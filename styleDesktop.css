@@ -1,0 +1,349 @@
+form {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+div.container-form-entry {
+  width: 98%;
+  max-width: 40em;
+  box-sizing: border-box;
+}
+div.profile-input-form {
+    width: 67%;
+}
+.goal-box-layout {
+    margin-left: auto;
+    margin-right: auto;
+    width: 40em;
+    max-width: 98.5%;
+}
+.goal-box {
+    width: 98.5%;
+}
+div.box-input-label {
+    display: inline-block;
+    text-align: left;
+    width: 6em;
+}
+div.short-input-label {
+  display: inline-block;
+  text-align: left;
+  width: 5em;
+  margin-left: 0;
+  margin-right: 0;
+}
+h1 {
+    padding-left: 2px;
+}
+h2 {
+    margin-bottom: 10px;
+    padding-left: 2px;
+}
+h3 {
+    font-size: 2rem;
+    padding-left: 1px;
+}
+h3 a {
+    color: #0088ff;
+    font-size: 2rem;
+    margin-top: 20px;
+    padding-left: 1px;
+    padding-right: 5px;
+}
+h4 {
+    font-size: 1.3rem;
+    margin-top: 20px;
+    padding-left: 1px;
+    padding-right: 5px;
+}
+h5 {
+    font-size: 1.05rem;
+    color: #008800;
+    margin-top: 10px;
+    padding-left: 1px;
+    padding-right: 5px;
+}
+.link-info {
+
+}
+a {
+    font-size: inherit;
+}
+p {
+    font-size: 1rem;
+}
+.big {
+    font-size: 1.3rem;
+}
+.small {
+    font-size: 0.95rem;
+}
+label {
+}
+input, textarea, select, button {
+    font-size: 1.01rem;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 6px;
+    padding-right: 6px;
+    margin-left: 3px;
+    margin-right: 3px;
+    text-rendering: auto;
+    color: initial;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 1px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+}
+textarea {
+    height: 150px;
+    width: 98.5%;
+}
+.ui-autocomplete-custom {
+    font: 400 Arial;
+}
+img {
+    width: 99%;
+}
+.button-submit {
+    font-size: inherit;
+    /*width: 110px;*/
+}
+.button-cancel {
+    width: 80px;
+}
+.anchor-button {
+}
+.button-small {
+    font-size: 1.2rem;
+    width: 30px;
+}
+.click-plus {
+    font-size: 1.5rem;
+    width: 1.6em;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    margin-bottom: 12px;
+    margin-top: 6px;
+}
+.spacer {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+.double-space {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+.quad-space {
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+.text-box {
+    display: inline-block;
+    width: 98.5%;
+    box-sizing: border-box;
+}
+.max-entry-box-width {
+    max-width: 40em;
+}
+.input-org {
+    width: 70%;
+}
+.subject-name {
+    width: 400px;
+}
+/* auto-completion classes */
+.skill {
+    width: 98.5%;
+    max-width: 30em;
+}
+/* end auto-completion classes */
+.name-box-small {
+    width: 120px;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    background-color: #eef;
+}
+.year-entry-box {
+    width: 5em;
+    padding-left: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 5px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.margin-bottom-small {
+    margin-top: 24px;
+    margin-bottom: 16px;
+}
+.small-word-button {
+    font-size: 1.1rem;
+    width: 80px;
+}
+.more-top-margin {
+    margin-top: 18px;
+}
+.margin-top {
+    margin-top: 0.8rem;
+}
+.map_canvas {
+   max-width: none;
+}
+.gmnoprint img {
+    max-width: none;
+}
+table {
+      border-collapse: collapse;
+      width: 100%;
+      cell-spacing: 0px;
+      padding-left: 8px;
+      padding-right 8px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      margin: 1px;
+      border: 2px solid #004400;
+      background-color: #CCEEFF;
+}
+.tablePosition {
+      border-collapse: collapse;
+      cell-spacing: 0px;
+      padding-left: 5px;
+      padding-right 5px;
+      padding-top: 2px;
+      padding-bottom: 2px;
+      margin: auto;
+      border: 2px solid #008800;
+      background-color: #554400;
+}
+th {
+    color: #008800;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    background-color: #BBDDAA;
+    border-spacing: 0px;
+    cell-spacing: 0px;
+    border: 1px solid #004400;
+}
+td {
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-spacing: 0px;
+}
+tr {
+    line-height: 2rem;
+}
+.less-bottom-margin {
+    margin-bottom: 2px;
+    margin-block-end: 0.1rem;
+}
+.less-top-margin {
+    margin-top: 2px;
+    margin-block-start: 0px;
+}
+.more-top-margin-2x {
+    margin-top: 1.01rem;
+}
+.more-top-margin-3x {
+    margin-top: 1.5em;
+}
+#main {
+    left: 29%;
+    width: 42%;
+    padding: 15px;
+}
+.content {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+#top_left {
+    position: absolute;
+    width: 22%;
+    top: 15%;
+    left: 2%;
+    color: #080;
+    background-color: #ffe;
+    border: 2px #080 solid;
+    padding: 20px
+}
+#one {
+  top: 5%;
+  left: 10%;
+  width: 80%;
+  height: 38%;
+  border: 0px orange solid;
+  padding-left: 1px;
+  padding-right: 1px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+#top_right {
+    position: absolute;
+    width: 22%;
+    top: 15%;
+    right: 2%;
+    color: #080;
+    background-color: #ffe;
+    border: 2px #080 solid;
+    padding: 20px
+}
+#top {
+    bottom: 30%;
+    height: 27%;
+    top: 3%;
+    left: 25%;
+    width: 50%;
+    border: 0px orange solid;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    position: relative;
+}
+#bottom {
+    left: 35%;
+    width: 30%;
+    bottom: 5%;
+    height: 3%;
+    position: relative;
+}
+#two {
+    left: 25%;
+    border: 0px orange solid;
+    position: relative;
+}
+#map {
+          /*position: relative;
+          position: absolute;
+          top: 35%;*/
+          left: 20%;
+          height: 400px;
+          width: 60%;
+          max-width: none;
+          padding: 0px;
+          border: 2px solid #008800;
+}
+#map img {
+   max-width: none;
+}
+#map_canvas img {
+   max-width: none;
+   max-height: none;
+   left: 20%;
+   height: 50%;
+   width: 70%;
+   padding: 0px;
+   border: 5px solid blue;
+}
