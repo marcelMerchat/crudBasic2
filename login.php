@@ -11,8 +11,7 @@ if ( isset($_POST['cancel'] ) ) {
 // 'if' statement fails for GET requests; there is no POST data.
 if (   isset($_POST['email'])  && isset($_POST['pass'])) {
   if ( (strlen($_POST['email']) >= 1) && (strlen($_POST['pass']) >= 1 )) {
-    unset($_SESSION['name']);  // Logout current user
-    unset($_SESSION['user_id']);
+    unset($_SESSION['user_id']);  // Logout current user
     // If user Name and password fields have entries:
     if (strpos($_POST['email'], '@') === FALSE ) {
          $_SESSION['error'] = 'Invalid email address'.$_POST['email'];
@@ -46,12 +45,10 @@ if (   isset($_POST['email'])  && isset($_POST['pass'])) {
       if($user_pass === $posted_pass) {
            $_SESSION['success'] = 'Logged in.';
            $_SESSION['user_id'] = array_values($row)[0];
-           $_SESSION['name'] = $_POST['email'];
            $_SESSION['email'] = $_POST['email'];
            $_SESSION['countEdu'] = 0;
            $_SESSION['countPosition'] = 0;
            $_SESSION['countSkill'] = 0;
-
            $_SESSION['full_name'] = get_name($pdo, $_SESSION['user_id']);
            error_log('Login success: '.$_POST['email']);
            $_SESSION['LAST_ACTIVITY'] = time();
@@ -72,18 +69,16 @@ if (   isset($_POST['email'])  && isset($_POST['pass'])) {
 }
 ?>
 
-<!--   VIEW ------------------------------------>
-
+<!--  VIEW or HTML code for model-view-controller  -->
 <!DOCTYPE html>
 <html>
 <head>
   <?php
      require_once 'header.php';
   ?>
-  <title>Marcel Merchat's Login Page</title>
+  <title>Login</title>
 </head>
 <body>
-</div>
 <div class="content form center" id="main">
 <form method="POST" action="login.php">
     <h1>Please Log In</h1>
@@ -133,7 +128,7 @@ if (   isset($_POST['email'])  && isset($_POST['pass'])) {
        </p>
   </form>
 
-</div></body>
+</div>
 <script>
 function doValidate() {
     console.log('Validating...');
@@ -156,3 +151,4 @@ function doValidate() {
     return false;
   }
 </script>
+</body></html>

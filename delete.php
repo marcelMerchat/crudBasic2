@@ -32,19 +32,20 @@ if ( $row === false ) {
 }
 
 ?>
+<!--  VIEW or HTML code for model-view-controller  -->
 <!DOCTYPE html>
 <html>
 <head>
-<title>Marcel Merchat - Deleting from Profile Data Table</title>
+<title>Delete Profile</title>
 <?php
    require_once 'header.php';
 ?>
 </head>
 <body>
 <div class="content center" id="main">
-<br>
+<br />
 <h3 class="center">Confirm Deletion</h3>
-<br>
+<br />
 <form method="post">
 
 <div class="container-form-entry"> <!-- column container of one column -->
@@ -58,8 +59,9 @@ if ( $row === false ) {
      <?= htmlentities($row['last_name']) ?>
   </div>
 </div>
-</br>
+<br />
 <h4 class="center">
+<input type="hidden" name="profile_id" value="<?= $row['profile_id'] ?>">
 <input class="button-submit spacer" type="submit" value="Delete" name="delete">
 </h4>
 </br>

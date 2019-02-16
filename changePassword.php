@@ -51,21 +51,18 @@ if ( isset($_POST['pass'])) {
     }
 }
 ?>
-
-<!-- VIEW ------------------------------------>
-
+<!--  VIEW or HTML code for model-view-controller  -->
 <!DOCTYPE html>
 <html>
 <head>
 <?php
     require_once 'header.php';
 ?>
-<title>New User</title>
+<title>Change Password</title>
 </head>
 <body>
-</div>
 <div class="content center" id="main">
-<br/>
+<br />
 <form method="POST">
     <h1 class="center">Get New Password</h1>
 <?php
@@ -76,13 +73,13 @@ if ( isset($_POST['pass'])) {
         <label for="id_1723">Password</label>
         <input class="password"  type="password" name="pass" value="<?= htmlentities('') ?>" id="id_1723">
   </p>
-  <br/>
+  <br />
   <p class="center big double-space">
         <input class="button-submit" type="submit" onclick="return doValidatePass();" value="Assign Password">
         <input class="button-submit" type="submit" name="cancel" value="Cancel">
   </p>
 </form>
-</body>
+</div>
 <script>
 function doValidatePass() {
     console.log('Validating...');
@@ -100,3 +97,5 @@ function doValidatePass() {
     return false;
   }
 </script>
+</body>
+</html>

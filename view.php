@@ -4,19 +4,19 @@ require_once "pdo.php";
 require_once "util.php";
 session_start();
 ?>
-
-<!DOCTYPE html>
+<!--  VIEW or HTML code for model-view-controller  -->
+<!DOCTYPE HTML>
 <html>
 <head>
-    <title>Marcel Merchat's Resume Registry</title>
+    <title>View Resume</title>
 <?php
     require_once 'header.php';
 ?>
 <style nonce="3c071056f3ed4d9ea0ec26f5a2fad84b" type="text/css">
-body {
-  line-height: normal;
-}
-div.edu-label {
+    body {
+      line-height: normal;
+    }
+    div.edu-label {
         display: inline-block;
         text-align: left;
         width: 3.2em;
@@ -27,8 +27,8 @@ div.edu-label {
         margin-top: 0px;
         padding-bottom: 0px;
         margin-bottom: 0px;
-}
-div.job-label {
+    }
+    div.job-label {
         display: inline-block;
         text-align: left;
         width: 5.5em;
@@ -51,32 +51,34 @@ div.job-label {
       padding-right: 1px;
       padding-top: 0px;
       padding-bottom: 0px;
-      margin-top: 0px;
-      margin-bottom: 0px;
+      margin-top: 4px;
+      margin-bottom: 1px;
     }
     div.edu-info {
         display: inline-block;
         text-align: left;
         width: 65%;
-        height: 1em;
+        padding-top: 1px;
+        padding-bottom: 0px;
         border: 0px solid #008800;
+        margin-top: 1px;
+        margin-bottom: 0px;
     }
     .edu-row1 {
-       height: 1em;
        border: 0px solid #008800;
        /*background-color: #eef;*/
+       margin-top: 1px;
        margin-bottom: 0px;
-       padding-top: 0px;
+       padding-top: 1px;
        padding-bottom: 0px;
     }
     .edu-row2 {
-       height: 1em;
        border: 0px solid #008800;
        /*background-color: #eef;*/
-       padding-top: 0px;
-       padding-bottom: 0px;
-       margin-top: 0px;
-       margin-bottom: 10px;
+       padding-top: 1px;
+       padding-bottom: 1px;
+       margin-top: 1px;
+       margin-bottom: 1px;
     }
     .more-top-margin {
         margin-top: 8px;
@@ -92,7 +94,7 @@ div.job-label {
 </head>
 <body>
 <div class="content" id="main">
-<br/>
+<br />
 <?php
     $profileid = $_GET['profile_id'];
     $stmt = $pdo->prepare('SELECT first_name, last_name,
@@ -203,7 +205,9 @@ echo '</ul>';
         //echo '<p style="color:orange">No positions found</p>';
   }
 ?>
-<p class="quad-space center"><a href="index.php">Return to Main Page</a>
+<br />
+<p class="double-space center"><a href="index.php">Return to Main Page</a>
 </p>
 </div>
 </body>
+</html>

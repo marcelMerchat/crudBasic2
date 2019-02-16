@@ -15,13 +15,12 @@ if ( isset($_POST['cancel']) ) {
 }
 // The profile does not exist yet; the profile id will be added below.
 // The logged-in user has submitted his profile.
-if (isset($_POST['first_name']) || (isset($_POST['last_name']) &&
-    isset($_POST['email'])) || isset($_POST['profession']) ||
-    isset($_POST['goal']) ) {
+if (  isset($_POST['first_name']) || isset($_POST['last_name']) ||
+      isset($_POST['email']) || isset($_POST['goal']) ) {
 
-  if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
-    isset($_POST['email']) && isset($_POST['profession']) &&
-    isset($_POST['goal']) ) {
+  if ( ((strlen($_POST['first_name']) >= 1) && (strlen($_POST['last_name']) >= 1) &&
+    (strlen($_POST['email']) >= 1) && (strlen($_POST['profession']) >= 1) &&
+    (strlen($_POST['goal']) >= 1) ) ) {
     //echo 'starting post validation';
     $msg = validateProfile();
     if (is_string($msg) ) {
@@ -80,17 +79,12 @@ if (isset($_POST['first_name']) || (isset($_POST['last_name']) &&
     header("Location: index.php");
     return;
   } else {
-    echo 'profile incomplete';
+    $_SESSION['error'] = 'Profile was incomplete, first and last names, email, and goal are required:';
   }
-} else {
-    //echo 'Nothing posted yet';
-}
+} // nothing in the profile was set, so fall through
 ?>
-
-<!-- model-view-controller -->
-<!--         VIEW             -->
-
-<!DOCTYPE html>
+<!--  VIEW or HTML code for model-view-controller  -->
+<!DOCTYPE HTML>
 <html>
 <head>
 <title>Add Profile</title>
@@ -162,7 +156,7 @@ if (isset($_POST['first_name']) || (isset($_POST['last_name']) &&
             <div class="container-form-entry">
                 <div class="less-bottom-margin short-input-label"> Year </div>
                 <div class="less-bottom-margin less-top-margin short-input-form">
-                     <input class="year-entry-box" type="text" name="edu_year@COUNT@" value="" />
+                     <input class="year-entry-box" type="text" name="edu_year@COUNT@" id="eduYearID@COUNT@" />
                 </div>
             </div>
             <div class="container-form-entry less-bottom-margin">
@@ -328,35 +322,7 @@ $(document).ready( function () {
               });
           }      //$('#gl').html.append("data dot first");
       });
-          //     var textboxId = $(this).attr("id");
-          //     txtentry = document.getElementById(id=textboxId).value;
-          //     if( len > 0){
-          //         $.getJSON('checkLanguage.php?txtentr'+'y='+txtentry, function(data) {
-          //             var y = data.first;
-          //             $.each(data, function(i, field){
-          //                 $(#gl".goal-box-layout").append(field + " ");
-          //             });
-          //         });
-          //     }              //$('.goal-box').autocomplete({ source: y });
-          //   //document.getElementById(textboxId).innerHTML = txtentry + y;
-          //     document.getElementById(textboxId).innerHTML = txtentry + " new";
-          //     document.getElementById(textboxId).style.color = "#FF0000";
-          //   //$.getJSON("demo_ajax_json.js", function(result){
-          //         //$.each(result, function(i, field){
-          //           //$("div").append(field + " ");
-          //         //});
-          //     //});
-          // //goals = document.getElementById('gl').value;
-          // //if (firstname == null || firstname == "" ) {
-          //   //goals == null || goals == "" )
-          //   //    alert("All fields must be filled out");
-          //     //  return false;
-          // //}
-          //   return true;
-        //} catch(e) {
-             //return false;
-        //}
-        $('#addSkill').click(function(event){
+      $('#addSkill').click(function(event){
             event.preventDefault();
             // Stored value of skillRemoved is pre-incremented by one count
             if( countSkill - skillRemoved + 1 > 9){
@@ -425,19 +391,21 @@ $(document).ready( function () {
                       <div class="year-form-entry"> \
                           <div class="less-bottom-margin less-top-margin year-input-label"> Start Year \
                           </div><div class="less-top-margin less-bottom-margin short-input-form"> \
-                              <input class="year-entry-box box-size" type="text" name="yearStart' + countPosition + '"' + ' id="ys'+ countPosition + '\" /> \
+                              <input class="year-entry-box box-size" type="text" name="wrkStartYr' + countPosition + '"' + ' id="ys'+ countPosition + '\" /> \
                           </div> \
                       </div> \
                       <div class="year-form-entry indent"> \
                           <div class="less-bottom-margin less-top-margin year-input-label"> Final Year \
                           </div><div class="less-top-margin less-bottom-margin short-input-form"> \
-                              <input class="year-entry-box" type="text" name="yearStart' + countPosition + '"' + ' id="yl'+ countPosition + '\" /> \
+                              <input class="year-entry-box" type="text" name="wrkFinalYr' + countPosition + '"' + ' id="yl'+ countPosition + '\" /> \
                           </div> \
                       </div> \
                   </div> \
                   <div class="more-top-margin less-bottom-margin"> Organization \
                   </div><div class="less-top-margin goal-box-layout"> \
-                      <input class="text-box" type="text" name="org'+countPosition+'" /> \
+                            <input class="text-box" type="text" \
+                                   name="org'+countPosition+'\" \
+                        id=\"orgID' + countPosition + '\"> \
                   </div> \
                   <div class="more-top-margin less-bottom-margin">Description \
                   </div><div class="less-bottom-margin goal-box-layout"> \

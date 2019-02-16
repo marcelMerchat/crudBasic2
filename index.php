@@ -3,10 +3,11 @@ require_once "pdo.php";
 require_once "util.php";
 session_start();
 ?>
-<!DOCTYPE html>
+<!--  VIEW or HTML code for model-view-controller  -->
+<!DOCTYPE HTML>
 <html>
 <head>
-  <title>Organization Resume Registry</title>
+  <title>Resume Registry</title>
   <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> -->
 <?php
   require_once 'header.php';
@@ -47,7 +48,7 @@ nav li a {
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-
+<!--  VIEW or HTML code for model-view-controller  -->
 <body>
 <div class="adgurd-alert adguard-assistant-button-fixed adguard-assistant-button-bottom adguard-assistant-button-right"><div class="adgurd-alert-wrap"><div class="adgurd-alert-logo-big"></div>
 <div class="adgurd-alert-cont" style="opacity: 0; display: none;"><div class="adgurd-alert-tail"></div><div class="adgurd-alert-head"></div><div class="adgurd-alert-text"></div>

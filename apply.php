@@ -12,7 +12,6 @@ if ( isset($_POST['cancel'] ) ) {
 // 'if' statement fails for GET requests; there is no POST data.
 if (   isset($_POST['email'])  && isset($_POST['pass']) && isset($_POST['hint'])) {
   if ( (strlen($_POST['email']) >= 1) && (strlen($_POST['pass']) >= 1 ) && (strlen($_POST['pass']) >= 1 )) {
-    unset($_SESSION['name']);  // Logout current user
     unset($_SESSION['user_id']);
     // If user Name and password fields have entries:
     if (strpos($_POST['email'], '@') === FALSE ) {
@@ -77,20 +76,17 @@ if (   isset($_POST['email'])  && isset($_POST['pass']) && isset($_POST['hint'])
 }
 ?>
 
-<!-- VIEW ------------------------------------>
-
+<!--  VIEW or HTML code for model-view-controller  -->
 <!DOCTYPE html>
 <html>
 <head>
 <?php
     require_once 'header.php';
 ?>
-<title>New User</title>
+<title>New Account</title>
 </head>
 <body>
-</div>
 <div class="content center" id="main">
-
 <form method="POST">
     <h2 class="center">Get New User Login</h2>
     <p>
@@ -101,16 +97,16 @@ if (   isset($_POST['email'])  && isset($_POST['pass']) && isset($_POST['hint'])
     <div class="big center">
       <p class="center less-bottom-margin less-top-margin"><label class="less-bottom-margin"for="username">User Nickname</label></p>
       <p class="center less-bottom-margin less-top-margin"><input class="text-box" type="text" name="name" value='<?= htmlentities("") ?>' id="username"></p>
-      </div><div class="center-entry">
+    </div><div class="center-entry">
       <p class="center less-bottom-margin"><label for="email">Email</label></p>
       <p class="center less-bottom-margin less-top-margin"><input class="text-box" type="text" name="email" value='<?= htmlentities("") ?>' id="email"></p>
-      </div><div>
+    </div><div>
       <p class="center less-bottom-margin"><label for="id_1723"> Password</label></p>
       <p class="center less-bottom-margin less-top-margin"><input class="text-box"  type="password" name="pass" value='<?= htmlentities("") ?>' id="id_1723"></p>
-      </div><div>
+    </div><div>
       <p class="center less-bottom-margin"><label for="id_1723h"> Hint</label></p>
       <p class="center less-bottom-margin less-top-margin"><input class="text-box"  type="password" name="hint" value='<?= htmlentities("") ?>' id="id_1723h"></p>
-   </div>
+    </div>
       <p class="center big double-space">
             <input class="button-submit" type="submit" onclick="return doValidate();" value="Assign My Login">
             <input class="button-submit" type="submit" name="cancel" value="Cancel">
@@ -131,7 +127,6 @@ if (   isset($_POST['email'])  && isset($_POST['pass']) && isset($_POST['hint'])
             with less than 50,000 members, but is it modeled for future growth
             into a large organization.
       </p>
-</body>
 <script>
 function doValidate() {
     console.log('Validating...');
@@ -154,3 +149,5 @@ function doValidate() {
     return false;
   }
 </script>
+</body>
+</html>

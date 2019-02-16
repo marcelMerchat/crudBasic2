@@ -599,15 +599,17 @@ td {
 ul {
     padding-top: 2px;
     padding-bottom: 0px;
-    padding-left: 40px;
+    padding-left: 8px;
     padding-right: 1px;
+    margin-left: 14px;
+    margin-bottom: 10px;
     list-style-type: square;
 }
 li {
     font-size: 1rem;
     padding-top: 4px;
-    padding-bottom: 10px;
-    padding-left: 10px;
+    padding-bottom: 6px;
+    padding-left: 1px;
     padding-right: 1px;
     list-style-type: square;
     color: #222;

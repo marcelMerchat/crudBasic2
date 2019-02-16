@@ -26,12 +26,14 @@ function flashMessages(){
     }
   }
 function validateProfile() {
+  $_SESSION['success'] = $_SESSION['success'].' profile check . . . ';
   if ( (strlen($_POST['first_name']) > 0) && (strlen($_POST['last_name']) > 0)
                                           &&
             (strlen($_POST['email']) > 0) && (strlen($_POST['profession']) > 0)
                                           &&
             strlen($_POST['goal']) > 0  ) {
        //$_SESSION['error'] = "No errors yet";
+       $_SESSION['success'] = $_SESSION['success'].' profile post check ok . . . ';
        if ( strpos($_POST['email'],'@') === false ) {
             $_SESSION['error'] = "Invalid email address";
             $_SESSION['error'] = "Invalidate email profile error";
@@ -176,19 +178,22 @@ function validateSkill() {
 function validatePos() {
     $_SESSION['countJobs'] = 0;
     $count = 0;
+    $_SESSION['success'] = $_SESSION['success'].' validating position . . . ';
     //echo 'start pos entry loop';
     for($i=1; $i<=9; $i++) {
-        if ( ! isset($_POST['yearStart'.$i]) ) continue;
-        if ( ! isset($_POST['yearLast'.$i]) ) continue;
+        $_SESSION['success'] = $_SESSION['success'].' validating position'.$_POST['wrkStartYr'.$i];
+        if ( ! isset($_POST['wrkStartYr'.$i]) ) continue;
+        if ( ! isset($_POST['wrkFinalYr'.$i]) ) continue;
         if ( ! isset($_POST['org'.$i]) ) continue;
         if ( ! isset($_POST['desc'.$i]) ) continue;
         //echo 'loop '.$i.' set';
-        $yearStart = $_POST['yearStart'.$i];
-        $yearLast = $_POST['yearLast'.$i];
+        $_SESSION['success'] = $_SESSION['success'].' validating year'.$_POST['wrkStartYr'.$i].$_POST['wrkFinalYr'.$i];
+        $yearStart = $_POST['wrkStartYr'.$i];
+        $yearLast = $_POST['wrkFinalYr'.$i];
         $org = $_POST['org'.$i];
         $desc = $_POST['desc'.$i];
         //echo 'assigned variables';
-        if ( ! (is_numeric($yearStart) && is_numeric($yearStart)) ) {
+        if ( ! (is_numeric($yearStart) && is_numeric($yearLast)) ) {
             return "Both position years must be numeric.";
         }
         if ( strlen($org) == 0 ) {
@@ -310,18 +315,6 @@ function insertSkillSet($pdo, $profile_id) {
           $stmt->execute(array(':nme' => trim($skill)) );
           $skill_id = $pdo->lastInsertId() + 0;
       }
-
-
-      // if($row !== false) {
-      //     $institution_id = $row['institution_id'] + 0;
-      // }
-      // //if school not found, insert it
-      // if($institution_id === false) {
-      //     $sql = 'INSERT INTO Institution (`name`) VALUES (TRIM(:nme))';
-      //     $stmt = $pdo->prepare($sql);
-      //     $stmt->execute(array(':nme' => $school) );
-      //     $institution_id = $pdo->lastInsertId() + 0;
-      // }
       $sql = 'INSERT INTO SkillSet (profile_id, skill_id, `rank`)
                     VALUES ( :pid, :sid, :rnk)';
       $stmt = $pdo->prepare($sql);
@@ -378,46 +371,54 @@ function insertEducations($pdo, $profile_id) {
       $count++;
       }
       if($rank > 0){
-        $_SESSION['success'] = "There are ".$rank." education entries.";
+        //$_SESSION['success'] = "There are ".$rank." education entries.";
       }
 }
 function insertPositions($pdo, $profile_id) {
     $rank = 1;
     $count = 0;
+    //$_SESSION['success'] = $_SESSION['success'].' inserting position - '.$_POST['workStartYear'.$i];
+    // $_SESSION['success'] = $_SESSION['success'].' starting language check - '
+    //      .$_POST['workStartYear1'].$_POST['org1'].$_POST['workFinalYear1'].$_POST['desc1'] ;
     for($i=1; $i<=9; $i++) {
-      //echo 'years '.$_POST['yearStart'.$i].$_POST['yearLast'.$i].$_POST['org'.$i].$_POST['desc'.$i];
-      if ( isset($_POST['yearStart'.$i]) && isset($_POST['org'.$i]) &&
-           isset($_POST['yearLast'.$i]) && isset($_POST['desc'.$i]) &&
-           strlen($_POST['org'.$i]) > 0 && (strlen($_POST['desc'.$i]) > 0) ) {
-                //echo 'inserting positions';
-                $org = trim($_POST['org'.$i]);
-                $org = filterWord($pdo, $org);
-                $desc = trim($_POST['desc'.$i]);
-                $off = ofnsvCheck($pdo, $desc);
-                //echo 'offensive test completed '.$off;
-                if($off==true){
-                    $desc = filterWord($pdo, $desc);
-                    echo ' -offensive language detected- ';
-                    $msg = $msg.' The profile was saved but at least one position was not entered, you can edit the profile. ';
-                    continue;
-                } else {
-                    $_SESSION['success'] = $_SESSION['success'].' -good language test- ';
-                    $stmt = $pdo->prepare('INSERT INTO Position
-                      (profile_id, `rank`, yearStart, yearLast, organization, description)
-                          VALUES ( :pid, :rnk, :yrStart, :yrLast, TRIM(:org), TRIM(:de))');
-                    $stmt->execute(array(
-                      ':pid' => $profile_id,  ':rnk' => $rank,
-                      ':yrStart' => $_POST['yearStart'.$i],
-                      ':yrLast' => $_POST['yearLast'.$i],
-                      ':org' => trim($_POST['org'.$i]),
-                      ':de' => trim($_POST['desc'.$i]))  );
-                      //echo 'added position set';
-                    $rank++;
-                }
-      }
+    //   //echo 'years '.$_POST['yearStart'.$i].$_POST['yearLast'.$i].$_POST['org'.$i].$_POST['desc'.$i];
+       if ( isset($_POST['wrkStartYr'.$i]) && isset($_POST['org'.$i]) &&
+            isset($_POST['wrkFinalYr'.$i]) && isset($_POST['desc'.$i]) &&
+            strlen($_POST['org'.$i]) > 0 && (strlen($_POST['desc'.$i]) > 0) ) {
+                   //$_SESSION['success'] = $_SESSION['success'].' starting language test - ';
+                   $org = trim($_POST['org'.$i]);
+                   $org = filterWord($pdo, $org);
+                   $desc = trim($_POST['desc'.$i]);
+                   $off = ofnsvCheck($pdo, $desc);
+                 //echo 'offensive test completed '.$off;
+                 //$_SESSION['success'] = $_SESSION['success'].' starting language check - '.$off;
+                 if($off==true){
+                     $desc = filterWord($pdo, $desc);
+                     $_SESSION['error'] = ' Offensive language may be present, please try again. ';
+                     $msg = $msg.' The profile was saved but at least one position was not entered, you can edit the profile. ';
+                     $_SESSION['success'] = $_SESSION['success'].$msg;
+                     continue;
+                 } else {
+                     //$_SESSION['success'] = $_SESSION['success'].' -good language test- ';
+                     $stmt = $pdo->prepare('INSERT INTO Position
+                       (profile_id, `rank`, yearStart, yearLast, organization, description)
+                           VALUES ( :pid, :rnk, :yrStart, :yrLast, TRIM(:org), TRIM(:de))');
+                     $stmt->execute(array(
+                       ':pid' => $profile_id,  ':rnk' => $rank,
+                       ':yrStart' => $_POST['wrkStartYr'.$i],
+                       ':yrLast' => $_POST['wrkFinalYr'.$i],
+                       ':org' => trim($_POST['org'.$i]),
+                       ':de' => trim($_POST['desc'.$i]))  );
+                       //echo 'added position set';
+                     $rank++;
+                 }
+       } else {
+         //$_SESSION['success'] = $_SESSION['success'].' test failed to start - ';
+
+       }
     }
     $_SESSION['countPosition'] = $rank - 1;
-    $_SESSION['success'] = "There are ".$_SESSION['countPosition']." positions.";
+    $_SESSION['success'] = $_SESSION['success']."There are ".$_SESSION['countPosition']." positions.";
 }
 function get_name($pdo, $user_id) {
     $stmt = $pdo->prepare('SELECT name FROM users WHERE user_id= :id');

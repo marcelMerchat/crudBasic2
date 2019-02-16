@@ -30,10 +30,6 @@ if (   isset($_POST['email'])  || isset($_POST['hint'])) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':em' => $_POST['email'], ':hnt' => $_POST['hint']));
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    print_r($row);
-    print_r("\n".$_POST['email']);
-    print_r("\n".$_POST['hint']);
-
     if($row === false) {
             $_SESSION['error'] = 'Hint not found: Please try again.';
             error_log('Login failure: '.$_POST['email'].' hint not in database. Please check spelling');
@@ -47,7 +43,7 @@ if (   isset($_POST['email'])  || isset($_POST['hint'])) {
           echo 'hint matches '.$row;
           $_SESSION['success'] = 'You entered the hint. You may change the password.';
           error_log('new password application success for User-'.$_POST['user_id']);
-          header( 'Location: recoverPass.php' );
+          header( 'Location: changePassword.php' );
           return;
    } else {
 	     $_SESSION['error'] = 'Incorrect email or hint';
@@ -61,16 +57,14 @@ if (   isset($_POST['email'])  || isset($_POST['hint'])) {
   $_SESSION['success'] = 'Ready to recover password. Enter email and hint.';
 }
 ?>
-
-<!-- VIEW ------------------------------------>
-
+<!--  VIEW or HTML code for model-view-controller  -->
 <!DOCTYPE html>
 <html>
 <head>
 <?php
 require_once 'header.php';
 ?>
-<title>New User</title>
+<title>Forgot Password</title>
 </head>
 <body>
 <div class="content center" id="main">
@@ -91,10 +85,7 @@ require_once 'header.php';
                 <input class="button-submit" type="submit" onclick="return doValidateHint();" value="Submit">
                 <input class="button-submit" type="submit" name="cancel" value="Cancel">
     </p>
-
-
 </form>
-</body>
 <script>
 function doValidateHint() {
     console.log('Validating...');
@@ -117,3 +108,5 @@ function doValidateHint() {
     return false;
   }
   </script>
+</body>
+</html>

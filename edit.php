@@ -24,6 +24,8 @@ if ( isset($_GET['profile_id']) && strlen($_GET['profile_id'] > 0)) {
 }
 $uid = $_SESSION['user_id'];
 $profileid = $_SESSION['profile_id'];
+//echo " ready 1a to add positions at header . . . ".$_POST['first_name'].$_POST['last_name'].$_POST['email'].$_POST['profession'].$_POST['goal'];
+//echo " work info: ".$_POST['wrkStartYr1'].$_POST['org1'].$_POST['wrkFinalYr1'].$_POST['desc1'];
 $posCount = get_position_count($pdo);
 $_SESSION['posCount'] =  $posCount;
 // Get profile from database
@@ -38,19 +40,20 @@ $ln = htmlentities(trim($profile['last_name']));
 $em = htmlentities(trim($profile['email']));
 $prof = htmlentities(trim($profile['profession']));
 $gl = htmlentities(trim($profile['goal']));
-
 // Check for initial GET request without (or without) post information
 if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
     isset($_POST['email']) && isset($_POST['profession']) &&
     isset($_POST['goal'])) {
-
+      $_SESSION['success'] = $_SESSION['success'].' post was made . . . ';
     $msg = validateProfile();
+    $_SESSION['success'] = $_SESSION['success'].' . . . profile checked  . . . '.$mdg;
     if (is_string($msg) ) {
       $_SESSION['error'] = $msg;
       echo $_SESSION['error'] ;
       header('Location: edit.php?profile_id='.$_REQUEST['profile_id']);
       return;
     }
+    $_SESSION['success'] = $_SESSION['success'].' profile passed . . . ';
     $msg = validateSkill();
     if (is_string($msg) ) {
        $_SESSION['error'] = $msg;
@@ -58,6 +61,7 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
        header('Location: edit.php?profile_id='.$_REQUEST['profile_id']);
        return;
     }
+    $_SESSION['success'] = $_SESSION['success'].' skill passed . . . ';
     $msg = validateEducation();
     if (is_string($msg) ) {
        $_SESSION['error'] = $msg.' the value of edu found';
@@ -65,7 +69,10 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
        header('Location: edit.php?profile_id='.$_REQUEST['profile_id']);
        return;
     }
+    $_SESSION['success'] = $_SESSION['success'].' edu passed . . . ';
+    echo 'ready to check positions';
     $msg = validatePos();
+    echo 'check positions '.$msg;
     //echo $msg;
     if (is_string($msg) ) {
           $_SESSION['error'] = $_SESSION['error'].$msg;
@@ -73,6 +80,7 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
           header('Location: edit.php?profile_id='.$_REQUEST['profile_id']);
           return;
     }
+    $_SESSION['success'] = $_SESSION['success'].' database check . . . ';
     // Get revised posted profile information
     $f_n = $_POST['first_name'];
     $l_n = $_POST['last_name'];
@@ -87,10 +95,11 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
     $g_l = trim(filterWord($pdo, $g_l));
     if(isset($_SESSION['error']) && $_SESSION['error'] == "offensive"){
         $_SESSION['error'] = $_SESSION['message'].' Word not recognized, please try again.';
-        header("Location: add.php");
+        header("Location: edit.php");
         return;
     }
  // Update profiles
+    $_SESSION['success'] = $_SESSION['success'].' update basic profile in database . . . ';
     $sql = "UPDATE Profile SET first_name = :fn, last_name = :lnm, email = :em, profession = :prof, goal = :goal WHERE profile_id = :pid ";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':fn' => $_POST['first_name'], ':lnm' => $_POST['last_name'], ':em' => $_POST['email'],
@@ -105,30 +114,31 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
     insertSkillSet($pdo, $_REQUEST['profile_id']);
     $skillCount = get_skill_count($pdo);
     $_SESSION['skillCount'] =  $skillCount;
-    $_SESSION["success"] = 'Record edited: there are now '.$skillCount.' skills.';
+    //$_SESSION["success"] = 'Record edited: there are now '.$skillCount.' skills.';
 
  // Delete old education entries; recreate new list
     $stmt = $pdo->prepare('DELETE FROM Education WHERE profile_id = :pid');
     $stmt->execute(array(':pid' => $_REQUEST['profile_id']));
     insertEducations($pdo, $_REQUEST['profile_id']);
-    $_SESSION['success'] = $_SESSION['success']." Education added";
-    //echo 'ready to delete positions';
+    //$_SESSION['success'] = $_SESSION['success']." Education added";
  // Clear old position entries; recreate new list
     $stmt = $pdo->prepare('DELETE FROM Position WHERE profile_id = :pid');
     $stmt->execute(array(':pid' => $_REQUEST['profile_id']));
-//  Insert new position entries; create replacement list
-    //echo 'ready to insert positions';
+ // Insert new position entries; create replacement list
+
+    //$_SESSION['success'] = $_SESSION['success']." ready to add positions . . . ";
     insertPositions($pdo, $_REQUEST['profile_id']);
+    //$_SESSION['success'] = $_SESSION['success']." finished adding positions . . . ";
     //echo 'finished with insertions';
     $_SESSION['countPosition'] = get_position_count($pdo);
-    $_SESSION['success'] = $_SESSION['success'].' Record edited: there are now '.$_SESSION['countPosition'].' positions.';
+    //$_SESSION['success'] = $_SESSION['success'].' Record edited: there are now '.$_SESSION['countPosition'].' positions.';
     if(isset($_SESSION['message'])) {
-        $_SESSION[''] = 'Language error: '.$_SESSION['message'];
+        $_SESSION['error'] = 'Language error: '.$_SESSION['message'];
     }
     header("Location: index.php");
     return;
 } else {
-  //echo '<h3>Initial Get Request: nothing posted yet</h3>';
+  //echo '<p>Initial Get Request: nothing posted yet</p>';
 }
 ?>
 
@@ -137,7 +147,7 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
 <!DOCTYPE html>
 <html>
 <head>
-<title>Resume Register</title>
+<title>Edit Profile</title>
 <?php
    require_once 'header.php';
    // Get educations and positions from database
@@ -180,14 +190,14 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
               <input class="text-box" type="text" name="profession" value="<?= $prof ?>" id="pf">
             </div></div>
           <div class="goal-box-layout less-top-margin">
-                <h3 class="small-bottom-pad center"> Goals</h3>
+                <h4 class="small-bottom-pad center"> Goals</h4>
                 <textarea class="goal-box" rows="5" name="goal" id="gl" ><?= $gl ?></textarea>
           </div>
           <!-- End of profile information -->
           <!-- Skills -->
 <!-- End of goals -->
 <!-- Skills -->
-<h3 class="more-top-margin-3x less-bottom-margin center">Skills</h3>
+<h4 class="more-top-margin-3x less-bottom-margin center">Skills</h4>
 <!-- the id addSkill point to a JavaScript function -->
 <div class="less-top-margin less-bottom-margin" id="skill_fields">
 <?php
@@ -224,11 +234,11 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
     </div>
 </script>
 </div>
-<h4 class="less-top-margin center">Add Job Skill: <button class="click-plus less-bottom-margin" id="addSkill">+</button></h4>
+<h5 class="less-top-margin center">Add Job Skill: <button class="click-plus less-bottom-margin" id="addSkill">+</button></h5>
 <!-- 'addSkill' is an argument of a JavaScript
  function object [ $('#addSkill') ] described below. -->
 <!-- end of skills -->
-<h3 class="less-bottom-margin center">Education</h3>
+<h4 class="less-bottom-margin center">Education</h4>
 <div class="less-top-margin less-bottom-margin centered-row-layout" id="edu_fields">
 <?php
 $countEdu = 1;
@@ -239,17 +249,19 @@ $countEdu = 1;
                     <div class="less-bottom-margin short-input-label">Year
                     </div><div class="less-top-margin less-bottom-margin short-input-form">
                         <input class="text-box year-entry-box" type="text" name="edu_year'.$countEdu.'"
-                            value="'.$education['year'].'">
+                            value="'.$education['year'].'"  id="eduYear'.$countEdu.'">
                     </div>
                 </div><div class="container-form-entry">
                     <div class="less-bottom-margin less-top-margin short-input-label">School
                     </div><div class="less-top-margin less-bottom-margin input-form">
-                        <input class="school text-box" type="text" name="edu_school'.$countEdu.'" value="'.htmlentities(trim($education['name'])).'" >
+                        <input class="school text-box" type="text" \
+                            name="edu_school'.$countEdu.'" \
+                            value="'.htmlentities(trim($education['name'])).'" id="school'.$countEdu.'">
                     </div>
                 </div><div class="container-form-entry">
                     <div class="less-bottom-margin less-top-margin short-input-label">Major
                     </div><div class="less-top-margin less-bottom-margin input-form">
-                        <input class="text-box" type="text" name="edu_major'.$countEdu.'" value="'.htmlentities(trim($education['major'])).'" id="major'.$countEdu.'" >
+                        <input class="text-box" type="text" name="edu_major'.$countEdu.'" value="'.htmlentities(trim($education['major'])).'" id="edu_major'.$countEdu.'" >
                     </div>
                 </div><div>
                     <p>Delete this education <input
@@ -266,7 +278,7 @@ $countEdu = 1;
     <div class="container-form-entry">
         <div class="less-bottom-margin short-input-label left">Year</div>
         <div class="less-bottom-margin less-top-margin short-input-form left">
-             <input class="year-entry-box" type="text" name="edu_year@COUNT@" value="" />
+             <input class="year-entry-box" type="text" name="edu_year@COUNT@" id="eduYear@COUNT@" />
         </div>
     </div>
     <div class="container-form-entry less-bottom-margin">
@@ -290,10 +302,10 @@ $countEdu = 1;
     </div>
 </script>
 </div>
-<h4 class="less-top-margin center">Add Education: <button class="click-plus less-bottom-margin" id="addEdu" >+</button></h4>
+<h5 class="less-top-margin center">Add Education: <button class="click-plus less-bottom-margin" id="addEdu" >+</button></h5>
 <!-- End of Eduction         -->
 <!-- Beginning of Employment -->
-<h3 class="more-top-margin less-bottom-margin center">Work History</h3>
+<h4 class="more-top-margin less-bottom-margin center">Work History</h4>
 <div class="less-top-margin less-bottom-margin" id="position_fields">
 
 <?php
@@ -310,15 +322,15 @@ foreach($positions as $position){
                    <div class="inline-block">
                       <div class="less-bottom-margin year-input-label">Start Year</div>
                       <div class="less-top-margin less-bottom-margin short-input-form">
-                        <input class="year-entry-box" type="text" name="yearStart'.$pos.'"
-                               value="'.$position['yearStart'].'">
+                        <input class="year-entry-box" type="text" name="wrkStartYr'.$pos.'"
+                               value="'.$position['yearStart'].'" id="workStartYr'.$pos.'">
                       </div>
                   </div>
                   <div class="inline-block">
                       <div class="less-bottom-margin year-input-label">Final Year</div>
                       <div class="less-top-margin less-bottom-margin short-input-form">
-                           <div><input class="year-entry-box" type="text" name="yearLast'.$pos.'"
-                                       value="'.$position['yearLast'].'">
+                           <div><input class="year-entry-box" type="text" name="wrkFinalYr'.$pos.'"
+                                       value="'.$position['yearLast'].'" id="workFinalYr'.$pos.'">
                            </div>
                       </div>
                   </div>
@@ -330,14 +342,14 @@ foreach($positions as $position){
               <div class="row">
                  <div class="inline-block">
                     <div class="less-bottom-margin year-input-label"> Start Year</div>
-                    <div class="short-input-form"><input class="year-entry-box" type="text" name="yearStart'.$pos.'"
-                              value="'.$position['yearStart'].'">
+                    <div class="short-input-form"><input class="year-entry-box" type="text" name="wrkStartYr'.$pos.'"
+                              value="'.$position['yearStart'].'" id="workStartYr'.$pos.'">
                     </div>
                  </div>
                  <div class="inline-block">
                      <div class="less-bottom-margin year-input-label"> Final Year</div>
-                     <div class="short-input-form"><input class="year-entry-box" type="text" name="yearLast'.$pos.'"
-                        value="'.$position['yearLast'].'">
+                     <div class="short-input-form"><input class="year-entry-box" type="text" name="wrkFinalYr'.$pos.'"
+                        value="'.$position['yearLast'].'" id="workStartYr'.$pos.'">
                      </div>
                  </div>
                 </div>
@@ -347,7 +359,7 @@ foreach($positions as $position){
                   Organization:
               </p><p class="less-top-margin less-bottom-margin">
               <input class="text-box less-top-margin less-bottom-margin" name="org'.$pos.'"
-               value="'.htmlentities(trim($position['organization'])).'" id=\"company'.$pos.'"/>
+               value="'.htmlentities(trim($position['organization'])).'" id="company'.$pos.'"/>
                </p><p class="less-bottom-margin">Description: </p>
                <textarea class="position-box margin-close less-top-margin less-bottom-margin"
                     name="desc'.$pos.'" rows = "8" id=\"positionDesc'.$pos.'>'
@@ -364,7 +376,7 @@ foreach($positions as $position){
 </div>
 <h4 class="less-top-margin center">Add Position <button class="click-plus" id="addPos" >+</button></h4>
 <!-- End of Employment -->
-<p class="less-bottom-margin small headline-green"><span class="link-info">Modify database</span>
+<p class="less-bottom-margin small headline-green center"><span class="link-info">Modify database</span>
   <input class="button-submit" type="submit" onclick="return doValidate();" value="Save"/>
   <input class="button-submit" type="submit" name="cancel" value="Cancel" size="40">
 </p>
@@ -443,6 +455,7 @@ $(document).ready(function() {
                 countPosition = countPosition + 1;
             }
             var positionYrs = 'positionYears'+countPosition;
+            // positionsYrs is the target for direct JavaScript DOM insertion
             $('#position_fields').append(
                '<div class="form-background div-form-group  border-top-bottom  more-bottom-margin" id=\"position'+countPosition+'\"> \
                    <div class="container-fluid"> \
@@ -468,7 +481,7 @@ $(document).ready(function() {
             );
             alert('Added position: Now there are ' + (countPosition - positionRemoved));
             var position = 'positionYears'+countPosition;
-
+            // 'positionYear# is the insertion target above.'
             var insertionId = "positionYears"+countPosition;
             var insertionTag = document.getElementById(insertionId);
             // Inline Package for both years
@@ -501,6 +514,7 @@ $(document).ready(function() {
             var StartYearLabelDiv = document.createElement("div");
             var StartYearLabelDivId = "workStartYearLabel"+countPosition;
             StartYearLabelDiv.id = StartYearLabelDivId;
+
             //StartYearLabelDiv.className = "less-bottom-margin year-input-label left inline-block";
             StartYearLabelDiv.className = "less-bottom-margin year-input-label";
             // Make Label and attach to container for label
@@ -512,12 +526,14 @@ $(document).ready(function() {
             var workStartYearInputDivId = "workStartYear"+countPosition;
             workStartYearInputDiv.id = workStartYearInputDivId;
             workStartYearInputDiv.className = "less-bottom-margin less-top-margin short-input-form";
-            //workStartYearInputDiv.className = "less-bottom-margin less-top-margin short-input-form";
        //   Make input box and attach it to its container
             var workStartYearInput = document.createElement("input");
-            var workStartYearId = "workStartYear"+countPosition;
-            workStartYearInput.id = workStartYearId;
+       //   This is the tag id for the form year
+            var workStartYearId = "wrkStartYr"+countPosition;
+            var workStartYearName = "wrkStartYr"+countPosition;
             workStartYearInput.className = "year-entry-box";
+            workStartYearInput.name = workStartYearName;
+            workStartYearInput.id = workStartYearId;
             workStartYearInputDiv.appendChild(workStartYearInput);
             workStartYearGroup.appendChild(workStartYearInputDiv);
         //  Insert group directly into DOM
@@ -527,6 +543,7 @@ $(document).ready(function() {
             var workFinalYearGroup = document.createElement("div");
             var workFinalYearGroupId = "workFinalYearGroup"+countPosition;
             workFinalYearGroup.id = workFinalYearGroupId;
+            workFinalYearGroup.name = workFinalYearGroupId;
             if(isLargeDevice){
                 //workFinalYearGroup.className = "container-form-entry";
                 workFinalYearGroup.className = "short-input-form inline-block";
@@ -535,6 +552,7 @@ $(document).ready(function() {
                 workFinalYearGroup.className = "short-input-form inline-block";
             }
             var FinalYearLabelDiv = document.createElement("div");
+       //   This is the tag id for the final form year
             var FinalYearLabelDivId = "workFinalYearLabel"+countPosition;
             FinalYearLabelDiv.id = FinalYearLabelDivId;
             FinalYearLabelDiv.className = "less-bottom-margin year-input-label";
@@ -551,9 +569,12 @@ $(document).ready(function() {
             workFinalYearInputDiv.className = "less-bottom-margin less-top-margin short-input-form";
 
             var workFinalYearInput = document.createElement("input");
-            var workFinalYearId = "workFinalYear"+countPosition;
-            workFinalYearInput.id = workFinalYearId;
+            var workFinalYearId = "wrkFinalYr"+countPosition;
+            var workFinalYearName = "wrkFinalYr"+countPosition;
             workFinalYearInput.className = "year-entry-box";
+            workFinalYearInput.name = workFinalYearName;
+            workFinalYearInput.id = workFinalYearId;
+
             workFinalYearInputDiv.appendChild(workFinalYearInput);
             workFinalYearGroup.appendChild(workFinalYearInputDiv);
             if(isMobileDevice){
