@@ -107,8 +107,6 @@ INSERT INTO Profiles (user_id, first_name, last_name, email, profession, goal)
 CREATE TABLE Skill (
 skill_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 name VARCHAR(128) NOT NULL DEFAULT '',
-profile_id INTEGER,
-description VARCHAR(255),
 INDEX(description)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

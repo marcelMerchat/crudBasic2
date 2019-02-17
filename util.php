@@ -6,9 +6,11 @@ function isMobile() {
 }
 function loadMobilityStyles() {
     if(isMobile()==1) {
-        require_once 'mobile.php';
+        //require_once 'mobile.php';
+        echo '<link rel="stylesheet" type="text/css" href="styleMobile.css">';
     } else {
-        require_once 'desktop.php';
+        //require_once 'desktop.php';
+        echo '<link rel="stylesheet" type="text/css" href="styleDesktop.css">';
     }
 }
 function flashMessages(){

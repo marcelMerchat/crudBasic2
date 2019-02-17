@@ -12,7 +12,8 @@ session_start();
 <?php
     require_once 'header.php';
 ?>
-<style nonce="3c071056f3ed4d9ea0ec26f5a2fad84b" type="text/css">
+<!-- nonce="3c071056f3ed4d9ea0ec26f5a2fad84b" -->
+<style type="text/css">
     body {
       line-height: normal;
     }
