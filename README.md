@@ -74,6 +74,7 @@ INSERT INTO users (name,email,password, hint)
 // password is 'rock123'
 
 ALTER TABLE users ADD INDEX(password);
+ALTER TABLE users CHANGE block block BOOLEAN DEFAULT true;
 
 
 #######################################################################
@@ -166,6 +167,7 @@ CREATE TABLE Education (
 profile_id INTEGER,
 institution_id INTEGER,
 rank INTEGER,
+major VARCHAR(128),
 year INTEGER,
 
 CONSTRAINT education_ibfk_1
@@ -181,6 +183,7 @@ ON DELETE CASCADE ON UPDATE CASCADE,
 PRIMARY KEY(profile_id, institution_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+Note: ALTER TABLE Education ADD COLUMN major VARCHAR(128) AFTER rank;
 #########################################################################
 
 drop table if exists Dictionary;

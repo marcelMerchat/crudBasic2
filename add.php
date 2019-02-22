@@ -5,7 +5,7 @@ session_start();
 // user is not logged-in
 if ( ! isset($_SESSION['user_id']))  {
       header('Location: index.php');
-      return; // or die('ACCESS DENIED');
+      die('ACCESS DENIED');
 }
 // If the user requested cancel, go back to view.php
 if ( isset($_POST['cancel']) ) {
@@ -21,7 +21,6 @@ if (  isset($_POST['first_name']) || isset($_POST['last_name']) ||
   if ( ((strlen($_POST['first_name']) >= 1) && (strlen($_POST['last_name']) >= 1) &&
     (strlen($_POST['email']) >= 1) && (strlen($_POST['profession']) >= 1) &&
     (strlen($_POST['goal']) >= 1) ) ) {
-    //echo 'starting post validation';
     $msg = validateProfile();
     if (is_string($msg) ) {
       $_SESSION['error'] = $msg;
@@ -90,10 +89,7 @@ if (  isset($_POST['first_name']) || isset($_POST['last_name']) ||
 <title>Add Profile</title>
 <?php
     require_once 'header.php';
-    //require_once 'jquery.php';
-    //loadMobilityStyles();
 ?>
-<!-- <script src="script.js"></script> -->
 </head>
 <body>
 <div class="content" id="main">
@@ -130,8 +126,6 @@ if (  isset($_POST['first_name']) || isset($_POST['last_name']) ||
     </div>
     <!-- End of profile information -->
     <!-- Skills -->
-                         <!-- 'addSkill' is an argument of a JavaScript
-                        function object [ $('#addSkill') ] described below. -->
     <h3 class="more-top-margin-3x center">Skills</h3>
     <div class="less-bottom-margin" id="skill_fields">
       <script id="skill-template" type="text">
@@ -146,11 +140,11 @@ if (  isset($_POST['first_name']) || isset($_POST['last_name']) ||
                           id="addSkill">+</button></h4>
         <!-- End of skills -->
         <!-- Education -->
-        <!--  Grab some HTML with hot spots and insert in the DOM
-              'edu-template' is the target id of the JavaScript function
-               function object $('#addEdu') described below. -->
         <h3 class="more-top-margin-2x center">Education</h3>
         <div class="less-top-margin less-bottom-margin centered-row-layout" id="edu_fields">
+        <!-- Inject HTML into hot spot and insert in the DOM
+             'edu-template' is the target id of the JavaScript function
+              function object $('#addEdu') described at the end of the body. -->
         <script id="edu-template" type="text">
         <div class="form-background div-form-group border-top-bottom more-bottom-margin" id="edu@COUNT@">
             <div class="container-form-entry">
@@ -183,37 +177,32 @@ if (  isset($_POST['first_name']) || isset($_POST['last_name']) ||
     <!-- End of education -->
     <!-- Positions -->
     <h3 class="more-top-margin-3x center">Work Experience</h3>
+    <!-- The ids for these profile information fields are used by
+     JavaScript function doValidate() in file script.js to check if
+     they were completed before posting to the website server where
+     they are rechecked using a PHP rountine in util.php. -->
     <div class="less-top-margin less-bottom-margin center" id="position_fields"> </div>
     <h4 class="small-bottom-pad more-top-margin-3x center">Add Position: <button class="click-plus" id="addPos" >+</button></h4>
     <h4 class="more-top-margin-3x center">Save to database:
         <input class="button-submit big" type="submit" onclick="return doValidate();" value="Add"/> <input
-        class="button-submit big" type="submit" name="cancel" value="Cancel">
+               class="button-submit big" type="submit" name="cancel" value="Cancel">
         <!-- doValidate() is a JavaScript function (see script.js) for preliminary validation
             which runs before the post to the website. The server program
             at the website (see util.php) performs a final validation check.-->
     </h4>
     <input type="hidden" name="user_id" value=$_SESSION['user_id']>
-       <!-- The ids for these profile information fields are used by
-        JavaScript function doValidate() in file script.js to check if
-        they were completed before posting to the website server where
-        they are rechecked using a PHP rountine in util.php. -->
 </form> <!-- end of class form -->
 </div> <!-- end of class content and id main -->
 <script type="text/javascript">
 $(document).ready( function () {
      window.console && console.log('Document ready called');
-      // fetch variables from the php function environment. However they are //
-      // always set equal equal to one before adding a new profile to the
-      // database.
-      var countPosition = 0;
-      countEdu =  0;
-      // The J prefix identifies JavaScript variables when variable names
-      // appear in the PHP code above.
-      countSkill = 0;
-      skillRemoved =  0;
-      eduRemoved =  0;
-      positionRemoved =  0;
-      window.console && console.log('Hello world');
+     var countPosition = 0;
+     countEdu =  0;
+     countSkill = 0;
+     skillRemoved =  0;
+     eduRemoved =  0;
+     positionRemoved =  0;
+     window.console && console.log('Hello world');
       //$.getJSON('jsonLanguage.php', function(data) {
         //window.console && console.log('Hello world');
         //window.console && console.log(data.first);
@@ -228,7 +217,6 @@ $(document).ready( function () {
             var goalId = $(this).attr("id");
             termgl = document.getElementById(id=goalId).value;
             window.console && console.log(termgl+goalId);
-           //var value="This is a string";
             var len = termgl.length;
             if( len > 0){
             //    $.getJSON('school.php?ter'+'m='+termgl, function(data) {
@@ -255,11 +243,9 @@ $(document).ready( function () {
                   p.css("background-color", 'rgb(249,255,185)');
                   p.css("borderWidth", "1px");
                   p.css("border-color", "886600");
-                  //border: 1px solid #008800;
-                  //background-color: #eef;
                 }
               });
-          }      //$('#gl').html.append("data dot first");
+          }
       });
       $(document).on('click', '.text-box', 'input[type="text"]', function(){
             var p = $(this);
@@ -282,33 +268,20 @@ $(document).ready( function () {
                   p.css("border-color", 'rgb(88,66,00)');
                 }
               });
-          }      //$('#gl').html.append("data dot first");
+          }
       });
       $(document).on('click', '.position-box', 'input[type="text"]', function(){
            var p = $(this);
            var posId = $(this).attr("id");
            termPos = document.getElementById(id=posId).value;
            window.console && console.log(termPos+posId);
-           //var value="This is a string";
-            var len = termPos.length;
-            if( len > 0){
-            //    $.getJSON('school.php?ter'+'m='+termgl, function(data) {
-            $.getJSON('jsonLanguage.php?ter'+'m='+termPos, function(data) {
+           var len = termPos.length;
+           if( len > 0){
+                $.getJSON('jsonLanguage.php?ter'+'m='+termPos, function(data) {
                 window.console && console.log(data.first);
-                //var p = $('#gl');
-                //var p = $('#goalId');
-                //$('.goal-box').val("json back: " + data.first);
                 if(data.first=='bad'){
-                    //$('.goal-box').val(data.first);
-                    //var info = $('.goal-box').val();
-                    //var info = $('#goalId').val();
                     var info = p.val();
-                    //$('#goalId').val(info+': Questionable language detected . . . ');
                     p.val(info+': Questionable language detected . . . ');
-                    //$('.goal-box').val(info+': Questionable language detected . . . '); //append(field + " ")
-                    //$('#gl').val(info+': Questionable language detected . . . '); //append(field + " ")
-                    //p.hide(500).show(500);
-                    //p.queue(function() {p.css("background-color", "#EEAAAA");});
                     p.css("background-color", "bisque");
                     p.css("borderWidth", "2px");
                     p.css("border-color", "#00EEDD");
@@ -316,18 +289,14 @@ $(document).ready( function () {
                   p.css("background-color", 'rgb(249, 255, 185)');
                   p.css("borderWidth", "1px");
                   p.css("border-color", "#886600");
-                  //border: 1px solid #008800;
-                  //background-color: #eef;
                 }
               });
-          }      //$('#gl').html.append("data dot first");
+          }
       });
       $('#addSkill').click(function(event){
             event.preventDefault();
-            // Stored value of skillRemoved is pre-incremented by one count
             if( countSkill - skillRemoved + 1 > 9){
                 alert('Maximum of nine skills exceeded');
-                //JcountSkill = JcountSkill - 1;
                 return;
             } else {
                 countSkill = countSkill + 1;
@@ -342,7 +311,6 @@ $(document).ready( function () {
                 var skillId = $(this).attr("id");
                 var termskill = document.getElementById(id=skillId).value;
                 $.getJSON('skill.php?ter'+'m='+termskill, function(data) {
-                     //var y = data.Result;
                      var ys = data;
                      $('.skill').autocomplete({ source: ys });
                 });
@@ -351,7 +319,6 @@ $(document).ready( function () {
               event.preventDefault();
               if( countEdu - eduRemoved + 1 > 9){
                   alert('Maximum of nine education entries exceeded');
-                  //countPosition = countPosition - 1;
                   return;
               } else {
                   countEdu = countEdu + 1;
@@ -361,11 +328,9 @@ $(document).ready( function () {
               $('#edu_fields').append(source.replace(/@COUNT@/g, countEdu));
               // auto-completion handler for new additions
               alert('Adding education entry, now there are '+ (countEdu - eduRemoved) + ' entries.');
-              //var y = "school.php";
               $(document).on('click', '.school', 'input[type="text"]', function(){
                       var eduId = $(this).attr("id");
                       term = document.getElementById(id=eduId).value;
-                      //var value="This is a string";
                       var len = term.length;
                       if( len > 0){
                           $.getJSON('school.php?ter'+'m='+term, function(data) {
@@ -377,7 +342,6 @@ $(document).ready( function () {
         });  //end of addedu
         $('#addPos').click(function(event){
             event.preventDefault();
-            // Stored value of positionRemoved is pre-incremented by one count
             if( countPosition - positionRemoved + 1 > 5){
                 alert('Maximum of five positions exceeded');
                 return;

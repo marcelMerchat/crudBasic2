@@ -26,7 +26,7 @@ if ( isset($_POST['pass'])) {
         $stmt = $pdo->prepare($sql);
         $stmt->execute(array($hashed_pass,$u));
         //$stmt->execute();
-        echo 'changed password';
+
     //  Retrieve information from database while protecting users from
     //  scripts or html code such as redirection to another website
         $sql = 'SELECT name, email, hint FROM `users` WHERE user_id = ?';

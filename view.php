@@ -12,7 +12,6 @@ session_start();
 <?php
     require_once 'header.php';
 ?>
-<!-- nonce="3c071056f3ed4d9ea0ec26f5a2fad84b" -->
 <style type="text/css">
     body {
       line-height: normal;
@@ -23,7 +22,6 @@ session_start();
         width: 3.2em;
         height: 1.1em;
         border: 0px solid #008800;
-        /*background-color: #eef;*/
         padding-top: 0px;
         margin-top: 0px;
         padding-bottom: 0px;
@@ -35,7 +33,6 @@ session_start();
         width: 5.5em;
         height: 1.1em;
         border: 0px solid #008800;
-        /*background-color: #eef;*/
         padding-top: 0px;
         margin-top: 0px;
         padding-bottom: 0px;
@@ -46,7 +43,6 @@ session_start();
       max-width: 100%;
       box-sizing: border-box;
       width: 100%;
-      /*text-align: left;*/
       border: 0px solid black;
       padding-left: 1px;
       padding-right: 1px;
@@ -67,7 +63,6 @@ session_start();
     }
     .edu-row1 {
        border: 0px solid #008800;
-       /*background-color: #eef;*/
        margin-top: 1px;
        margin-bottom: 0px;
        padding-top: 1px;
@@ -75,7 +70,6 @@ session_start();
     }
     .edu-row2 {
        border: 0px solid #008800;
-       /*background-color: #eef;*/
        padding-top: 1px;
        padding-bottom: 1px;
        margin-top: 1px;
@@ -106,7 +100,7 @@ session_start();
                                htmlentities($row['last_name']).', '.
                                htmlentities($row['profession']).'</p>';
         echo '<p class="center small more-top-margin">Email: '.htmlentities($row['email']).'</p>';
-        //echo '<br/>';
+        //echo '<br />';
         echo '<h4>Goals</h4>';
         echo '<p>'.htmlentities($row['goal']).'</p>';
         $sqlSkillSet = 'SELECT skill_id FROM SkillSet WHERE profile_id = :pid';
@@ -127,12 +121,12 @@ session_start();
                 $skill_name = $stmt_skillname->fetch(PDO::FETCH_ASSOC);
                 $skill = array_values($skill_name)[0];
                 echo '<li>'.htmlentities($skill).' &nbsp;&nbsp;&nbsp; </li>';
-          }
-echo '</ul>';
+            }
+            echo '</ul>';
         } else {
               //echo '<p style="color:orange">No skills found</p>';
         }
-// Education  ----------------------------------------------------------
+     // Education  ----------------------------------------------------------
         $sqlid = 'SELECT institution_id, year, major FROM Education WHERE profile_id = :pid';
         $sqlinst = 'SELECT name FROM Institution WHERE institution_id = :iid';
         $stmt_schoolid = $pdo->prepare($sqlid);
@@ -173,18 +167,9 @@ echo '</ul>';
   $row = $stmt_positions->fetchALL(PDO::FETCH_ASSOC);
   $rows = array_values($row);
   $worklength = count($rows);
-  // $row !== false ||
-
   if($worklength > 0) {
-      //echo '<ul class="less-top-margin">';
       echo '<h4>Employment History</h4>';
       foreach($rows as $job){
-              //echo '<li class="less-top-margin less-bottom-margin">'.htmlentities($job['yearStart'])
-              //.'-'
-              //.htmlentities($job['yearLast'])
-              //.' &emsp; '
-              //.htmlentities($job['organization'])
-              //.htmlentities($job['description']).'</li>';
           echo '<div class="container-edu-info">'
                     .'<div class="job-label">'
                        .'<div class="edu-row1">'.htmlentities($job['yearStart']).'-'
@@ -201,7 +186,6 @@ echo '</ul>';
                   .'</div>'
                .'</div>';
         }
-        //echo '</ul>';
   } else {
         //echo '<p style="color:orange">No positions found</p>';
   }

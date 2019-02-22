@@ -6,7 +6,6 @@ function isMobile() {
 }
 function loadMobilityStyles() {
     if(isMobile()==1) {
-        //require_once 'mobile.php';
         echo '<link rel="stylesheet" type="text/css" href="styleMobile.css">';
     } else {
         //require_once 'desktop.php';
@@ -14,7 +13,6 @@ function loadMobilityStyles() {
     }
 }
 function flashMessages(){
-    //$_SESSION["success"] = 'Record edited Nov 6: there are now '.$posCount.' positions.';
     //echo '<p class="big message" style="color:red">'.$_SESSION['success'].'</p>';
     if ( isset($_SESSION['error']) ) {
           echo '<p class="message" style="color:red">'.$_SESSION['error'].'</p>';
@@ -34,7 +32,6 @@ function validateProfile() {
             (strlen($_POST['email']) > 0) && (strlen($_POST['profession']) > 0)
                                           &&
             strlen($_POST['goal']) > 0  ) {
-       //$_SESSION['error'] = "No errors yet";
        $_SESSION['success'] = $_SESSION['success'].' profile post check ok . . . ';
        if ( strpos($_POST['email'],'@') === false ) {
             $_SESSION['error'] = "Invalid email address";
@@ -64,7 +61,7 @@ function detectOffensive($phrase) {
     foreach ($exploded as $word) {
            $stmt = $pdo->prepare("SELECT COUNT(*) FROM Dictionary WHERE Word = ?");
            $stmt->execute(array($word));
-          //$cnt = $stmt->fetch(PDO::FETCH_COLUMN);
+           //$cnt = $stmt->fetch(PDO::FETCH_COLUMN);
            $rowdata = $stmt->fetch(PDO::FETCH_ASSOC);
            $cnt = array_values($rowdata)[0];
            if($cnt > 0) {
@@ -79,8 +76,6 @@ function detectOffensive($phrase) {
               // COUNT(*) does not return an array.
               $cnt2 = array_values($rowdata2)[0];
               if($cnt2 > 0) {
-    // //           $_SESSION['error'] = 'offensive';
-    // //           $_SESSION['message'] = 'Rejected word at : '.$word;
                     $offense = "questionable language";
                }
            }
@@ -88,7 +83,6 @@ function detectOffensive($phrase) {
     return $offense;
 }
 function ofnsvCheck($pdo, $phrase) {
-    //$offense = '';
     $offense = false;
     $punct = array(',','.','!','?','@');
     $replace = array(' ');
@@ -131,7 +125,6 @@ function filterWord($pdo, $phrase) {
     //$exploded = explode(' ',multiexplode(array(",",".","|",":"),$phrase));
     $punct = array(',','.','!','?','@');
     $replace = array(' ');
-
     //$arr = array("Hello","world","!");
     //$replaced = str_replace('.'," ");
     $replaceCount = 0;
@@ -155,10 +148,9 @@ function filterWord($pdo, $phrase) {
             $stmt->execute([$word]);
             $cnt2 = $stmt->fetch(PDO::FETCH_COLUMN);
             if($cnt2 > 0) {
-              //$_SESSION['error'] = 'offensive';
-              $_SESSION['message'] = 'Rejected word at : '.$word;
+               $_SESSION['message'] = 'Rejected word at : '.$word;
             } else {
-              $newPhrase = $newPhrase.' '.$word;
+               $newPhrase = $newPhrase.' '.$word;
             }
         }
     }
@@ -181,7 +173,6 @@ function validatePos() {
     $_SESSION['countJobs'] = 0;
     $count = 0;
     $_SESSION['success'] = $_SESSION['success'].' validating position . . . ';
-    //echo 'start pos entry loop';
     for($i=1; $i<=9; $i++) {
         $_SESSION['success'] = $_SESSION['success'].' validating position'.$_POST['wrkStartYr'.$i];
         if ( ! isset($_POST['wrkStartYr'.$i]) ) continue;
@@ -194,7 +185,6 @@ function validatePos() {
         $yearLast = $_POST['wrkFinalYr'.$i];
         $org = $_POST['org'.$i];
         $desc = $_POST['desc'.$i];
-        //echo 'assigned variables';
         if ( ! (is_numeric($yearStart) && is_numeric($yearLast)) ) {
             return "Both position years must be numeric.";
         }
@@ -204,11 +194,9 @@ function validatePos() {
         if ( strlen($org) == 0 || strlen($desc) == 0 ) {
             return "Position description is required";
         }
-        //echo 'data validatin checked';
         $count = $count + 1;
     }
     $_SESSION['countJobs'] = $count;
-    //echo 'job count is '.$_SESSION['countJobs'] ;
     return true;
 }
 function validateEducation() {
@@ -284,7 +272,6 @@ function loadEdu($pdo, $profile_id) {
 }
 function insertSkillSet($pdo, $profile_id) {
     $rank = 1;
-    //echo "inserting skill fields";
     for($i=1; $i<=9; $i++) {
       if ( ! isset($_POST['skill_name'.$i]) ) continue;
       $skill = $_POST['skill_name'.$i];
@@ -301,8 +288,8 @@ function insertSkillSet($pdo, $profile_id) {
       $stmt = $pdo->prepare($sql);
       $stmt->execute(array(':nme' => $skill) );
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
-      print_r($row);
-      var_dump($row);
+      //print_r($row);
+      //var_dump($row);
       if($row !== false) {
           // add 0 to convert variable type to numeric
           $skill_id = $row['skill_id'] + 0;
@@ -379,44 +366,34 @@ function insertEducations($pdo, $profile_id) {
 function insertPositions($pdo, $profile_id) {
     $rank = 1;
     $count = 0;
-    //$_SESSION['success'] = $_SESSION['success'].' inserting position - '.$_POST['workStartYear'.$i];
-    // $_SESSION['success'] = $_SESSION['success'].' starting language check - '
-    //      .$_POST['workStartYear1'].$_POST['org1'].$_POST['workFinalYear1'].$_POST['desc1'] ;
     for($i=1; $i<=9; $i++) {
-    //   //echo 'years '.$_POST['yearStart'.$i].$_POST['yearLast'.$i].$_POST['org'.$i].$_POST['desc'.$i];
        if ( isset($_POST['wrkStartYr'.$i]) && isset($_POST['org'.$i]) &&
             isset($_POST['wrkFinalYr'.$i]) && isset($_POST['desc'.$i]) &&
             strlen($_POST['org'.$i]) > 0 && (strlen($_POST['desc'.$i]) > 0) ) {
-                   //$_SESSION['success'] = $_SESSION['success'].' starting language test - ';
-                   $org = trim($_POST['org'.$i]);
-                   $org = filterWord($pdo, $org);
-                   $desc = trim($_POST['desc'.$i]);
-                   $off = ofnsvCheck($pdo, $desc);
-                 //echo 'offensive test completed '.$off;
-                 //$_SESSION['success'] = $_SESSION['success'].' starting language check - '.$off;
-                 if($off==true){
-                     $desc = filterWord($pdo, $desc);
-                     $_SESSION['error'] = ' Offensive language may be present, please try again. ';
-                     $msg = $msg.' The profile was saved but at least one position was not entered, you can edit the profile. ';
-                     $_SESSION['success'] = $_SESSION['success'].$msg;
-                     continue;
+                $org = trim($_POST['org'.$i]);
+                $org = filterWord($pdo, $org);
+                $desc = trim($_POST['desc'.$i]);
+                $off = ofnsvCheck($pdo, $desc);
+                if($off==true){
+                   $desc = filterWord($pdo, $desc);
+                   $_SESSION['error'] = ' Offensive language may be present, please try again. ';
+                   $msg = $msg.' The profile was saved but at least one position was not entered, you can edit the profile. ';
+                   $_SESSION['success'] = $_SESSION['success'].$msg;
+                   continue;
                  } else {
-                     //$_SESSION['success'] = $_SESSION['success'].' -good language test- ';
-                     $stmt = $pdo->prepare('INSERT INTO Position
+                   $stmt = $pdo->prepare('INSERT INTO Position
                        (profile_id, `rank`, yearStart, yearLast, organization, description)
                            VALUES ( :pid, :rnk, :yrStart, :yrLast, TRIM(:org), TRIM(:de))');
-                     $stmt->execute(array(
+                   $stmt->execute(array(
                        ':pid' => $profile_id,  ':rnk' => $rank,
                        ':yrStart' => $_POST['wrkStartYr'.$i],
                        ':yrLast' => $_POST['wrkFinalYr'.$i],
                        ':org' => trim($_POST['org'.$i]),
                        ':de' => trim($_POST['desc'.$i]))  );
-                       //echo 'added position set';
-                     $rank++;
+                   $rank++;
                  }
        } else {
          //$_SESSION['success'] = $_SESSION['success'].' test failed to start - ';
-
        }
     }
     $_SESSION['countPosition'] = $rank - 1;

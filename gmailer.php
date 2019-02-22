@@ -39,11 +39,11 @@ $mail->Subject = 'Account Change';
 $mail->Body = $_SESSION['emailMessage'];
 //$address = "marcosmoothy@gmail.com";
 $address =  $_SESSION['email'];
-echo 'to address is '.$address;
+//echo 'to address is '.$address;
 try{
     $mail->AddAddress($address, "Marcel Merchat");
 }
-catch (phpmailerException $e) {
+catch (phpmailerException $e)
     echo $e->errorMessage(); //Pretty error messages from PHPMailer
 } catch (Exception $e) {
   //echo $e->getMessage(); //Boring error messages from anything else!
