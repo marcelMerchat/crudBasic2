@@ -18,16 +18,9 @@ $t = $_GET['term'];
 unset($_SESSION['error']);
 $detect = $t;
 $detect = 'good';
-if(ofnsvCheck($pdo, $t)){
+if(ofnsvCheck($t,$pdo)){
     $detect = 'bad';
 }
-//$detect = $t.' '.ofnsvJSON($pdo, $t);
-//$detect = 'bad';
-//if(isset($_SESSION['error']) && $_SESSION['error'] == "offensive"){
-    //$_SESSION['error'] = $_SESSION['message'].' Word not recognized, please try again.';
-    //header("Location: add.php");
-    //return;
-//}
 $detectArray = array($detect);
 $stuff = array('first' => $detect, 'second' => 'second thing');
 //echo(json_encode($detectArray));

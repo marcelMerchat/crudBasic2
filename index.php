@@ -54,27 +54,26 @@ nav li a {
 <div class="adgurd-alert-cont" style="opacity: 0; display: none;"><div class="adgurd-alert-tail"></div><div class="adgurd-alert-head"></div><div class="adgurd-alert-text"></div>
 <div class="adgurd-alert-more"></div></div></div></div>
 <?php
-    if(! isMobile()) {
-        echo '<div id="top_left">
-          <img src="IMG_20151115_150532519PathinPark.jpg">
-          <p>Two roads diverged in a yellow wood,</p>
-          <p>And sorry I could not travel both</p>
-          <p>And be one traveler, long I stood</p>
-          <p>And looked down one as far as I could</p>
-          <p class="center">Robert Frost</p>
-        </div>';
+if(! isMobile()) {
+    echo '<div id="top_left">
+      <img src="IMG_20151115_150532519PathinPark.jpg">
+      <p>The path ahead leads into the trees,</p>
+      <p>And I wished I could follow it</p>
+      <p>long I looked until I dared.</p>
+    </div>
+    <div id="top_right">
+      <img src="IMG_20180919_124000517FlowersinMeadow.jpg">
+      <p>The beginning usually doesn\'t go well</p>
+      <p>and things need time to develop,</p>
+      <p>the beginning is still remembered</p>
+      <p class = "set-in1">until it fades away.</p>
+      <p class="center"></p>
+    </div>';
+}
+else {
 
-        echo '<div id="top_right">
-          <img src="IMG_20180919_124000517FlowersinMeadow.jpg">
-          <p>Beginnings are usually scary, and </p>
-          <p>endings are usually sad,</p>
-          <p>but it\'s everything in between</p>
-          <p class = "set-in1"> that makes it all worth living.</p>
-          <p class="center">Bob Marley</p>
-        </div>';
-    } else {
+}
 
-    }
 ?>
 
 <div class="center" id="main">

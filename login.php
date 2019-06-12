@@ -49,7 +49,7 @@ if (   isset($_POST['email'])  && isset($_POST['pass'])) {
            $_SESSION['countEdu'] = 0;
            $_SESSION['countPosition'] = 0;
            $_SESSION['countSkill'] = 0;
-           $_SESSION['full_name'] = get_name($pdo, $_SESSION['user_id']);
+           $_SESSION['full_name'] = get_name($_SESSION['user_id'],$pdo);
            error_log('Login success: '.$_POST['email']);
            $_SESSION['LAST_ACTIVITY'] = time();
            header( 'Location: index.php');

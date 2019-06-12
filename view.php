@@ -97,8 +97,10 @@ session_start();
     $stmt->execute(array(':pid' => $_GET['profile_id']));
     $row =  $stmt->fetch(PDO::FETCH_ASSOC);
         echo '<p class="center big less-bottom-margin">'.htmlentities($row['first_name']).' '.
-                               htmlentities($row['last_name']).', '.
-                               htmlentities($row['profession']).'</p>';
+                               htmlentities($row['last_name']).'
+              </p><p class="center">'.
+                               htmlentities($row['profession']).
+              '</p>';
         echo '<p class="center small more-top-margin">Email: '.htmlentities($row['email']).'</p>';
         //echo '<br />';
         echo '<h4>Goals</h4>';

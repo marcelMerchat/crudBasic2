@@ -37,7 +37,7 @@ div {
   box-sizing: border-box;
   width: 99%;
 }
-.goal-box {
+.paragraph-box {
     box-sizing: border-box;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -213,8 +213,21 @@ input {
     padding-right: 6px;
     /*background-color: #eef;*/
     background-color: rgb(249, 255, 185);
-    border: 1px solid #886600;
+    border: 2px solid #886600;
     font-size: 1em;
+}
+input:-webkit-autofill {
+    -webkit-box-shadow:0 0 0 50px #F9FFBA inset; /* Change the color to your own background color */
+    -webkit-text-fill-color: #333;
+}
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: /*your box-shadow*/,0 0 0 50px white inset;
+    -webkit-text-fill-color: #333;
+}
+input:-internal-autofill-selected {
+    background-color: rgb(249, 255, 185) !important;
+    background-image: none !important;
+    color: rgb(0, 0, 0) !important;
 }
 div.inline-block-layout {
     /*display: inline-block;
@@ -249,7 +262,7 @@ textarea {
     padding-left: 2px;
     padding-top: 2px;
     padding-bottom: 3px;
-    border: 1px solid #886600;
+    border: 2px solid #886600;
     /*background-color: #eef;*/
     background-color: rgb(249, 255, 180);
 }
@@ -409,7 +422,7 @@ a:hover {
 }
 .ui-autocomplete-custom {
     background-color: rgb(249, 255, 185);
-    border: 1px solid #886600;
+    border: 2px solid #886600;
     z-index: 2;
 }
 .spacer {
@@ -426,6 +439,7 @@ a:hover {
 }
 .text-box {
     font-size: 1em;
+    border: 2px solid #886600;
     text-align: left;
     padding-left: 5px;
     padding-right: 5px;
@@ -436,7 +450,7 @@ a:hover {
 .year-entry-box {
     padding-top: 3px;
     padding-bottom: 3px;
-    border: 1px solid #886600;
+    border: 2px solid #886600;
 }
 .subject-name {
     width: 44vw;
@@ -461,7 +475,7 @@ a:hover {
     padding-right: 3px;
     margin-top: 2px;
     margin-bottom: 5px;
-    border: 1px solid #008800;
+    border: 2px solid #008800;
     background-color: #eef;
 }
 .margin-bottom-small {
@@ -476,7 +490,7 @@ a:hover {
     padding-bottom: 3px;
     margin-top: 2px;
     margin-bottom: 2px;
-    border: 1px solid #886600;
+    border: 2px solid #886600;
     box-sizing: border-box;
 }
 .name-box {
@@ -497,7 +511,7 @@ a:hover {
     padding-right: 5px;
     margin-top: 2px;
     margin-bottom: 2px;
-    border: 1px solid #668800;
+    border: 2px solid #886600;
 }
 .small-word-button {
     font-size: 2.5vw;
@@ -547,13 +561,13 @@ div.short-input-form {
   width: 5.5em;
   margin-right: 1em;
   border-width: 0px;
-  border-color: #668800;
+  border-color: #886600;
 }
 .border-top-bottom {
     border-top-style: solid;
     border-bottom-style: solid;
     border-width: 1px;
-    border-color: #668800;
+    border-color: #886600;
 }
 table {
       border-collapse: collapse;

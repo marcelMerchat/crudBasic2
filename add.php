@@ -15,72 +15,83 @@ if ( isset($_POST['cancel']) ) {
 }
 // The profile does not exist yet; the profile id will be added below.
 // The logged-in user has submitted his profile.
-if (  isset($_POST['first_name']) || isset($_POST['last_name']) ||
-      isset($_POST['email']) || isset($_POST['goal']) ) {
-
-  if ( ((strlen($_POST['first_name']) >= 1) && (strlen($_POST['last_name']) >= 1) &&
-    (strlen($_POST['email']) >= 1) && (strlen($_POST['profession']) >= 1) &&
-    (strlen($_POST['goal']) >= 1) ) ) {
-    $msg = validateProfile();
-    if (is_string($msg) ) {
-      $_SESSION['error'] = $msg;
-      header( 'Location: add.php' );
-      return;
-    }
-    $msg = validateSkill();
-    if (is_string($msg) ) {
-       $_SESSION['error'] = $msg;
-       header('Location: add.php');
-       return;
-    }
-    $msg = validateEducation();
-    if (is_string($msg) ) {
-       $_SESSION['error'] = $_SESSION['error'].$msg;
-       header('Location: add.php');
-       return;
-    }
-    $msg = validatePos();
-    if (is_string($msg) ) {
-          $_SESSION['error'] = $_SESSION['error'].$msg;
-          header('Location: add.php');
+// To create a profile only the first and last name and a valid email
+// are required.
+if (isset($_POST['first_name']) || isset($_POST['last_name']) ||
+    isset($_POST['email']) )
+    {
+      if
+       (
+         (strlen($_POST['first_name']) >= 1) &&
+         (strlen($_POST['last_name']) >= 1) &&
+         (strlen($_POST['email']) >= 1)
+       )
+       {
+         unset($_SESSION['error']);
+         unset($_SESSION['success']);
+         unset($_SESSION['message']);
+  //     Save entered data
+         $fn = $_POST['first_name'];
+         $ln = $_POST['last_name'];
+         $em = $_POST['email'];
+         $prof = $_POST['profession'];
+         $goal = $_POST['goal'];
+         $fn = filterPhrase($fn,$pdo);
+         $ln = filterPhrase($ln,$pdo);
+      // check name
+         $valid_name = validateName($pdo);
+      // check email
+         $valid_email = validateEmail($pdo);
+         if (!$valid_email || !$valid_name)
+          {
+            $_SESSION['error'] = "Name and email are required to begin.";
+            header('Location: index.php');
+            return;
+          } else {
+            $profileAdded = insertProfile($pdo,$IsUpdate=false);
+            if($profileadded===false){
+                $_SESSION['error'] = 'Could not save name or email. Please try again. ';
+                header('Location: add.php');
+                return;
+            }
+          //$profileid = $pdo->lastInsertId();
+          //$_SESSION['profile_id'] = $profileid;
+          //$emailAdded = insertEmail($profileid,$pdo);
+          }
+          // When IsUpdate is false, Session['profile_id'] is assigned.
+          $profileid = $_SESSION['profile_id'];
+  //  Check Professional Goals
+  //  Profession might be vaild but have a deleted word.
+  //$em = filterPhrase($em,$pdo);
+          $prof = filterPhrase($prof,$pdo);
+          $goal = filterPhrase($goal,$pdo);
+          $professionAdded = insertProfession($profileid, $pdo, $IsUpdate=false);
+          $goalsAdded = insertProfessionalGoals($profileid, $pdo, $IsUpdate=false);
+  //  Skills
+          $skillCount = 0;
+          $skillAdded = insertSkillSet($profileid,$pdo);
+          $skillCount = get_skill_count($profileid,$pdo);
+          $_SESSION['skillCount'] =  $skillCount;
+  //  Education
+          insertEducations($profileid,$pdo);
+  //  Positions
+          insertPositions($profileid, $pdo);
+          $_SESSION['countPosition'] = get_position_count($profileid,$pdo);
+//    $sql = "INSERT INTO Profile (user_id, first_name, last_name, email, profession, goal) VALUES ( :uid, :fn, :ln, :em, :prof, :goal )";
+//    $stmt = $pdo->prepare($sql);
+//    $stmt->execute(array(
+//          ':uid' => $_SESSION['user_id'], ':fn' => $fn,
+//          ':ln'  => $ln,  ':em' => $_POST['email'],
+//          ':prof'  => $_POST['profession'], ':goal' => $_POST['goal']) );
+          header("Location: index.php");
           return;
-    }
-    $fn = $_POST['first_name'];
-    $ln = $_POST['last_name'];
-    $em = $_POST['email'];
-    $prof = $_POST['profession'];
-    $goal = $_POST['goal'];
-    unset($_SESSION['error']);
-    $fn = filterWord($pdo, $fn);
-    $ln = filterWord($pdo, $ln);
-    $em = filterWord($pdo, $em);
-    $prof = filterWord($pdo, $prof);
-    $goal = filterWord($pdo, $goal);
-    if(isset($_SESSION['error']) && $_SESSION['error'] == "offensive"){
-        $_SESSION['error'] = $_SESSION['message'].' Word not recognized, please try again.';
-        header("Location: add.php");
-        return;
-    }
-    $sql = "INSERT INTO Profile (user_id, first_name, last_name, email, profession, goal) VALUES ( :uid, :fn, :ln, :em, :prof, :goal )";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(
-          ':uid' => $_SESSION['user_id'], ':fn' => $fn,
-          ':ln'  => $ln,  ':em' => $_POST['email'],
-          ':prof'  => $_POST['profession'], ':goal' => $_POST['goal']) );
-    $profile_id = $pdo->lastInsertId();
-    unset($_SESSION['message']);
-    insertSkillSet($pdo, $profile_id);
-    insertEducations($pdo, $profile_id);
-    insertPositions($pdo, $profile_id);
-    if(isset($_SESSION['message'])) {
-        $_SESSION['error'] = 'Language error: '.$_SESSION['message'];
-    }
-    header("Location: index.php");
-    return;
-  } else {
-    $_SESSION['error'] = 'Profile was incomplete, first and last names, email, and goal are required:';
-  }
-} // nothing in the profile was set, so fall through
+          //printf("falling through");
+      } else {
+          $_SESSION['error'] = 'Profile was incomplete, first and last names, and email are required:';
+      }
+} else {
+  // Either name or email is not posted, so fall through
+}
 ?>
 <!--  VIEW or HTML code for model-view-controller  -->
 <!DOCTYPE HTML>
@@ -97,7 +108,7 @@ if (  isset($_POST['first_name']) || isset($_POST['last_name']) ||
    flashMessages();
 ?>
 <h3 class="center">Adding Profile</h3>
-<form method="post">
+<form method="post" name="form1">
         <div class="container-form-entry"> <!-- column container of one column -->
           <div class="less-bottom-margin less-top-margin box-input-label">First Name:
           </div><div class="less-top-margin less-bottom-margin profile-input-form">
@@ -122,7 +133,7 @@ if (  isset($_POST['first_name']) || isset($_POST['last_name']) ||
           <div class="center">
                <h4 class="less-bottom-margin center">Goals</h4>
           </div>
-          <textarea class="goal-box" rows="5" name="goal" id="gl"><?= htmlentities("") ?></textarea>
+          <textarea class="paragraph-box" rows="5" name="goal" id="gl"><?= htmlentities("") ?></textarea>
     </div>
     <!-- End of profile information -->
     <!-- Skills -->
@@ -194,199 +205,201 @@ if (  isset($_POST['first_name']) || isset($_POST['last_name']) ||
 </form> <!-- end of class form -->
 </div> <!-- end of class content and id main -->
 <script type="text/javascript">
-$(document).ready( function () {
-     window.console && console.log('Document ready called');
-     var countPosition = 0;
+$(document).ready(function() {
+     window.console && console.log('Document ready called ');
+     isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
+     isLargeDevice = !isMobileDevice;
+     window.console && console.log('Mobile device = ' + isMobileDevice);
+     countPosition = 0;
      countEdu =  0;
      countSkill = 0;
      skillRemoved =  0;
-     eduRemoved =  0;
+     eduRemoved = 0;
      positionRemoved =  0;
-     window.console && console.log('Hello world');
-      //$.getJSON('jsonLanguage.php', function(data) {
-        //window.console && console.log('Hello world');
-        //window.console && console.log(data.first);
-        //var y = data;
-        // $.each(data, function(i, field){
-        //   $('#gl').append(field + " ");
-        //   $('#gl').html("data dot first");
-        //  });
-      //});
-      $(document).on('click', '.goal-box', 'input[type="text"]', function(){
-            var p = $(this);
-            var goalId = $(this).attr("id");
-            termgl = document.getElementById(id=goalId).value;
-            window.console && console.log(termgl+goalId);
-            var len = termgl.length;
-            if( len > 0){
-            //    $.getJSON('school.php?ter'+'m='+termgl, function(data) {
-            $.getJSON('jsonLanguage.php?ter'+'m='+termgl, function(data) {
-                window.console && console.log(data.first);
-                //var p = $('#gl');
-                //var p = $('#goalId');
-                //$('.goal-box').val("json back: " + data.first);
-                if(data.first=='bad'){
-                    //$('.goal-box').val(data.first);
-                    //var info = $('.goal-box').val();
-                    //var info = $('#goalId').val();
-                    var info = p.val();
-                    //$('#goalId').val(info+': Questionable language detected . . . ');
-                    p.val(info+': Questionable language detected . . . ');
-                    //$('.goal-box').val(info+': Questionable language detected . . . '); //append(field + " ")
-                    //$('#gl').val(info+': Questionable language detected . . . '); //append(field + " ")
-                    //p.hide(500).show(500);
-                    //p.queue(function() {p.css("background-color", "#EEAAAA");});
-                    p.css("background-color", "bisque");
-                    p.css("borderWidth", "2px");
-                    p.css("border-color", "#00EEDD");
-                } else {
-                  p.css("background-color", 'rgb(249,255,185)');
-                  p.css("borderWidth", "1px");
-                  p.css("border-color", "886600");
-                }
+     lastTextBox =  'fn';
+     // When a new skill is added, the immediate previous skill is checked
+     // for offensive language.
+     $(document).on('click', '.text-box', 'input[type="text"]', function(){
+               var p = $(this);
+               var tagId = p.attr("id");
+               checkLanguage(tagId);
+     });
+     $(document).on('click', '.paragraph-box', 'input[type="text"]', function(){
+               //var p = $(this);
+               var tagId = $(this).attr("id");
+               window.console && console.log(lastTextBox);
+               checkLanguage(tagId);
+     });
+     $('#addSkill').click(function(event){
+         event.preventDefault();
+         window.console && console.log("Adding skill");
+         if(countSkill - skillRemoved + 1 > 20) {
+              alert('Maximum of twenty skills exceeded');
+              return;
+         } else {
+              countSkill = countSkill + 1;
+         }
+         window.console && console.log("Adding skill-"+countSkill);
+         // Fill out the template block within the html code
+         var source = $('#skill-template').html();
+         $('#skill_fields').append(source.replace(/@COUNT@/g, countSkill));
+         //alert('Added skill, skill count increases to '+ (countSkill - skillRemoved));
+         $(document).on('click', '.skill', 'input[type="text"]', function(){
+              var skillId = $(this).attr("id");
+              var termskill = document.getElementById(id=skillId).value;
+              $.getJSON('skill.php?ter'+'m='+termskill, function(data) {
+                  var ys = data;
+                  $('.skill').autocomplete({ source: ys });
               });
-          }
-      });
-      $(document).on('click', '.text-box', 'input[type="text"]', function(){
-            var p = $(this);
-            var goalId = $(this).attr("id");
-            termgl = document.getElementById(id=goalId).value;
-            window.console && console.log(termgl+goalId);
-            var len = termgl.length;
-            if( len > 0){
-            $.getJSON('jsonLanguage.php?ter'+'m='+termgl, function(data) {
-                window.console && console.log(data.first);
-                if(data.first=='bad'){
-                    var info = p.val();
-                    p.val(info+': Questionable language detected . . . ');
-                    p.css("background-color", "bisque");
-                    p.css("borderWidth", "2px");
-                    p.css("border-color", "#00EEDD");
-                } else {
-                  p.css("background-color", 'rgb(249, 255, 185)');
-                  p.css("borderWidth", "1px");
-                  p.css("border-color", 'rgb(88,66,00)');
-                }
-              });
-          }
-      });
-      $(document).on('click', '.position-box', 'input[type="text"]', function(){
-           var p = $(this);
-           var posId = $(this).attr("id");
-           termPos = document.getElementById(id=posId).value;
-           window.console && console.log(termPos+posId);
-           var len = termPos.length;
-           if( len > 0){
-                $.getJSON('jsonLanguage.php?ter'+'m='+termPos, function(data) {
-                window.console && console.log(data.first);
-                if(data.first=='bad'){
-                    var info = p.val();
-                    p.val(info+': Questionable language detected . . . ');
-                    p.css("background-color", "bisque");
-                    p.css("borderWidth", "2px");
-                    p.css("border-color", "#00EEDD");
-                } else {
-                  p.css("background-color", 'rgb(249, 255, 185)');
-                  p.css("borderWidth", "1px");
-                  p.css("border-color", "#886600");
-                }
-              });
-          }
-      });
-      $('#addSkill').click(function(event){
-            event.preventDefault();
-            if( countSkill - skillRemoved + 1 > 9){
-                alert('Maximum of nine skills exceeded');
-                return;
-            } else {
-                countSkill = countSkill + 1;
-            }
-            window.console && console.log("Adding skill-"+countSkill);
-            // Fill out the template block within the html code
-            var source = $('#skill-template').html();
-            $('#skill_fields').append(source.replace(/@COUNT@/g, countSkill));
-              alert('Added skill, skill count increases to '+ (countSkill - skillRemoved));
-            });
-            $(document).on('click', '.skill', 'input[type="text"]', function(){
-                var skillId = $(this).attr("id");
-                var termskill = document.getElementById(id=skillId).value;
-                $.getJSON('skill.php?ter'+'m='+termskill, function(data) {
-                     var ys = data;
-                     $('.skill').autocomplete({ source: ys });
-                });
-            });
-         $('#addEdu').click(function(event) {
-              event.preventDefault();
-              if( countEdu - eduRemoved + 1 > 9){
-                  alert('Maximum of nine education entries exceeded');
-                  return;
+           });
+        });
+        // when education is added, the immediate previous education
+        // is checked for offensive language.
+        $('#addEdu').click(function(event) {
+             event.preventDefault();
+             //alert('Adding education entry, now there are '+ (countEdu + 1 - eduRemoved) + ' entries.');
+             if( countEdu - eduRemoved + 1 > 9){
+                 alert('Maximum of nine education entries exceeded');
+                 return;
+             } else {
+                 countEdu = countEdu + 1;
+             }
+             var source = $('#edu-template').html();
+                 // Creates Div with id of edu1, edu2, ...
+                 // These divs inherit class from edu-fields div
+             $('#edu_fields').append(source.replace(/@COUNT@/g, countEdu));
+             //alert('Added education, count increases to '+ (countEdu - eduRemoved));
+             window.console && console.log("Appending to education");
+                 //auto-completion handler for new additions
+             $(document).on('click', '.school', 'input[type="text"]', function(){
+                 var schoolId = $(this).attr("id");
+                 term = document.getElementById(id=schoolId).value;
+                 window.console && console.log('preparing json for '+term);
+                 $.getJSON('school.php?ter'+'m='+term, function(data) {
+                         var y = data;
+                         $('.school').autocomplete({ source: y });
+                 });
+             });
+         });  //end of addedu
+         $('#addPos').click(function(event){
+             event.preventDefault();
+             //alert('Adding position, now there are '+ (countPosition + 1 - positionRemoved) + ' positions.');
+             if( countPosition - positionRemoved + 1 > 5){
+                 alert('Maximum of five position entries exceeded');
+                 return;
+             } else {
+                 countPosition = countPosition + 1;
+             }
+             var positionYrs = 'positionYears'+countPosition;
+                 // positionsYrs is the target for direct JavaScript DOM insertion
+             $('#position_fields').append(
+                '<div class="form-background div-form-group  border-top-bottom  more-bottom-margin" id="position'+countPosition+'\"> \
+                    <div class="container-fluid"> \
+                       <div class="row" id='+positionYrs+'> </div> \
+                    </div> \
+                    <div> \
+                      <p class="less-bottom-margin"> \
+                         Organization: \
+                      </p> <input \
+                            class="text-box less-top-margin less-bottom-margin" type="text" name="org'+countPosition+'" id="company'+countPosition+'"/> \
+                      <p class="less-bottom-margin"> Description:</p> \
+                      <textarea class="paragraph-box" \
+                         name="desc'+ countPosition + '" rows = "8" \
+                         id="positionDesc'+countPosition+'"> </textarea> \
+                      <p>Delete this position: <input type="button" \
+                         class="click-plus" value="-" \
+                         onclick="$(\'#position'+countPosition+'\').remove(); \
+                         removePosition(countPosition, positionRemoved); \
+                         return false;"/> \
+                      </p> \
+                   </div> \
+               </div>'
+              );
+              //alert('Added position: Now there are ' + (countPosition - positionRemoved));
+              var position = 'positionYears'+countPosition;
+              var insertionId = "positionYears"+countPosition;
+              var insertionTag = document.getElementById(insertionId);
+             //  Starting Year
+             //  Define container for an input box and its label
+              var workStartYearGroup = document.createElement("div");
+              var workStartYearGroupId = "workStartYearGroup"+countPosition;
+              workStartYearGroup.id = workStartYearGroupId;
+             //  1-line or 2-line option for large or small devices
+              if(isLargeDevice){
+                  // large device (1-line)
+                 workStartYearGroup.className = "inline-block";
               } else {
-                  countEdu = countEdu + 1;
+                  // small device (2-lines)
+                 workStartYearGroup.className = "inline-block";
               }
-              var source = $('#edu-template').html();
-              window.console && console.log("Adding education");
-              $('#edu_fields').append(source.replace(/@COUNT@/g, countEdu));
-              // auto-completion handler for new additions
-              alert('Adding education entry, now there are '+ (countEdu - eduRemoved) + ' entries.');
-              $(document).on('click', '.school', 'input[type="text"]', function(){
-                      var eduId = $(this).attr("id");
-                      term = document.getElementById(id=eduId).value;
-                      var len = term.length;
-                      if( len > 0){
-                          $.getJSON('school.php?ter'+'m='+term, function(data) {
-                              var y = data;
-                              $('.school').autocomplete({ source: y });
-                          });
-                      }
-              });
-        });  //end of addedu
-        $('#addPos').click(function(event){
-            event.preventDefault();
-            if( countPosition - positionRemoved + 1 > 5){
-                alert('Maximum of five positions exceeded');
-                return;
-            } else {
-                countPosition = countPosition +   1;
-            }
-            window.console && console.log("Adding Position-"+countPosition);
-            $('#position_fields').append(
-               '<div class="form-background div-form-group border-top-bottom more-top-margin left" id="position' + countPosition + '\" > \
-                   <div class="container-form-entry"> \
-                      <div class="year-form-entry"> \
-                          <div class="less-bottom-margin less-top-margin year-input-label"> Start Year \
-                          </div><div class="less-top-margin less-bottom-margin short-input-form"> \
-                              <input class="year-entry-box box-size" type="text" name="wrkStartYr' + countPosition + '"' + ' id="ys'+ countPosition + '\" /> \
-                          </div> \
-                      </div> \
-                      <div class="year-form-entry indent"> \
-                          <div class="less-bottom-margin less-top-margin year-input-label"> Final Year \
-                          </div><div class="less-top-margin less-bottom-margin short-input-form"> \
-                              <input class="year-entry-box" type="text" name="wrkFinalYr' + countPosition + '"' + ' id="yl'+ countPosition + '\" /> \
-                          </div> \
-                      </div> \
-                  </div> \
-                  <div class="more-top-margin less-bottom-margin"> Organization \
-                  </div><div class="less-top-margin goal-box-layout"> \
-                            <input class="text-box" type="text" \
-                                   name="org'+countPosition+'\" \
-                        id=\"orgID' + countPosition + '\"> \
-                  </div> \
-                  <div class="more-top-margin less-bottom-margin">Description \
-                  </div><div class="less-bottom-margin goal-box-layout"> \
-                     <textarea class="position-box" name="desc'+countPosition+
-                         '\" rows = "8" id=\"positionDesc' + countPosition +
-                         '\"> ' +
-                    '</textarea> \
-                  </div> \
-                  <div class="less-top-margin less-bottom-margin more-left-margin"> \
-                  Delete this position: \
-                  <input type="button" class="click-plus" value="-" \
-                  onclick="$(\'#position' + countPosition +
-                        '\').remove(); removePosition(countPosition, positionRemoved);return false;"/></div> \
-              </div>');
-              alert('Adding position, now there are '+ (countPosition - positionRemoved) + ' positions.');
-          });
-});
-</script>
-</body>
-</html>
+             //  Define container for label
+              var StartYearLabelDiv = document.createElement("div");
+              var StartYearLabelDivId = "workStartYearLabel"+countPosition;
+              StartYearLabelDiv.id = StartYearLabelDivId;
+              StartYearLabelDiv.className = "less-bottom-margin year-input-label";
+             // Make Label and attach to container for label
+              var node = document.createTextNode("Start Year");
+              StartYearLabelDiv.appendChild(node);
+              workStartYearGroup.appendChild(StartYearLabelDiv);
+             //  Define container for input box
+              var workStartYearInputDiv = document.createElement("div");
+              var workStartYearInputDivId = "workStartYear"+countPosition;
+              workStartYearInputDiv.id = workStartYearInputDivId;
+              workStartYearInputDiv.className = "less-bottom-margin less-top-margin short-input-form";
+            //   Make input box and attach it to its container
+              var workStartYearInput = document.createElement("input");
+            //   This is the tag id for the form year
+              var workStartYearId = "wrkStartYr"+countPosition;
+              var workStartYearName = "wrkStartYr"+countPosition;
+              workStartYearInput.className = "year-entry-box";
+              workStartYearInput.name = workStartYearName;
+              workStartYearInput.id = workStartYearId;
+              workStartYearInputDiv.appendChild(workStartYearInput);
+              workStartYearGroup.appendChild(workStartYearInputDiv);
+             //  Insert group directly into DOM
+              insertionTag.appendChild(workStartYearGroup);
+             //  Final Year
+              var workFinalYearGroup = document.createElement("div");
+              var workFinalYearGroupId = "workFinalYearGroup"+countPosition;
+              workFinalYearGroup.id = workFinalYearGroupId;
+              workFinalYearGroup.name = workFinalYearGroupId;
+              if(isLargeDevice){
+                     workFinalYearGroup.className = "short-input-form inline-block";
+              } else {
+                  // small device year-form-input
+                     workFinalYearGroup.className = "short-input-form inline-block";
+              }
+              var FinalYearLabelDiv = document.createElement("div");
+            //   This is the tag id for the final form year
+              var FinalYearLabelDivId = "workFinalYearLabel"+countPosition;
+              FinalYearLabelDiv.id = FinalYearLabelDivId;
+              FinalYearLabelDiv.className = "less-bottom-margin year-input-label";
+              var node = document.createTextNode("Final Year");
+              FinalYearLabelDiv.appendChild(node);
+              workFinalYearGroup.appendChild(FinalYearLabelDiv);
+              var workFinalYearInputDiv = document.createElement("div");
+              var workFinalYearInputDivId = "workFinalYear"+countPosition;
+              workFinalYearInputDiv.id = workFinalYearInputDivId;
+              workFinalYearInputDiv.className = "less-bottom-margin less-top-margin short-input-form";
+
+              var workFinalYearInput = document.createElement("input");
+              var workFinalYearId = "wrkFinalYr"+countPosition;
+              var workFinalYearName = "wrkFinalYr"+countPosition;
+              workFinalYearInput.className = "year-entry-box";
+              workFinalYearInput.name = workFinalYearName;
+              workFinalYearInput.id = workFinalYearId;
+
+              workFinalYearInputDiv.appendChild(workFinalYearInput);
+              workFinalYearGroup.appendChild(workFinalYearInputDiv);
+              if(isMobileDevice){
+                insertionTag.appendChild(workFinalYearGroup);
+                    //  Insert 1-line group directly into DOM
+              }  else {
+                 insertionTag.appendChild(workFinalYearGroup);
+              }
+                 window.console && console.log("Adding position "+countPosition);
+         });
+     });
+     </script>
+     </body>
+     </html>
