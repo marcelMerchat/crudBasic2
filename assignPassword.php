@@ -4,52 +4,52 @@ require 'timeout.php';
 require_once 'pdo.php';
 require_once "util.php";
 
-if ( ! isset($_SESSION['user_id']))  {
-      die('ACCESS DENIED');
-}
-
-if ( isset($_POST['cancel'] ) ) {
-    header('Location: index.php');
-    return;
-}
 $_SESSION['success'] = false;
-if ( isset($_POST['pass'])) {
-  if ( strlen($_POST['pass']) > 5) {
+
+// 'if' statement fails for GET requests; there is no POST data.
+if ( isset($_POST['pass']) &&  isset($_POST['hint']) ) {
+  if (strlen($_POST['hint']) < 5) {
+       $_SESSION['error'] = 'hint is too short '.$_POST['hint'];
+       header( 'Location: apply.php' ) ;
+       return;
+  }
+  if ( strlen($_POST['pass']) > 5 && strlen($_POST['hint']) > 4) {
+     // If user Name and password fields have entries:
         $sql = "SELECT user_id, email, random, block FROM users WHERE email = :em";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(array( ':em' => $_SESSION['email']));
+        $stmt->execute(array( ':em' => $_POST['email']));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if($row === false) {
             $_SESSION['error'] = 'Incorrect password: The e-mail was not found: Please try again.';
-            error_log('Login failure: '.$_SESSION['email'].' is not in database. Please check spelling');
+            error_log('Login failure: '.$_POST['email'].' is not in database. Please check spelling');
             header( 'Location: login.php' );
             return;
         }
         if($row['block'] == 1) {
             $_SESSION['error'] = 'Account locked. Contact administrator regarding this login.';
             unset($_SESSION['user_id']);
-            error_log('Login blocked: '.$_SESSION['email']);
+            error_log('Login blocked: '.$_POST['email']);
             header( 'Location: login.php' );
             return;
         }
         $salt = $_SESSION['random'];
         //$salt = 'XyZzy12*_';
         $hashed_pass = hash('md5', $salt.$_POST['pass']);
+        $hashed_hint = hash('md5', $salt.$_POST['hint']);
         $u = (int) $_SESSION['user_id'];
     //  $_SESSION['email'] was set at previous forgotpass.php page;
         unset($_SESSION['error']);
-        $_SESSION['emailSubject'] = 'Password';
-        $_SESSION['emailMessage'] = '<html><body style="'
-            .'font-size:1.2em; color:#886600;background-color: #FDF0D0;'
-            .'border: 2px solid #886600;padding: 20px;">'
-        .'<p style="font-size:1.3em;color:#008800;margin-bottom:30px">'
-        .'Attention: '.$userName
-        .'</p><p>'
-        .'The password at www.marcel-merchat.com for email address '
-           .$_SESSION['email']
-           .' was changed. If you did not did not authorize this, please '
-           .'email the database administrator at merchatDataTools@gmail.com or '
-           .'call 773-852-1689.</p></body></html>';
+
+        $_SESSION['emailSubject'] = 'New Password';
+        $_SESSION['emailMessage'] = '<html><body style="font-size: 1.1em;color:#886600">
+          <p style="font-size: 1.3em;color:#008800;margin-bottom:30px">Attention '.$_SESSION['userName'].':</p>
+          <p style="font-size: 1.2em;color:#886600">
+                 The password at www.marcel-merchat.com for email address '
+                 .$_SESSION['email']
+                 .' was assigned with hint '.$_POST['hint']
+                 .'. If you did not did not authorize this, please
+                    contact database administrator (merchatDataTools@gmail.com) or
+                    call 773-852-1689.</p></body></html>';
         error_log('Password change was attemped for User-'.$u);
         require 'gmailer.php';
         if ($_SESSION['success'] === false) {
@@ -58,22 +58,24 @@ if ( isset($_POST['pass'])) {
              header( 'Location: forgotpass.php' ) ;
              return;
         }
-    //  Change database
-        $sql = "UPDATE users SET password = ? WHERE user_id = ?";
+    //  Change database without user control or hacking issues
+        $sql = "UPDATE users SET password = ?, hint = ? WHERE user_id = ?";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(array($hashed_pass,$u));
+        $stmt->execute(array($hashed_pass,$hashed_hint,$u));
         error_log('Password change was made for User-'.$u);
 
     //  Retrieve information from database while protecting users from
     //  scripts or html code such as redirection to another website
-        $sql = 'SELECT name, email FROM `users` WHERE user_id = ?';
+        $sql = 'SELECT name, email, hint FROM `users` WHERE user_id = ?';
         $stmt = $pdo->prepare($sql);
         $stmt->execute(array($u));
         $row =  $stmt->fetch(PDO::FETCH_ASSOC);
+        //$myname = htmlentities($row['name']);
         $mymail = htmlentities($row['email']);
+        //$myhint = htmlentities($row['hint']);
         $_SESSION['success'] = 'The password has been changed. A confirmation has been forwarded to your '.$mymail.' address.';
         $_SESSION['emailSubject'] = 'Password Change at www.marcel-merchat.com';
-        $_SESSION['emailMessage'] = 'Password changed for '.$mymail.'\.';
+        $_SESSION['emailMessage'] = 'Password changed for '.$mymail.'.';
         $_SESSION['userName'] = "Administrator";
         //require 'gmailer.php';
         $_SESSION['userName'] = "";
@@ -103,9 +105,19 @@ if ( isset($_POST['pass'])) {
   flashMessages();
 ?>
   <br/>
+  <!--<div><p class="center big">
+      <label for="id_1723">Password</label>
+      <input class="password"  type="password" name="pass" id="id_1723">
+  </p>
+</div> -->
   <div>
     <p class="center less-bottom-margin"><label for="id_1723">Password</label></p>
     <p class="center less-bottom-margin less-top-margin"><input class="text-box"  type="password" name="pass" id="id_1723"></p>
+  </div>
+
+  <div class="more-top-margin">
+    <p class="center less-bottom-margin"><label for="id_1723h">Hint</label></p>
+    <p class="center less-bottom-margin less-top-margin"><input class="text-box"  type="password" name="hint" id="id_1723h"></p>
   </div>
   <br/>
       <input class="button-submit" type="submit" onclick="return doValidatePass();" value="Assign Password">
@@ -117,13 +129,18 @@ function doValidatePass() {
     console.log('Validating...');
     try {
         pss = document.getElementById('id_1723').value;
-        console.log("Validating pss="+pss);
-        if (pss == null || pss == "") {
-            alert("password must be filled in.");
+        hnt = document.getElementById('id_1723h').value;
+        console.log("Validating pss="+pss+' hint='+hnt);
+        if (hnt == null || hnt == "" || pss == null || pss == "") {
+            alert("password and hnt must be filled in.");
             return false;
         }
         if (pss.length < 8) {
             alert("Password must have length of at least 8 characters.");
+            return false;
+        }
+        if (hnt.length < 6) {
+            alert("Hint must have length of at least 5 characters.");
             return false;
         }
         return true;

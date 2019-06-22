@@ -56,14 +56,24 @@ nav li a {
 <?php
 if(! isMobile()) {
     echo '<div id="top_left">
+      <div>
       <img src="IMG_20151115_150532519PathinPark.jpg">
-      <p>The path ahead leads into the trees,</p>
+      <p class="more-top-margin">The path ahead leads into the trees,</p>
       <p>And I wished I could follow it</p>
       <p>long I looked until I dared.</p>
-    </div>
-    <div id="top_right">
+      </div>
+      <br />
+      <div>
+      <p class="more-top-margin">This is an example of a simple website and database
+            that is suitable for a relatively small organization or business
+            with less than 50,000 members, but is it modeled for future growth
+            into a large organization.
+      </p>
+      </div>
+   </div>
+   <div id="top_right" class="more-top-margin">
       <img src="IMG_20180919_124000517FlowersinMeadow.jpg">
-      <p>The beginning usually doesn\'t go well</p>
+      <p class="more-top-margin">The beginning usually doesn\'t go well</p>
       <p>and things need time to develop,</p>
       <p>the beginning is still remembered</p>
       <p class = "set-in1">until it fades away.</p>
@@ -105,7 +115,7 @@ if ( isset($_SESSION['user_id']) && (strlen($_SESSION['user_id']) > 0) ) {
         <a href="login.php">Login</a>
        </h4>
        <div>
-           <p class="small left">
+           <p class="small center">
               Using the login link, you can log in as \'guest@mycompany.com\'
               with the password \'login123\'.
            </p>
@@ -180,9 +190,12 @@ if($tableRows > 0) {
     echo ('<p class="center">No profiles yet.</p>');
 }
 if ( ! (isset($_SESSION['user_id']) && (strlen($_SESSION['user_id']) > 0)) ) {
-    echo '<p class="left"> If you forgot the password but remember the hint,
-             you can get a new password <a href="forgotpass.php">here</a>.
-          </p>';
+    echo '<p class="left"> You can change your password '
+             .'<a href="forgotpass.php">here</a>.'
+          .'</p>';
+    echo ' <p class="left"> If you forgot the password but remember the hint, '
+          .'you can get a new password <a href="forgotpass.php">here</a>.'
+          .'</p>';
 }
 ?>
 </div> <!-- end main -->

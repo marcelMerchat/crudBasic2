@@ -2,11 +2,14 @@
 session_start();
 require_once 'pdo.php';
 require_once "util.php";
+// Check the hint
 
 if ( isset($_POST['cancel'] ) ) {
     header('Location: index.php');
     return;
 }
+$_SESSION['success'] = false;
+$email = '';
 
 // 'if' statement fails for GET requests; there is no POST data.
 if (   isset($_POST['email'])  || isset($_POST['hint'])) {
@@ -25,8 +28,10 @@ if (   isset($_POST['email'])  || isset($_POST['hint'])) {
          //return;
     }
 //     $rememberHint = false;
+    $email = $_POST['email'];
+    $_SESSION['email'] = $_POST['email'];
     $hint = $_POST['hint'];
-    $sql = 'SELECT user_id, email, hint FROM users WHERE email = :em AND hint = :hnt';
+    $sql = 'SELECT user_id, name, email, random, hint FROM users WHERE email = :em AND hint = :hnt';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(':em' => $_POST['email'], ':hnt' => $_POST['hint']));
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -39,10 +44,13 @@ if (   isset($_POST['email'])  || isset($_POST['hint'])) {
           //  hint found in database; does it match email address?
           $rememberHint = true;
           $_SESSION['user_id'] = array_values($row)[0];
+          $_SESSION['userName'] = array_values($row)[1];
+          $_SESSION['random'] = array_values($row)[3];
+          //$userName = $_POST['name'];
           $_SESSION['email'] = $_POST['email'];
-          echo 'hint matches '.$row;
+          //echo 'hint matches '.$row;
           $_SESSION['success'] = 'You entered the hint. You may change the password.';
-          error_log('new password application success for User-'.$_POST['user_id']);
+          error_log('The hint was verified for User-'.$_POST['user_id']);
           header( 'Location: changePassword.php' );
           return;
    } else {
@@ -75,10 +83,10 @@ require_once 'header.php';
   <h2>Change Password</h2>
   <p class="big">
       <label for="email">Email</label>
-      <input class="email" type="text" name="email" value="<?= htmlentities('') ?>" id="email">
+      <input class="email" type="text" name="email" value="<?= htmlentities($email) ?>" id="email">
       </p><p class="big">
       <label for="id_1723h">Hint</label>
-      <input class="password"  type="password" name="hint" value="<?= htmlentities('') ?>" id="id_1723h">
+      <input class="password"  type="password" name="hint" id="id_1723h">
       </p>
 
     <p class="big double-space">

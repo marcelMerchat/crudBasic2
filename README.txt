@@ -142,12 +142,14 @@ CREATE TABLE users (
    name VARCHAR(128),
    email VARCHAR(128),
    password VARCHAR(128),
+   random VARCHAR(128),
    hint VARCHAR(128),
    INDEX(email)
 ) ENGINE=InnoDB CHARSET=utf8;
 
-INSERT INTO users (name,email,password, hint)
-    VALUES ('gramps^77','merchatDataTools@gmail.com','e76500c3d37247cb0564d800821a1311','frank');
+INSERT INTO users (name,email,password,random,hint)
+    VALUES ('gramps^77','merchatDataTools@gmail.com','e76500c3d37247cb0564d800821a1311','XyZzy12*_','frank');
+UPDATE users SET random = 'XyZzy12*_';
 
 //password is 'mcp2tWc'; gramps77 is also the designed owner for pdo objects
 //in php.

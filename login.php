@@ -18,7 +18,7 @@ if (   isset($_POST['email'])  && isset($_POST['pass'])) {
          header( 'Location: login.php' ) ;
          return;
     }
-    $sql = "SELECT user_id, email, password, block FROM users WHERE email = :em";
+    $sql = "SELECT email, random FROM users WHERE email = :em";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array( ':em' => $_POST['email']));
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -33,13 +33,14 @@ if (   isset($_POST['email'])  && isset($_POST['pass'])) {
             unset($_SESSION['user_id']);
             error_log('Login blocked: '.$_POST['email']);
     } else {
-      $sql = "SELECT user_id, email, password FROM users WHERE email = :em AND password = :pw";
-      $salt = 'XyZzy12*_';
+      $salt = $row['random'];
+      //$salt = 'XyZzy12*_';
       $stmt = $pdo->prepare($sql);
-      $posted_pass = hash('md5', $salt.$_POST['pass']);
+      $posted_pass = hash('md5',$salt.$_POST['pass']);
+      $sql = "SELECT user_id, email, password, block FROM users WHERE email = :em";
+      $stmt = $pdo->prepare($sql);
       $stmt->execute(array(
-            ':em' => $_POST['email'],
-            ':pw' => $posted_pass));
+            ':em' => $_POST['email']));
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
       $user_pass = array_values($row)[2];
       if($user_pass === $posted_pass) {
@@ -106,28 +107,17 @@ if (   isset($_POST['email'])  && isset($_POST['pass'])) {
              which runs before the post to the website. The server program
              at the website (see util.php) performs a final validation check.-->
      </h3>
-     <p class="left quad-space"> If you forgot the password but remember the hint,
-      you can recover <a href="forgotpass.php">here</a>.</p>
-      <!-- Hint:
-       <p class="big"> For a password hint, view source and find an account and password hint
-                          in the HTML comments.
-       Three accounts are:
-       email: umsi@umich.edu php123  password: php123
-
-       The password is the three character name of the
-       programming language used in this class (all lower case)
-       followed by 123.
-
-       Other accounts:
-       Elvis: epresley@musicland.edu  password: rock123
-       Marilyn: mmonroe@whitehouse.gov  password: holly123  </p>   -->
+     <!-- Hint: -->
        <p class="left quad-space">You can get your own login password
-           <a href="apply.php"> here</a>.
-       </p><p class="left quad-space">Take me back to the
+           <a href="apply.php"> here</a> or login as
+           guest@mycompany.com  with password login123.
+       </p><p class="left"> You can change your password
+           <a href="forgotpass.php">here</a>. If you forgot the password but remember the hint,
+                you can get a new password <a href="forgotpass.php">here</a>.
+       </p><p class="left">Take me back to the
            <a href="index.php"> first page</a>.
        </p>
   </form>
-
 </div>
 <script>
 function doValidate() {

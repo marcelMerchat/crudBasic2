@@ -703,3 +703,12 @@ function filterPhrase($phrase, $pdo) {
     }
     return trim($newPhrase);
 }
+function generateRandomString($length = 8) {
+    $characters = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}

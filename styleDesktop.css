@@ -278,6 +278,15 @@ tr {
     border: 2px #080 solid;
     padding: 20px
 }
+#under_top_left {
+    position: absolute;
+    width: 22%;
+    left: 2%;
+    color: #080;
+    background-color: #ffe;
+    border: 2px #080 solid;
+    padding: 20px
+}
 #one {
   top: 5%;
   left: 10%;
