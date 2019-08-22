@@ -13,35 +13,14 @@ header('Content-Type: application/json; charset=utf-8');
 
 $t = $_GET['term'];
 $var = '%'.$t.'%';
-// Alternate Method
-//error_log('Looking for type-ahead term '.$t);
-//$stmt = $db->query('SELECT * FROM table');
-//$row_count = $stmt->rowCount();
-//$stmtCount = $pdo->prepare('SELECT * FROM Institution
-  //                  WHERE `name` LIKE :patt');
-//$stmtCount->bindValue(1, $var);
-//$stmtCount ->execute();
-//$stmtCount->execute(array(':patt' => $var));
-//$stmtCnt = $stmtCount->fetch(PDO::FETCH_ASSOC);
-//$resultCnt = $stmtCount->rowCount();
-$i = 0;
-$resultCnt = 0;
-//$hit = 'junk';
-//$cnt2 = 0;
+//print_r($var);
 $stmt2 = $pdo->prepare('SELECT name FROM Institution
                       WHERE name LIKE :patt');
 $stmt2->execute(array( ':patt' => $var));
 $wordList = array();
-//$detect = false;
-//$cnter = 0;
-//while ($cnter < 1 ) {
-  //$cnter = $cnter + 1;
-//}
 while($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)){
-    //if(!$detect) {
-     // There is a possible offensive language match
-        $wordList[] = $row2['name'];
-        //$resultCnt = $resultCnt + 1;
-    //}
+    $wordList[] = $row2['name'];
+    //var_dump($row2['name']);
 }
+//var_dump($wordList);
 echo(json_encode($wordList));

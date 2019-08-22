@@ -18,7 +18,7 @@ div {
   box-sizing: border-box;
 }
 .content {
-  margin: 15px;
+  margin: 2%;
 }
 .goal-box-layout {
   display: inline-block;
@@ -43,20 +43,24 @@ div {
     margin-left: auto;
     margin-right: auto;
 }
+.job-description-box {
+    box-sizing: border-box;
+    word-wrap: break-word;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    width: 98%;
+}
 div.container-form-entry {
     font-size: 1em;
     width: 99%;
     box-sizing: border-box;
     border: 0px solid black;
-    padding-top: 3px;
-    padding-left: 3px;
-    padding-right: 3px;
-    padding-bottom: 3px;
+    padding: 3px;
     margin-top: 3px;
     margin-bottom: 3px;
 }
 .year-form-input {
-    width: 9em;
+    width: 8em;
     max-width: 49%;
     box-sizing: border-box;
     border: 0px solid red;
@@ -323,6 +327,7 @@ a:hover {
     padding-top: 1px;
     padding-bottom: 1px;
     margin-bottom: 10px;
+    color: #bb4422;
 }
 .indent {
     margin-left: 30px;
@@ -477,11 +482,24 @@ a:hover {
     border: 2px solid #008800;
     background-color: #eef;
 }
+.margin-top-small {
+    margin-top: 1px;
+}
 .margin-bottom-small {
-    margin-top: 4vw;
-    margin-bottom: 2vw;
+    margin-bottom: 1px;
 }
 .school {
+    width: 98%;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border: 2px solid #886600;
+    box-sizing: border-box;
+}
+.award {
     width: 98%;
     padding-left: 5px;
     padding-right: 5px;
@@ -541,7 +559,7 @@ a:hover {
     margin-block-end: 0.1vw;
 }
 .more-bottom-margin {
-    margin-bottom: 1em;
+    margin-bottom: 1.5em;
 }
 .less-top-margin {
     margin-top: 0.4vw;
@@ -557,10 +575,10 @@ a:hover {
     padding: 10px;
 }
 div.short-input-form {
-  width: 5.5em;
+  width: 5em;
   margin-right: 1em;
   border-width: 0px;
-  border-color: #886600;
+  border-color: #FF6600;
 }
 .border-top-bottom {
     border-top-style: solid;
@@ -594,6 +612,8 @@ th {
     padding-right: 5px;
     padding-top: 3px;
     padding-bottom: 2px;
+    margin-left: auto ;
+    margin-right: auto ;
     background-color: #BBDDEE;
     border-spacing: 0px;
     cell-spacing: 0px;
@@ -604,7 +624,8 @@ td {
     padding-right: 5px;
     padding-top: 2px;
     padding-bottom: 2px;
-    cell-spacing: 0px;
+    margin-left: auto ;
+    margin-right: auto ;
     border: 1px solid #008800;
     border-spacing: 0px;
     background-color: #EEEEFF;
@@ -624,6 +645,7 @@ li {
     padding-bottom: 6px;
     padding-left: 1px;
     padding-right: 1px;
+    margin-top: 3px;
     list-style-type: square;
     color: #222;
 }
@@ -643,6 +665,12 @@ li {
     padding-top: 2px;
     padding-bottom: 2px;
     position: relative;
+}
+#centerlist {
+    top: 20%;
+    left: 21%;
+    width: 58%;
+    border: 0px orange solid;
 }
 #bottom {
     left: 35%;

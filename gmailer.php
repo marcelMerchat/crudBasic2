@@ -51,8 +51,8 @@ try{
         $_SESSION['error'] = "It didn't go thru ".'Mailer Error: ' . $mail->ErrorInfo;
     } else {
     //echo 'Message has been sent';
-    //$_SESSION['success'] = true;
-    $_SESSION['success'] = "It was successful";
+    $_SESSION['success'] = true;
+    //$_SESSION['success'] = "It was successful";
     //$_SESSION['success'] = 'New password assigned for '.$address.'. You may now login.';
     }
     //echo "Message sent to";
@@ -69,4 +69,3 @@ try{
   //echo 'Message: ' .$e->getMessage();
   $_SESSION['error'] = "General mail error or internet not available: ". $e->getMessage().$mail->ErrorInfo;
 }
-unset($_SESSION['email']);

@@ -16,27 +16,58 @@ session_start();
     body {
       line-height: normal;
     }
+    #main {
+        left: 15%;
+        right: 15%;
+        width: 70%;
+        border: 0px solid #008800;
+    }
     div.edu-label {
         display: inline-block;
+        vertical-align: top;
         text-align: left;
-        width: 3.2em;
+        width: 1.4rem;
         height: 1.1em;
         border: 0px solid #008800;
-        padding-top: 0px;
+        padding: 0px;
+        padding-left: 5px;
         margin-top: 0px;
-        padding-bottom: 0px;
+        margin-bottom: 0px;
+    }
+    div.edu-year-label {
+        display: inline-block;
+        vertical-align: top;
+        text-align: left;
+        width: 4rem;
+        height: 1.1em;
+        border: 0px solid #008800;
+        padding: 0px;
+        padding-left: 5px;
+        margin-top: 0px;
         margin-bottom: 0px;
     }
     div.job-label {
-        display: inline-block;
-        text-align: left;
-        width: 5.5em;
-        height: 1.1em;
-        border: 0px solid #008800;
-        padding-top: 0px;
-        margin-top: 0px;
-        padding-bottom: 0px;
-        margin-bottom: 0px;
+      display: inline-block;
+      vertical-align: top;
+      text-align: left;
+      width: 6.2rem;
+      height: 1.1em;
+      border: 0px solid #008800;
+      padding: 0px;
+      padding-left: 5px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+    div.job-desc {
+      display: inline-block;
+      box-sizing: border-box;
+      text-align: left;
+      width: 99%;
+      height: 1.1em;
+      border: 0px solid #008800;
+      padding: 0px;
+      margin-top: 5px;
+      margin-bottom: 0px;
     }
     div.container-edu-info {
       width: 30em;
@@ -49,34 +80,35 @@ session_start();
       padding-top: 0px;
       padding-bottom: 0px;
       margin-top: 4px;
-      margin-bottom: 1px;
+      margin-bottom: 15px;
     }
     div.edu-info {
         display: inline-block;
         text-align: left;
-        width: 65%;
-        padding-top: 1px;
+        box-sizing: border-box;
+        padding-top: 0px;
         padding-bottom: 0px;
-        border: 0px solid #008800;
-        margin-top: 1px;
+        border: 0px solid #888800;
+        margin-top: 0px;
         margin-bottom: 0px;
+        width: 75%;
     }
     .edu-row1 {
        border: 0px solid #008800;
-       margin-top: 1px;
-       margin-bottom: 0px;
-       padding-top: 1px;
-       padding-bottom: 0px;
+       margin: 0px
+       padding: 1px;
     }
     .edu-row2 {
        border: 0px solid #008800;
-       padding-top: 1px;
-       padding-bottom: 1px;
-       margin-top: 1px;
-       margin-bottom: 1px;
+       padding-top: 0px;
+       padding-bottom: 0px;
+       margin: 0px;
     }
     .more-top-margin {
         margin-top: 8px;
+    }
+    .more-bottom-margin {
+        margin-bottom: 30px;
     }
     ul {
        margin-top: 0px;
@@ -86,10 +118,10 @@ session_start();
       margin-bottom: 0px;
     }
     </style>
-</head>
-<body>
-<div class="content" id="main">
-<br />
+    </head>
+    <body>
+      <div class="content" id="main">
+        <br />
 <?php
     $profileid = $_GET['profile_id'];
     $stmt = $pdo->prepare('SELECT first_name, last_name,
@@ -97,68 +129,126 @@ session_start();
     $stmt->execute(array(':pid' => $_GET['profile_id']));
     $row =  $stmt->fetch(PDO::FETCH_ASSOC);
         echo '<p class="center big less-bottom-margin">'.htmlentities($row['first_name']).' '.
-                               htmlentities($row['last_name']).'
+                              htmlentities($row['last_name']).'
               </p><p class="center">'.
                                htmlentities($row['profession']).
               '</p>';
         echo '<p class="center small more-top-margin">Email: '.htmlentities($row['email']).'</p>';
         //echo '<br />';
         echo '<h4>Goals</h4>';
-        echo '<p>'.htmlentities($row['goal']).'</p>';
-        $sqlSkillSet = 'SELECT skill_id FROM SkillSet WHERE profile_id = :pid';
-        $sqlSkill = 'SELECT name FROM Skill WHERE skill_id = :iid';
-        $stmt_skillSet = $pdo->prepare($sqlSkillSet);
-        $stmt_skillSet->execute(array(':pid' => $_GET['profile_id']));
-        $skillSet = $stmt_skillSet->fetchALL(PDO::FETCH_ASSOC);
-        // school id list
-        $rows = $skillSet;
-        $length = count($rows);
-        if( $length !== 0) {
+        echo '<p class="job-description-box">'.htmlentities($row['goal']).'</p>';
+
+        $sqlSkillCount = 'SELECT COUNT(*) FROM SkillSet WHERE profile_id = :pid';
+        $stmtCount = $pdo->prepare($sqlSkillCount);
+        $stmtCount->execute(array(':pid' => $_GET['profile_id']) );
+        $rowcount = $stmtCount->fetch(PDO::FETCH_ASSOC);
+        $cnt = array_values($rowcount)[0];
+        //if( $length !== 0) {
+        if( $cnt > 0) {
+            $sqlSkillSet = 'SELECT skill_id FROM SkillSet WHERE profile_id = :pid';
+            $stmt_skillSet = $pdo->prepare($sqlSkillSet);
+            $stmt_skillSet->execute(array(':pid' => $_GET['profile_id']));
+            $skillSet = $stmt_skillSet->fetchALL(PDO::FETCH_ASSOC);
+          // school id list
+            $rows = $skillSet;
+            $length = count($rows);
+
             echo '<h4 class="less-bottom-margin">Job Skills</h4>';
             echo '<ul class="less-top-margin">';
             for ($i = 0; $i < $length; $i++){
-                $skill_id = $rows[$i]['skill_id'];
-                $stmt_skillname = $pdo->prepare($sqlSkill);
-                $stmt_skillname->execute(array(':iid' =>   $skill_id));
-                $skill_name = $stmt_skillname->fetch(PDO::FETCH_ASSOC);
-                $skill = array_values($skill_name)[0];
-                echo '<li>'.htmlentities($skill).' &nbsp;&nbsp;&nbsp; </li>';
+               $skill_id = $rows[$i]['skill_id'];
+               $sqlSkill = 'SELECT name FROM Skill WHERE skill_id = :iid';
+               $stmt_skillname = $pdo->prepare($sqlSkill);
+               $stmt_skillname->execute(array(':iid' =>   $skill_id));
+               $skillrow = $stmt_skillname->fetch(PDO::FETCH_ASSOC);
+               //$skill = array_values($skillrow)[0];
+               echo '<li class="job-description-box">'.htmlentities($skillrow['name']).' &nbsp;&nbsp;&nbsp; </li>';
             }
+            // $sqlSkill = 'SELECT name FROM Skill WHERE skill_id = :iid';
+            // $stmt_skillname = $pdo->prepare($sqlSkill);
+            // $stmt_skillname->execute(array(':iid' => $_GET['profile_id']));
+            // $skillrows = $stmt_skillname->fetch(PDO::FETCH_ASSOC);
+            // $length = count($skillrows);
+            // for ($i = 0; $i < $length; $i++){
+            //     $skill = $skillrows['skill'];
+            //     echo '<li>'.htmlentities($skill).' &nbsp;&nbsp;&nbsp; </li>';
+            // }
             echo '</ul>';
         } else {
               //echo '<p style="color:orange">No skills found</p>';
         }
      // Education  ----------------------------------------------------------
-        $sqlid = 'SELECT institution_id, year, major FROM Education WHERE profile_id = :pid';
-        $sqlinst = 'SELECT name FROM Institution WHERE institution_id = :iid';
+        // get the school name
+        $sqlid = 'SELECT year, institution_id, award_id FROM Education WHERE profile_id = :pid';
         $stmt_schoolid = $pdo->prepare($sqlid);
         $stmt_schoolid->execute(array(':pid' => $_GET['profile_id']));
         $school_ids = $stmt_schoolid->fetchALL(PDO::FETCH_ASSOC);
+
+        // The profile_id was provided as a 'get' parameter.
+        // There are two other foreign keys in the Education Table.
+
         // school id list
         $rows = $school_ids;
         $length = count($rows);
         if( $length !== 0) {
             echo '<h4 class="">Education</h4>';
+
+            // If any of the entires are missing the year, the year will be
+            // deleted.
+            $year_block = false;
             for ($i = 0; $i < $length; $i++){
+                $year_string = $rows[$i]['year'];
+                if ( ! strlen($year_string) > 0 ) {
+                      $year_block = true;
+                }
+            }
+
+            for ($i = 0; $i < $length; $i++){
+                // get the year
+                $year_string = $rows[$i]['year'];
+                if ( strlen($year_string) > 0 ) {
+                      $year = (int) $year_string;
+                } else {
+                      $year = -99999;
+                }
+                // get the school name
+                //print_r($rows[$i]);
                 $institution_id = $rows[$i]['institution_id'];
+                $sqlinst = 'SELECT name FROM Institution WHERE institution_id = :iid';
                 $stmt_schoolname = $pdo->prepare($sqlinst);
-                $stmt_schoolname->execute(array(':iid' =>   $institution_id));
+                $stmt_schoolname->execute(array(':iid' => $institution_id));
                 $school_name = $stmt_schoolname->fetch(PDO::FETCH_ASSOC);
                 $school = array_values($school_name)[0];
-                echo '<div class="container-edu-info more-top-margin less-bottom-margin">'
-                         .'<div class="edu-label">'
-                            .'<div class="edu-row1">'.htmlentities($rows[$i]['year']).'</div>'
-                         .'</div><div class="edu-info">'
-                            .'<div class="edu-row1">'.htmlentities($school).'</div>'
+
+                // get the degree award
+                $degree_id = $rows[$i]['award_id'];
+                $sqlaward = 'SELECT name FROM Award WHERE award_id = :aid';
+                $stmt_award = $pdo->prepare($sqlaward);
+                $stmt_award->execute(array(':aid' => $degree_id));
+                $award_name = $stmt_award->fetch(PDO::FETCH_ASSOC);
+                $award = array_values($award_name)[0];
+
+                echo '<div class="container-edu-info">
+                        <div class="edu-row1">';
+                              if($year_block === false){
+                echo               '<div class="edu-year-label">'
+                                      .htmlentities($rows[$i]['year'])
+                                  .'</div>';
+                              } else {
+                echo              '<div class="edu-label" style="font-size: 26px;"> &#9642</div>';
+                                              // &#8226 for round bullet
+                              }
+                echo          '<div class="edu-info">'
+                                   .'<div><p class="margin-bottom-small">'.htmlentities($school).'</p></div>'
+                                   .'<div class="job-desc">'
+                                    .'<p class="job-description-box">'
+                                        .htmlentities($award)
+                                    .'</p>'
+                                   .'</div>'
+                              .'</div>'
                          .'</div>'
-                     .'</div>'
-                     .'<div class="edu-row2">'
-                         .'<div class="edu-label">'
-                            .'<div class="edu-row2"></div>'
-                         .'</div><div class="edu-info">'
-                            .'<div class="edu-row2">Major:&nbsp;'.htmlentities($rows[$i]['major']).'</div>'
-                        .'</div>'
-                     .'</div>';
+                    .'</div>';
+                    //.htmlentities($rows[$i]['major']).'&nbsp;'
             }
         } else {
               //echo '<p style="color:orange">No education found</p>';
@@ -172,21 +262,30 @@ session_start();
   if($worklength > 0) {
       echo '<h4>Employment History</h4>';
       foreach($rows as $job){
-          echo '<div class="container-edu-info">'
-                    .'<div class="job-label">'
-                       .'<div class="edu-row1">'.htmlentities($job['yearStart']).'-'
-                          .htmlentities($job['yearLast']).'</div>'
-                    .'</div><div class="edu-info">'
-                       .'<div class="edu-row1">'.htmlentities($job['organization']).'</div>'
-                    .'</div>'
-               .'</div>'
-               .'<div class="edu-row2">'
-                  .'<div class="job-label">'
-                      .'<div class="edu-row2"></div>'
-                  .'</div><div class="edu-info">'
-                      .'<div class="edu-row2">'.htmlentities($job['description']).'</div>'
-                  .'</div>'
-               .'</div>';
+
+               echo '<div class="container-edu-info">
+                       <div class="edu-row1">';
+                             //if($year > 0){
+               echo          '<div class="job-label">'
+                                     .htmlentities($job['yearStart'])
+                                     .'-'
+                                     .htmlentities($job['yearLast'])
+                             .'</div>';
+                             //} else {
+               //echo              '<div class="job-label" style="font-size: 26px;"> &#9642</div>';
+               // &#8226 for round bullet
+                             //}
+               echo          '<div class="edu-info">'
+                                 .'<div>'.htmlentities($job['organization'])
+                                .'</div><div class="job-desc">'
+                                  .'<p class="job-description-box">'
+                                           .htmlentities($job['description'])
+                                  .'</p>'
+                              .'</div>'
+                            .'</div>'
+                           .'</div>'
+
+                   .'</div>';
         }
   } else {
         //echo '<p style="color:orange">No positions found</p>';
@@ -195,6 +294,63 @@ session_start();
 <br />
 <p class="double-space center"><a href="index.php">Return to Main Page</a>
 </p>
+<!-- <button id="getmain">Get #Main Width</button>
+<button id="getw">Get Window Width</button>
+<button id="getd">Get Document Width</button> -->
 </div>
+<script>
+$(document).ready(function() {
+  window.console && console.log('Document ready called ');
+  isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
+  isLargeDevice = !isMobileDevice;
+  window.console && console.log('Mobile device = ' + isMobileDevice);
+  var w = window.screen.width;
+  window.console && console.log('The screen width is = ' + w);
+  var tagId = document.getElementById("main");
+  var tagIdcss = $('#main').attr("id");
+  var w = window.screen.width;
+  var w = $( window ).width();
+
+  window.console && console.log('The JavaScript TagId is '+tagId +' screen width is reset to 80%' + tagIdcss);
+
+  //showWidth("shoWidth");
+
+  //$( "div" ).text( "The width for the " + tagId + " is " + w + "px." );
+  if (isLargeDevice &&  w > 1100) {
+      $("#main").css("left", "22%");
+      $("#main").css("right", "22%");
+      $("#main").css("width", "55%");
+  }
+  if (isLargeDevice && w > 860 && w < 1101) {
+      //document.getElementById("main").style.width = "90%";
+      //document.getElementById("main").style.width = "80%";
+      //window.console && console.log('The screen width is reset to 80%' + w);
+      //$(tagIdcss).css("width": "90%");
+      //$("#main").css("width", 100);
+      $("#main").css("left", "18%");
+      $("#main").css("right", "18%");
+      $("#main").css("width", "64%");
+  }
+  if (isLargeDevice && w > 760 && w < 861) {
+      $("#main").css("left", "10%");
+      $("#main").css("right", "10%");
+      $("#main").css("width", "80%");
+  }
+  if (isLargeDevice && w < 761) {
+      $("#main").css("left", "5%");
+      $("#main").css("right", "5%");
+      $("#main").css("width", "90%");
+  }
+  $( "#getmain" ).click(function() {
+  showWidth( "main div", $( "#main" ).width() );
+  });
+  $("#getw").click(function() {
+  showWidth( "window", $( window ).width() );
+  });
+  $( "#getd" ).click(function() {
+  showWidth( "document", $( document ).width() );
+  });
+});
+</script>
 </body>
 </html>

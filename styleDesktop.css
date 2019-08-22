@@ -75,9 +75,7 @@ p {
     font-size: 1.3rem;
 }
 .small {
-    font-size: 0.95rem;
-}
-label {
+    font-size: 0.9rem;
 }
 input, textarea, select, button {
     font-size: 1.01rem;
@@ -181,10 +179,6 @@ img {
     margin-top: 2px;
     margin-bottom: 2px;
 }
-.margin-bottom-small {
-    margin-top: 24px;
-    margin-bottom: 16px;
-}
 .small-word-button {
     font-size: 1.1rem;
     width: 80px;
@@ -260,9 +254,9 @@ tr {
     margin-top: 1.5em;
 }
 #main {
-    left: 29%;
-    width: 42%;
-    padding: 15px;
+    left: 25%;
+    width: 50%;
+    padding: 4px;
 }
 .content {
     margin-top: 15px;

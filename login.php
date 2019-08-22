@@ -9,8 +9,9 @@ if ( isset($_POST['cancel'] ) ) {
 }
 
 // 'if' statement fails for GET requests; there is no POST data.
-if (   isset($_POST['email'])  && isset($_POST['pass'])) {
-  if ( (strlen($_POST['email']) >= 1) && (strlen($_POST['pass']) >= 1 )) {
+if (   isset($_POST['email']) && isset($_POST['pass']) ) {
+  $email = trim($_POST['email']);
+  if ( strlen($email) >= 1 && strlen($_POST['pass']) >= 1 ) {
     unset($_SESSION['user_id']);  // Logout current user
     // If user Name and password fields have entries:
     if (strpos($_POST['email'], '@') === FALSE ) {
@@ -18,55 +19,102 @@ if (   isset($_POST['email'])  && isset($_POST['pass'])) {
          header( 'Location: login.php' ) ;
          return;
     }
-    $sql = "SELECT email, random FROM users WHERE email = :em";
+    $sql = "SELECT random, timeout, block FROM users WHERE email = :em";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array( ':em' => $_POST['email']));
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if($row === false) {
-            $_SESSION['error'] = 'Incorrect password: The e-mail was not found: Please try again.';
-            error_log('Login failure: '.$_POST['email'].' is not in database. Please check spelling');
+    if($row == false) {
+            $_SESSION['error'] = 'Incorrect email or password: Please check spelling and try again.';
+            error_log('Login failure: '.$_POST['email'].' is not in database.');
             header( 'Location: login.php' );
             return;
     }
     if($row['block'] == 1) {
-            $_SESSION['error'] = 'Account locked. Contact administrator regarding this login.';
+            $_SESSION['error'] = 'Something went wrong. Contact administrator.';
             unset($_SESSION['user_id']);
             error_log('Login blocked: '.$_POST['email']);
+            header( 'Location: login.php' );
+            return;
+    }
+    $totalseconds = -1;
+    if($row['timeout'] == 1){
+        //print_r('. The apply time was '.strtotime($row['password_time']));
+        // $request_num = strtotime($row['password_time']);
+        // $request_time = date("Y-m-d H:i:s", $request_num);
+        // print_r('. The apply time was '.$request_time);
+        // $current_time = date("Y-m-d H:i:s");
+        // $requested = new DateTime($request_time);
+        // $current = new DateTime($current_time);
+        // $interval = $requested->diff($current);
+        // $days = $interval->d;
+        // $hrs = $interval->h;
+        // $mins = $interval->i;
+        // $secs = $interval->s;
+        // //$totalmins = 24*60*$days+60*$hrs + $mins;
+        // $totalsecs = 24*3600*$days + 3600*$hrs + 60*$mins + $secs;
+        $mysqlfield = 'password_time';
+        $totalsecs = getElapsedSeconds($_POST['email'],$mysqlfield,$pdo);
+        print_r('. The elapsed time was '.$totalsecs);
+        if($totalsecs > 600) {
+          $_SESSION['error'] = 'Temporary password expired after 30 minutes. '
+          . 'To get a new password, enter your email address.';
+          //print_r('. The elapsed time exceeded 30 minutes. ');
+          unset($_SESSION['user_id']);
+          error_log('Temporary password expired for '.$_POST['email']);
+        } else if ( !($totalsecs > 0) ){
+          unset($_SESSION['user_id']);
+          $_SESSION['error'] = 'Something went wrong. To get a new password, '
+          .'contact the administrator at merchatDataTools@gmail.com or '
+          .'call 773-852-1689. ';
+          error_log('Time difference was not greater than zero for '.$_POST['email']);
+        }
+        if( !($totalsecs > 0) || $totalsecs > 1000) {
+          //header( 'Location: forgotpass.php' );
+          //return;
+          print_r('. Something wrong here. The elapsed time was '.$totalsecs);
+        }
+     }
+    //$salt = 'XyZzy12*_';
+    $sql = "SELECT user_id, password, random FROM users WHERE email = :em";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+        ':em' => $_POST['email']));
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    var_dump($row);
+    $user_pass = $row['password'];
+    $salt = $row['random'];
+    $posted_pass = hash('md5',$salt.$_POST['pass']);
+          //print_r('The posted password is '.$posted_pass);
+          //print_r('The database pass '.$row['password']);
+    $hashed_hint2 = hash('md5', $salt.'admin1r23');
+    echo("<br />");
+          //print_r('. The salt is '.$salt);
+          //print_r('. The hash for "admin1r23" is '.$hashed_hint2);
+    if($user_pass === $posted_pass) {
+              $_SESSION['success'] = 'Logged in.';
+              $_SESSION['user_id'] = $row['user_id'];
+              $_SESSION['email'] = $_POST['email'];
+              $_SESSION['countEdu'] = 0;
+              $_SESSION['countPosition'] = 0;
+              $_SESSION['countSkill'] = 0;
+              $_SESSION['userName'] = get_name($_SESSION['user_id'],$pdo);
+              error_log('Login success: '.$_POST['email']);
+              $_SESSION['LAST_ACTIVITY'] = time();
+              header( 'Location: index.php');
+              return;
     } else {
-      $salt = $row['random'];
-      //$salt = 'XyZzy12*_';
-      $stmt = $pdo->prepare($sql);
-      $posted_pass = hash('md5',$salt.$_POST['pass']);
-      $sql = "SELECT user_id, email, password, block FROM users WHERE email = :em";
-      $stmt = $pdo->prepare($sql);
-      $stmt->execute(array(
-            ':em' => $_POST['email']));
-      $row = $stmt->fetch(PDO::FETCH_ASSOC);
-      $user_pass = array_values($row)[2];
-      if($user_pass === $posted_pass) {
-           $_SESSION['success'] = 'Logged in.';
-           $_SESSION['user_id'] = array_values($row)[0];
-           $_SESSION['email'] = $_POST['email'];
-           $_SESSION['countEdu'] = 0;
-           $_SESSION['countPosition'] = 0;
-           $_SESSION['countSkill'] = 0;
-           $_SESSION['full_name'] = get_name($_SESSION['user_id'],$pdo);
-           error_log('Login success: '.$_POST['email']);
-           $_SESSION['LAST_ACTIVITY'] = time();
-           header( 'Location: index.php');
-           return;
-       } else {
-			     $_SESSION['error'] = 'Incorrect password';
-           error_log('Login failure: '.$_POST['email'].' Password is incorrect.');
-           header( 'Location: login.php' );
-           return;
-       }
+			        $_SESSION['error'] = 'Incorrect password';
+              error_log('Login failure: '.$_POST['email'].' Password is incorrect.');
+              header( 'Location: login.php' );
+              return;
+    }
+  } else {
+      $_SESSION['error'] = ' Incorrect email or password. ';
+      header( 'Location: login.php' );
+      return;
   }
 } else {
-    $_SESSION['error'] = 'Both fields must be filled out.';
-    header( 'Location: login.php' );
-    return;
-}
+      // This is the fall through
 }
 ?>
 
@@ -108,24 +156,23 @@ if (   isset($_POST['email'])  && isset($_POST['pass'])) {
              at the website (see util.php) performs a final validation check.-->
      </h3>
      <!-- Hint: -->
-       <p class="left quad-space">You can get your own login password
+       <p class="justify quad-space">You can get your own password
            <a href="apply.php"> here</a> or login as
-           guest@mycompany.com  with password login123.
-       </p><p class="left"> You can change your password
-           <a href="forgotpass.php">here</a>. If you forgot the password but remember the hint,
-                you can get a new password <a href="forgotpass.php">here</a>.
-       </p><p class="left">Take me back to the
+           guest@mycompany.com using password 'guest123' for a fast preview.
+       </p><p class="justify">If you forgot the password,
+                you can get a new one <a href="forgotpass.php">here</a>.
+       </p><p class="justify left">Take me back to the
            <a href="index.php"> first page</a>.
        </p>
   </form>
 </div>
 <script>
 function doValidate() {
-    console.log('Validating...');
+    //console.log('Validating...');
     try {
         addr = document.getElementById('email').value;
         pw = document.getElementById('id_1723').value;
-        console.log("Validating addr="+addr+" pw="+pw);
+        //console.log("Validating addr="+addr+" pw="+pw);
         if (addr == null || addr == "" || pw == null || pw == "") {
             alert("Both fields must be filled out");
             return false;

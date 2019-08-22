@@ -97,6 +97,16 @@ if ( isset($_SESSION['user_id']) && (strlen($_SESSION['user_id']) > 0) ) {
         echo '<a class="anchor-button" href="add.php">Make New Profile</a> <a' ;
         echo ' class="anchor-button" href="logout.php">Logout</a>' ;
     echo '</p>';
+    //$ips = isPassWordSet($pdo);
+    $mysqlfield = 'password_time';
+    $ips = isPasswordSet($_SESSION['email'],$mysqlfield,$pdo);
+    // echo $ips;
+    // if($ips=="SetTimeout"){
+    //    echo '<p class="center message">Password must be <a href="changePassword.php">reset</a> before the 30 minute timeout.</p>';
+    // } else if ($ips=="PastTimeout"){
+    //    echo '<p class="center message">Temporary password expired after 30-minutes.'
+    //           .'Go to the <a href="changePassword.php">replace password</a> page to obtain a new password.</p>';
+    // }
     flashMessages();
     $sqlUsrCount = "SELECT COUNT(*) FROM Profile WHERE user_id = :sid";
     $stmtUsrCount = $pdo->prepare($sqlUsrCount);
@@ -115,19 +125,16 @@ if ( isset($_SESSION['user_id']) && (strlen($_SESSION['user_id']) > 0) ) {
         <a href="login.php">Login</a>
        </h4>
        <div>
-           <p class="small center">
+           <p class="small">
               Using the login link, you can log in as \'guest@mycompany.com\'
-              with the password \'login123\'.
+              with the password \'guest123\'. There is a link to get your own
+              password too.
            </p>
         </div>');
     $stmtCountRows = $pdo->query("SELECT COUNT(*) FROM Profile");
     $cnt =  $stmtCountRows->fetch(PDO::FETCH_ASSOC);
-      //print_r($cnt."\n"); // array to string conversion warning
-      //echo(array_values($cnt)[0]);
     $tableRows = array_values($cnt)[0];
 }
-  //$usrCount = array_values($rowCnt)[0];
-  // print_r and var_dump are intended to be used for debugging
 if($tableRows > 0) {
     // Show table with column title row only
     echo('<table class="double-space" border=2>');
@@ -189,12 +196,9 @@ if($tableRows > 0) {
 } else {
     echo ('<p class="center">No profiles yet.</p>');
 }
-if ( ! (isset($_SESSION['user_id']) && (strlen($_SESSION['user_id']) > 0)) ) {
-    echo '<p class="left"> You can change your password '
-             .'<a href="forgotpass.php">here</a>.'
-          .'</p>';
-    echo ' <p class="left"> If you forgot the password but remember the hint, '
-          .'you can get a new password <a href="forgotpass.php">here</a>.'
+if ( isset($_SESSION['user_id']) && strlen($_SESSION['user_id']) > 0 ) {
+    echo '<p class="center"> You can change your password '
+             .'<a href="changePassword.php">here</a>.'
           .'</p>';
 }
 ?>

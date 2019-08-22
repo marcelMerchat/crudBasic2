@@ -1,121 +1,462 @@
 function doValidate() {
-    //alert("Last Text box was "+lastTextBox);
-    var p = document.getElementById(lastTextBox);
-            //var tagId = $(this).attr(id);
-            //window.console && console.log('At JSON Dictionary. Tag id is ' + elementid);
-            //var textinfo = document.getElementById(elementid).value;
-    var textinfo = p.value;
-    //window.console && console.log('info is '+textinfo);
-    var len = textinfo.length;
+    submitted = true;
+    var p = document.getElementById(last_text_box);
+    var eid = '#'+last_text_box;
+    //var tagId = $(this).attr(id);
+    window.console && console.log('At JSON Dictionary. Tag id is ' + last_text_box);
+    var text_info = p.value;
+    if ( text_info == null || text_info == "") {
+          triggerAlert("The last entry box you clicked is incomplete. " + eid,true );
+          flagDataEntryBox(last_text_box);
+          return false;
+    }
+    var text_info = p.value.trim();
+    if ( text_info == null || text_info == "") {
+        triggerAlert("The last entry box you visited is still empty. " + eid,true );
+        flagDataEntryBox(last_text_box);
+        return false;
+    }
+    //window.console && console.log('info is '+text_info);
+    var len = text_info.length;
     myresult = "blank";
-    try {
-      if( len > 2){
-        //window.console && console.log('Ready for ajax ' + len);
-        $.ajax({
+    if( Boolean(len > 2) && len > 2){
+        try
+        {
+           window.console && console.log('Ready for ajax ' + len);
+           $.ajax({
                dataType: "json",
-               url: 'jsonLanguage.php?ter'+'m='+textinfo,
-               //data: data,
+               url: "jsonLanguage.php?ter"+"m="+text_info,
                success: function(data) {
-                  //alert('Data: '+data.first);
-                  myresult = data.first;
-                  //myresult = "bad";
-                  //window.console && console.log('Found result ' + myresult);
+                    myresult = data.first;
                },
                async: false
-        });
-        //alert("Language test is " + myresult);
-        if (myresult == "bad") {
-                  eid = '#'+lastTextBox;
-                  $(eid).css("borderWidth", "2px");
-                  $(eid).css("background-color", "bisque");
-                  $(eid).css("border-color", "#980200");
-                  $(eid).val(textinfo+" . . . Language filter was triggered.");
-                  alert("Language filter for the last modified text box was triggered.");
-                  return false;
-        }
-        $(eid).css("background-color", 'rgb(249, 255, 185)');
-        $(eid).css("borderWidth", "2px");
-        $(eid).css("border-color", "#886600");
+           });
+           // window.console && console.log('my result is '+ myresult);
+           if (myresult == "bad") {
+              $(eid).css("borderWidth", "2px");
+              $(eid).css("background-color", "bisque");
+              $(eid).css("border-color", "#980200");
+              $(eid).val(text_info+" . . . Language filter was triggered.");
+              triggerAlert("Language filter for the last modified text box was triggered.",true);
+              return false;
+           }
+           $(eid).css("background-color", 'rgb(249, 255, 185)');
+           $(eid).css("borderWidth", "2px");
+           $(eid).css("border-color", "#886600");
+         } catch(e) {
+            triggerAlert("Something went wrong. Please try again.",true);
+            return false;
+         }
+   }
+   first_name = document.getElementById('fn').value;
+   last_name = document.getElementById('ln').value;
+   addr = document.getElementById('em').value;
+     //profession = document.getElementById('pf').value;
+     //goals = document.getElementById('gl').value;
+   if (first_name == null || first_name == "" ||
+       last_name == null || last_name == "" ||
+           addr == null || addr == "" )
+         // || profession == null || profession == ""
+         // || goals == null || goals == ""
+   {
+         triggerAlert("Name and email are required.",true);
+         return false;
+   }
+   first_name = first_name.trim();
+   last_name = last_name.trim();
+   addr = addr.trim();
+   if (first_name == null || first_name == "" ||
+       last_name == null ||  last_name == "" ||
+           addr == null ||      addr == ""   )
+   {
+        triggerAlert("Name and email are required. Please try again.", true);
+        return false;
+   }
+   if(!validateEmail(form1.email)){
+        // Search with regular expression.
+        // Offensive language check of parts at website.
+        return false;
+   }
+   //     skillSet
+   skillnum = skill_array.length;
+   for(i=0; i<skillnum; i++){
+     var j = i + 1;
+     var field = skill_array[i];
+     var p = document.getElementById(field);
+     if (p===null)
+     {
+        continue;
+     }
+     var text_info = p.value;
+     //alert(" For skill "+field+ ", the info is "+ text_info);
+     if ( text_info == null || text_info == "") {
+         triggerAlert("A Skill is incomplete.", true);
+         flagDataEntryBox(skill_array[i]);
+         return false;
+     }
+     var text_info = p.value.trim();
+     if ( text_info == null || text_info == "") {
+          triggerAlert("A Skill is still incomplete.", true);
+          flagDataEntryBox(skill_array[i]);
+          return false;
+     }
+  } // end of for loop
+//            education
+//    alert("Ready for education.");
+  school_size = school_array.length;
+  for(i=0; i < school_size; i++){
+      var j = i + 1;
+      var field = school_array[i];
+      var p = document.getElementById(field);
+      if (p===null)
+      {
+         continue;
       }
-    } catch(e) {
-        return false;
-    }
-    firstname = document.getElementById('fn').value;
-    lastname = document.getElementById('ln').value;
-    addr = document.getElementById('em').value;
-    profession = document.getElementById('pf').value;
-    goals = document.getElementById('gl').value;
-    if (firstname == null || firstname == "" ||
-        lastname == null || lastname == "" ||
-        addr == null || addr == "" )
-        // || profession == null || profession == ""
-        // || goals == null || goals == ""
+      var text_info = p.value;
+   // alert(" For school "+field+ ", the info is "+ text_info);
+      if ( text_info == null || text_info == "") {
+             triggerAlert("A School name in education is incomplete.", true);
+             flagDataEntryBox(school_array[i]);
+             return false;
+      }
+      var text_info = p.value.trim();
+      if ( text_info == null || text_info == "") {
+           triggerAlert("A School name in education is still incomplete.", true);
+           flagDataEntryBox(school_array[i]);
+           return false;
+       }
+   } // end of for loop
+   //          Educational Awards
+   award_len = award_array.length;
+   for(i=0; i < award_len; i++){
+        var j = i + 1;
+        var field = award_array[i];
+        var p = document.getElementById(field);
+        if (p===null)
+        {
+           triggerAlert("An Educational Award is incomplete.", true);
+           flagDataEntryBox(field);
+           return false;
+        }
+        var text_info = p.value;
+        if ( text_info == null || text_info == "") {
+               triggerAlert("An Educational Award is incomplete.", true);
+               flagDataEntryBox(field);
+               return false;
+        }
+        var text_info = p.value.trim();
+        if ( text_info == null || text_info == "") {
+            triggerAlert("Educational Award-" + j +
+               "  still incomplete.", true);
+            flagDataEntryBox(field);
+            return false;
+        }
+    } // end of for loop
+    org_len = org_array.length;
+    for(i=0; i < org_len; i++){
+         var j = i + 1;
+         var field = org_array[i];
+         var p = document.getElementById(field);
+         if (p===null)
+         {
+            continue;
+         }
+         var text_info = p.value;
+         if ( text_info == null || text_info == "") {
+             triggerAlert("Organization-" + j +
+               "  of the work history is incomplete.", true);
+             flagDataEntryBox(org_array[i]);
+             return false;
+         }
+         var text_info = p.value.trim();
+         if ( text_info == null || text_info == "") {
+             triggerAlert("Organization-" + j +
+                 "  of the work history is still incomplete.", true);
+             flagDataEntryBox(org_array[i]);
+             return false;
+         }
+    } // end of for loop
+    len = org_year_start_array.length;
+    for(i=0; i < len; i++){
+          var j = i + 1;
+          var field = org_year_start_array[i];
+          window.console && console.log('Processing start year for '+field);
+          var p = document.getElementById(field);
+          if (p===null)
+          {
+             continue;
+          }
+          var text_info = p.value;
+          if ( text_info == null || text_info == "") {
+               triggerAlert("Start Year-" + j +
+                     "  of the work history is incomplete.", true);
+               flagDataEntryBox(field);
+               return false;
+          }
+          var text_info = p.value.trim();
+          if ( text_info == null || text_info == "") {
+               triggerAlert("Start Year-" + j +
+                   "  of the work history is still incomplete.", true);
+               flagDataEntryBox(field);
+               return false;
+          }
+          var num = parseInt(text_info);
+          if ( isNaN(num)) {
+               flagDataEntryBox(field);
+               triggerAlert("Start Year-" + j +
+                   " of the work history requires a 4-digit year.", true);
+               return false;
+          }
+          if ( num < 1000 || num > 9999) {
+              flagDataEntryBox(field);
+              triggerAlert("Start Year-" + j +
+                   "  of the work history must be a 4-digit integer.", true);
+              return false;
+          }
+    } // end of for loop for start array
+    year_final = org_year_final_array.length;
+    for(i=0; i < year_final; i++){
+            var j = i + 1;
+            var field = org_year_final_array[i];
+            var p = document.getElementById(field);
+            if (p===null)
+            {
+               continue;
+            }
+            var text_info = p.value;
+            if ( text_info == null || text_info == "") {
+                triggerAlert("Final Year-" + j +
+                   " of the work history is incomplete.", true);
+                flagDataEntryBox(field);
+                return false;
+            }
+            var text_info = p.value.trim();
+            if ( text_info == null || text_info == "") {
+                 triggerAlert("Final Year-" + j +
+                     " of the work history is still incomplete.", true);
+                 flagDataEntryBox(field);
+                 return false;
+            }
+            var num = parseInt(text_info);
+            if ( isNaN(num)) {
+                 flagDataEntryBox(field);
+                 triggerAlert("Final Year-" + j +
+                     " of the work history requires a 4-digit year.", true);
+                 return false;
+            }
+            if ( num < 1000 || num > 9999) {
+                flagDataEntryBox(field);
+                triggerAlert("Final Year-" + j +
+                  " of the work history must be a 4-digit integer.", true);
+                return false;
+            }
+      } // end of for loop for final work year
+      descnum = position_desc_array.length;
+      for(i=0; i< descnum; i++){
+          var j = i + 1;
+          var field = position_desc_array[i];
+          var p = document.getElementById(field);
+          if (p===null)
+          {
+             continue;
+          }
+          var text_info = p.value;
+          if ( text_info == null || text_info == "") {
+               triggerAlert("Job Description-" + j +
+                     " of the work history is incomplete.", true);
+               flagDataEntryBox(position_desc_array[i]);
+               return false;
+          }
+          var text_info = p.value.trim();
+          if ( text_info == null || text_info == "") {
+               triggerAlert("Job Description-" + j +
+                      " of the work history is still incomplete.", true);
+               flagDataEntryBox(position_desc_array[i]);
+               return false;
+          }
+      } // end of for loop for position description
+  return true;
+}
+function validateApplication() {
+    uhint = document.getElementById('hint').value.trim();
+    uname = document.getElementById('username').value.trim();
+    em_addr = document.getElementById('email').value.trim();
+    if (uname == null || uname == "" ||
+        em_addr == null || em_addr == "" ||
+        uhint == null || uhint == "" )
     {
-        alert("Name and email are required.");
+        triggerAlert("Name, email, and hint are required.", true);
         return false;
     }
-    if(!validateEmail(form1.email)){
+    var len_hint = uhint.length;
+    if( len_int < 5){
+        triggerAlert("Hint is too short. Five characters are required.", true);
+        return false;
+    }
+    if(!validateEmail(apply.email)){
                  return false;
     }
     return true;
 }
-function checkLanguage(elementid) {
-    eid = '#'+lastTextBox;
-    thisPhrase = document.getElementById(id=lastTextBox).value;
-    //window.console && console.log(" Checking "+lastTextBox+" ... ");
-    var len = thisPhrase.length;
-    //window.console && console.log(" the length is "+len+" ... ");
-    if( !(len > 2) ) {
-        lastTextBox = elementid;
+function triggerAlert(message,replace=false){
+  var source = $('#message_template').html();
+  if(replace){
+      $('#message').remove();
+      $('#message_field').append(
+        '<span style="float:left; margin:12px 12px 20px 0;" id="message">' +
+                     message + ' </span>');
+      } else {
+        $('#message_field').append(
+           '<span style="float:left; margin:12px 12px 20px 0;" id="message">' + message + '</span>');
+    }
+    $( function() {
+      $( "#dialog-confirm" ).dialog({
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        buttons: {
+          "OK" : function() {
+            $( this ).dialog( "close" );
+          },
+          Cancel: function() {
+            $( this ).dialog( "close" );
+          }
+        }
+      });
+    } );
+}
+function checkLanguage(element_id) {
+    var n = audit_array.includes(element_id);
+    box_list_size = audit_array.length;
+    if
+      (
+        n==false &&
+        (! element_id.includes("year")) && (! element_id.includes("yr"))
+        //&&
+        //(! element_id.includes("school")) && (! element_id.includes("award"))
+      )
+      {
+        audit_array.push(element_id)
+        // audit_array is a stack of text box ID numbers.
+        // It is used to select the next text box to be audited.
+        // The first element of the next_text_box[0] is selected and then
+        // removed from the stack.
+        window.console && console.log(element_id + " was added. Audit-Array: " + audit_array);
+      }
+    if
+      (
+        !(element_id in audit_list)
+         //&&
+        //(! element_id.includes("year")) && (! element_id.includes("yr"))
+         //&&
+        //(! element_id.includes("school")) && (! element_id.includes("award"))
+      )
+      {
+        audit_list[element_id] = -1;
+      }
+    // element_exists = document.body.contains(test_box);
+    // if (!element_exists)
+    // {
+    //     if(audit_array.includes(test_box) && (audit_array.length > 1)){
+    //        var index = audit_array.indexOf(test_box);
+    //        audit_array.splice(index, 1);
+    //        test_box = audit_array[0];
+    //     }
+    //     return false;
+    // }
+    p = document.getElementById(id=test_box);
+    if (p===null)
+    {
+        var index = audit_array.indexOf(test_box);
+        audit_array.splice(index, 1);
+        test_box = 'fn';
         return false;
     }
-    //let promiseDict = new Promise(function(resolve, reject) {
-        // executor (the producing code, "singer")
-        checkJsonDictionary(lastTextBox).then(function(result){
-           if (result == "bad" ) {
+    thisPhrase = document.getElementById(id=test_box).value;
+    if (thisPhrase === null || thisPhrase == "" )
+    {
+        if(audit_array.includes(test_box) && (audit_array.length > 1)){
+           var index = audit_array.indexOf(test_box);
+           audit_array.splice(index, 1);
+           test_box = audit_array[0];
+        }
+        return false;
+    }
+    thisPhrase = thisPhrase.trim();
+    if (thisPhrase == null || thisPhrase == "" )
+    {
+      if(audit_array.includes(test_box) && (audit_array.length > 1)){
+         var index = audit_array.indexOf(test_box);
+         audit_array.splice(index, 1);
+         test_box = audit_array[0];
+      }
+      return false;
+    }
+    var phrase_len = thisPhrase.length;
+    if(phrase_len < 3 || audit_list[test_box]==phrase_len) {
+        var index = audit_array.indexOf(test_box);
+        if(audit_array.includes(test_box) && (audit_array.length > 1)){
+            audit_array.splice(index, 1);
+        }
+        test_box = audit_array[0];
+        return false;
+    }
+    window.console && console.log("Check language triggered for " + test_box);
+    checkJsonDictionary(test_box).then(function(result){
+    eid = '#'+ test_box;
+    if (result == "bad" ) {
               window.console && console.log(" processing bad data ... ");
               $(eid).css("borderWidth", "2px");
               $(eid).css("background-color", "bisque");
               $(eid).css("border-color", "#980200");
-              $(eid).val(thisPhrase + " ... language filter triggered. Please Review.");
-              var longer = document.getElementById(id=lastTextBox).value;
-              //window.console && console.log(" JavaScript retrieval is "+longer);
-              lastTextBox = elementid;
+              $(eid).val(thisPhrase + " ... language filter triggered. ");
+              if(audit_array.includes(test_box) && (audit_array.length > 1)){
+                   var index = audit_array.indexOf(test_box);
+                   audit_array.splice(index, 1);
+              }
+              audit_list[test_box] = audit_list[test_box] - 10000;
+              window.console && console.log(" Bad result for. " + test_box);
+              test_box = audit_array[0];
+              window.console && console.log(" New test box will be " + test_box);
               return false;
-            }
-            $(eid).css("background-color", 'rgb(249, 255, 185)');
-            $(eid).css("borderWidth", "2px");
-            $(eid).css("border-color", "#886600");
-            lastTextBox = elementid;
-            //window.console && console.log(" language filter passed test "+result);
-            return true;
+       }
+        $(eid).css("background-color", 'rgb(249, 255, 185)');
+        $(eid).css("borderWidth", "2px");
+        $(eid).css("border-color", "#886600");
+        //window.console && console.log(" language filter passed test "+result);
+        window.console && console.log(" Good test result for. " + test_box);
+        if(audit_array.includes(test_box) && (audit_array.length > 1)){
+             audit_list[test_box] = phrase_len;
+             var index = audit_array.indexOf(test_box);
+             audit_array.splice(index, 1);
+        }
+        test_box = audit_array[0];
+        window.console && console.log(" New test box will be " + test_box);
+        return true;
     });
 }
 // checkJsonDictionary is the nested function within checkLanguage()
 // which handles the JSON request.
-function checkJsonDictionary(elementid) {
+function checkJsonDictionary(element_id) {
     //console.log('Checking online JSON dictionary ...');
-    //var def = $.Deferred();
     return new Promise(function(resolve, reject) {
-        var p = document.getElementById(elementid);
-        //var tagId = $(this).attr(id);
-        //window.console && console.log('At JSON Dictionary. Tag id is ' + elementid);
-        //var textinfo = document.getElementById(elementid).value;
-        var textinfo = p.value;
-        //window.console && console.log('info is '+textinfo);
-        var len = textinfo.length;
+      var p = document.getElementById(element_id);
+      var text_info = p.value;
+      var num = parseInt(text_info);
+      if (! isNaN(num)) {
+            return "good";
+      }
+        //window.console && console.log('info is '+text_info);
+      var len = text_info.length;
         //window.console && console.log('The string length is ' + len);
-        if( len > 2){
-             $.getJSON('jsonLanguage.php?ter'+'m='+textinfo).then(function(data) {
-                //window.console && console.log(textinfo+" is "+data.first);
-                //return data.first;
+      if( len > 2){
+             $.getJSON('jsonLanguage.php?ter'+'m='+text_info).then(function(data) {
                 resolve(data.first);
              });
-          } else {
+       } else {
               return "good";
-          }
-          //window.console && console.log(" Error occurred. " );
-          //return false;
+       }
     });
 }
 function validateEmail(mail)
@@ -124,7 +465,7 @@ function validateEmail(mail)
   {
     return (true);
   }
-    alert("You have entered an invalid email address!");
+    triggerAlert("You have entered an invalid email address!",true);
     return (false);
 }
 function validateFirstName() {
@@ -135,10 +476,8 @@ function validateFirstName() {
           profession = document.getElementById('pf').value;
           goals = document.getElementById('gl').value;
           checkJsonDictionary('fn').then(function(data){
-                //alert("Language variable equals " + data);
                 eid = '#'+'fn';
                 if (data == "bad" ) {
-                  alert("Language filter for first name was triggered.");
                   $(eid).css("borderWidth", "10px");
                   $(eid).css("background-color", "bisque");
                   $(eid).css("border-color", "#986600");
@@ -157,7 +496,6 @@ function validateLastName() {
           checkJsonDictionary('ln').then(function(data){
                 eid = '#'+'ln';
                 if (data == "bad" ) {
-                  alert("Language filter for last name was triggered.");
                   $(eid).css("borderWidth", "10px");
                   $(eid).css("background-color", "bisque");
                   $(eid).css("border-color", "#986600");
@@ -170,38 +508,119 @@ function validateLastName() {
         }
         return false;
 }
-function removeSkill(cntSkill, removedCnt){
-      //alert("skill count is " + cntSkill);
-      removedCnt = removedCnt + 1;
-      //alert("removed skill count is " + (removedCnt));
-      //alert("skill removed, count decreases to " + (cntSkill - removedCnt));
-      // Stored value of 'skillRemoved' is pre-incremented by one count.
-      skillRemoved = removedCnt;
+function flagDataEntryBox(box_id){
+     eid = '#'+ box_id;
+     $(eid).css("borderWidth", "2px");
+     $(eid).css("background-color", "bisque");
+     $(eid).css("border-color", "#BB0200");
+     $(eid).val("Incomplete");
 }
-function removeEdu(cntEdu, removedCnt){
-      removedCnt = removedCnt + 1;
-      //alert("removed education count is " + removedCnt);
-      //alert("An education has been removed, count decreases to " + (cntEdu - removedCnt));
-      // Stored value of 'skillRemoved' is pre-incremented by one count.
-      eduRemoved = removedCnt;
+function reformatDataEntryBox(box_id){
+      eid = '#'+ box_id;
+      $(eid).css("background-color", 'rgb(249, 255, 185)');
+      $(eid).css("borderWidth", "2px");
+      $(eid).css("border-color", "#886600");
 }
-function removePosition(cntPosition, removedCnt){
-      removedCnt = removedCnt + 1;
-      //alert("removed position count is " + removedCnt);
-      //alert("Position removed, count decreases to " + (cntPosition - removedCnt));
-      positionRemoved = removedCnt;
+function showWidth( ele, w ) {
+    triggerAlert(" The shoWidth function was called "+ w, true);
+    $( "#shoWidth" ).text( "The width for the " + ele + " is " + w + "px." );
+}
+function makeSkillArray(n){
+    var a = [];
+    for(i=0; i<n; i++){
+        j = i + 1;
+        a[i] = "job_skill"+j;
+    }
+    return a;
+}
+function makeSchoolArray(n){
+    var a = [];
+    for(i=0; i<n; i++){
+        j = i + 1;
+        a[i] = "school"+ j;
+    }
+    return a;
+}
+function makeAwardArray(n){
+    var a = [];
+    for(i=0; i<n; i++){
+        j = i + 1;
+        a[i] = "award"+ j;
+    }
+    return a;
 }
 
-// $.ajax({
-//        dataType: "json",
-//        url: 'jsonLanguage.php?ter'+'m='+textinfo,
-//        //data: data,
-//        success: function(data) {
-//           //alert('Data: '+data.first);
-//           alert('Data: '+data.first);
-//           myresult = data.first;
-//           //myresult = "bad";
-//           window.console && console.log('Found result ' + myresult);
-//        },
-//        async: false
-// });
+function makeJobYearStartArray(n){
+    var a = [];
+    for(i=0; i<n; i++){
+          j = i + 1;
+        a[i] = "wrk_start_yr"+ j;
+    }
+    return a;
+}
+function makeJobYearFinalArray(n){
+    var a = [];
+    for(i=0; i<n; i++){
+          j = i + 1;
+        a[i] = "wrk_final_yr"+ j;
+    }
+    return a;
+}
+function makeOrgArray(n){
+    var a = [];
+    for(i=0; i<n; i++){
+          j = i + 1;
+        a[i] = "company"+ j;
+    }
+    return a;
+}
+function makePositionDescArray(n){
+    var a = [];
+    for(i=0; i<n; i++){
+          j = i + 1;
+        a[i] = "position_desc"+ j;
+    }
+    return a;
+}
+function deleteFromAuditList(field){
+  if ( field in audit_list )
+    {
+      delete audit_list[field];
+    }
+  if (audit_array.includes(field) )
+    {
+      var index = audit_array.indexOf(field);
+      audit_array.splice(index, 1);
+    }
+}
+function deleteSkill(group,field){
+    $(group).remove();
+    skill_removed = skill_removed + 1;
+    var index = skill_array.indexOf(field);
+    skill_array.splice(index, 1);
+    deleteFromAuditList(field);
+}
+function deleteEdu(group,schoolfield,award_field){
+    $(group).remove();
+    edu_removed = edu_removed + 1;
+    var index1 = school_array.indexOf(schoolfield);
+    school_array.splice(index1, 1);
+    var index2 = award_array.indexOf(award_field);
+    award_array.splice(index2, 1);
+    deleteFromAuditList(schoolfield);
+    deleteFromAuditList(award_field);
+}
+function deleteJob(group,year1_field, year2_field,orgfield,descfield){
+    $(group).remove();
+    position_removed = position_removed + 1;
+    var index1 = org_array.indexOf(orgfield);
+    org_array.splice(index1, 1);
+    var index2 = position_desc_array.indexOf(descfield);
+    position_desc_array.splice(index2, 1);
+    var index3 = org_year_start_array.indexOf(year1_field);
+    org_year_start_array.splice(index3, 1);
+    var index4 = org_year_final_array.indexOf(year2_field);
+    org_year_final_array.splice(index4, 1);
+    deleteFromAuditList(orgfield);
+    deleteFromAuditList(descfield);
+}

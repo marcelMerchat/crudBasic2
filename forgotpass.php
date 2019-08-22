@@ -1,108 +1,169 @@
 <?php
 session_start();
+require 'timeout.php';
 require_once 'pdo.php';
 require_once "util.php";
-// Check the hint
-
+unset($_SESSION['user_id']);
 if ( isset($_POST['cancel'] ) ) {
     header('Location: index.php');
     return;
 }
 $_SESSION['success'] = false;
-$email = '';
 
-// 'if' statement fails for GET requests; there is no POST data.
-if (   isset($_POST['email'])  || isset($_POST['hint'])) {
-   if ( (strlen($_POST['email']) >= 1) && (strlen($_POST['hint']) >= 1 )) {
-       unset($_SESSION['name']);  // Logout current user
-       unset($_SESSION['user_id']);
-   // If user Name and password fields have entries:
-    if (strpos($_POST['email'], '@') === FALSE ) {
-         $_SESSION['error'] = 'Invalid email address'.$_POST['email'];
-         //header( 'Location: apply.php' ) ;
-         //return;
-    }
-    if (strlen($_POST['hint']) < 5) {
-         $_SESSION['error'] = 'hint is too short'.$_POST['hint'];
-         //header( 'Location: apply.php' ) ;
-         //return;
-    }
-//     $rememberHint = false;
-    $email = $_POST['email'];
-    $_SESSION['email'] = $_POST['email'];
-    $hint = $_POST['hint'];
-    $sql = 'SELECT user_id, name, email, random, hint FROM users WHERE email = :em AND hint = :hnt';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(':em' => $_POST['email'], ':hnt' => $_POST['hint']));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if($row === false) {
-            $_SESSION['error'] = 'Hint not found: Please try again.';
-            error_log('Login failure: '.$_POST['email'].' hint not in database. Please check spelling');
-            //header( 'Location: forgotpass.php' );
-            //return;
-    } else if ( $row['email'] == $_POST['email'] AND $row['hint'] == $_POST['hint']) {
-          //  hint found in database; does it match email address?
-          $rememberHint = true;
-          $_SESSION['user_id'] = array_values($row)[0];
-          $_SESSION['userName'] = array_values($row)[1];
-          $_SESSION['random'] = array_values($row)[3];
-          //$userName = $_POST['name'];
-          $_SESSION['email'] = $_POST['email'];
-          //echo 'hint matches '.$row;
-          $_SESSION['success'] = 'You entered the hint. You may change the password.';
-          error_log('The hint was verified for User-'.$_POST['user_id']);
-          header( 'Location: changePassword.php' );
+if ( isset($_POST['emale'])) {
+  $mymail = trim(htmlentities($_POST['emale']));
+  if ( strlen($_POST['emale']) >= 1) {
+     //print_r(" Getting started inside. ".$mymail);
+     unset($_SESSION['user_id']);
+     $numErrors = 0;
+     $_SESSION['error'] = "";
+  // Validate email
+     if (strpos($_POST['emale'], '@') === FALSE ) {
+        $_SESSION['error'] = $_SESSION['error'].' Invalid email address'.$_POST['emale'].'. ';
+        $numErrors = $numErrors + 1;
+     }
+     //print_r(" Checking count. ".$mymail);
+     unset($_SESSION['user_id']);
+     $sql = "SELECT Count(*) FROM users WHERE email = :em";
+     $stmt = $pdo->prepare($sql);
+     $stmt->execute(array( ':em' => $mymail));
+     $CountArray = $stmt->fetch(PDO::FETCH_ASSOC);
+     $myCount = array_values($CountArray)[0];
+ //  $myCount equals 1 if email was found
+     if ($myCount == 1) {
+          $_SESSION['success'] = $_SESSION['success'].' Further instructions have been sent to that email address. ';
+     } else if ($myCount === 0) {
+          $_SESSION['error'] = $_SESSION['error'].' Something went wrong. Please try again. ';
+          $numErrors = $numErrors + 1;
+          header( 'Location: forgotpass.php' ) ;
           return;
-   } else {
-	     $_SESSION['error'] = 'Incorrect email or hint';
-       error_log('password application failure: '.$_POST['email'].'Email does not match hint.');
-   }
-} else {
-  $_SESSION['error'] = 'Incorrect email or hint';
-  error_log('password application failure: '.$_POST['email'].'Email does not match hint.');
-}
-} else {
-  $_SESSION['success'] = 'Ready to recover password. Enter email and hint.';
+     }
+     if ($numErrors > 0){
+        unset($_SESSION['success']);
+        header( 'Location: forgotpass.php' ) ;
+        return;
+     }
+     //print_r(" retrieving data. ".$mymail);
+     $sql = "SELECT user_id, name, block, random FROM users WHERE email = :em";
+     $stmt = $pdo->prepare($sql);
+     $stmt->execute(array( ':em' => $mymail));
+     $row = $stmt->fetch(PDO::FETCH_ASSOC);
+     if($row['block'] == 1) {
+          $_SESSION['error'] = 'Something went wrong. Contact administrator.';
+          unset($_SESSION['user_id']);
+          error_log('Login blocked: '.$_POST['emale']);
+          header('Location: index.php');
+          return;
+     }
+     //print_r(" retrieved data. ".$mymail);
+     $userName = $row['name'];
+//   Application accepted
+     $salt = $row['random'];
+     $_SESSION['random'] = $row['random'];
+     $pass = generateRandomString(8);
+     $hashed_pass = hash('md5', $salt.$pass);
+     //print_r('The hashed password for '.$pass, ' is '.$hashed_pass);
+     $current_time = date("Y-m-d H:i:s");
+     $now = new DateTime();
+     $now_string = $now->format('Y-m-d H:i:s');
+     $sql = "SELECT user_id, name, block, random FROM users WHERE email = :em";
+     $stmt = $pdo->prepare($sql);
+     $stmt->execute(array( ':em' => $mymail));
+     //$sql = "UPDATE users SET timeout = 1 WHERE email = :em ";
+     //$stmt = $pdo->prepare($sql);
+     //$stmt->execute(array(':em' => $mymail ));
+     $sql = "UPDATE users SET password = :hpw, timeout = :tout WHERE email = :em ";
+     $stmt = $pdo->prepare($sql);
+     $stmt->execute(array(':hpw' => $hashed_pass,
+                          ':tout' => 1, ':em' => $mymail ));
+     error_log('Password change was made for '.$mymail.' at '.$current_time.'.');
+     $_SESSION['email'] = $mymail;
+     $_SESSION['emailSubject'] = 'Temporary Password';
+     $_SESSION['emailMessage'] =
+         '<html><body style="'
+        .'font-size:1.2em;color:#886600;'
+        .'background-color: #FDF0D0; border: solid 3px ;padding: 20px;">'
+        .'<p style="font-size:1.3em;color:#008800;margin-bottom:30px">'
+        .' Attention: '.$userName
+        .'</p><p>'
+        .'A new temporary password has been assigned at www.marcel-merchat.com for email address '
+        .$mymail
+        .'. You may login using the temporary password '.$pass
+        .' at this <a href="http://www.marcel-merchat.com/crudBasic/login.php">'
+        .'address</a>. This temporary password will expire in 30 minutes.'
+        .' delete this <a href="localhost/crudBasic/login.php">local address</a>'
+        .'</p>'
+        .'</body></html>';
+       //.' at this <a href="localhost/crudbasic/assignPassword.php">address</a> </p></body></html>';
+       //.' at this <a href="http://www.marcel-merchat.com/crudbasic/assignPassword.php">address</a> </p></body></html>';
+        error_log('Replacement password assigned for '.$mymail);
+        //  Attempt email notification before entering new password into database.
+      require 'gmailer.php';
+      //$_SESSION['success'] = true;
+      if ($_SESSION['success'] === false) {
+          $_SESSION['emailMessage'] = 'Problem sending e-mail. ';
+          header( 'Location: forgotpass.php' );
+          return;
+      }
+      $_SESSION['success'] = 'A temporary password has been sent to the '.$mymail.' address.'.$pass;
+      header('Location: login.php');
+      return;
+    } else {
+      $_SESSION['error'] = 'Email is required.';
+    } // non-zero length for email
 }
 ?>
-<!--  VIEW or HTML code for model-view-controller  -->
 <!DOCTYPE html>
+<!--  VIEW or HTML code for model-view-controller  -->
 <html>
 <head>
 <?php
-require_once 'header.php';
+    require_once 'header.php';
 ?>
-<title>Forgot Password</title>
+<title>Replace Password</title>
 </head>
 <body>
 <div class="content center" id="main">
 <?php
-  flashMessages();
+    flashMessages();
 ?>
 <form method="POST">
-  <h2>Change Password</h2>
-  <p class="big">
-      <label for="email">Email</label>
-      <input class="email" type="text" name="email" value="<?= htmlentities($email) ?>" id="email">
-      </p><p class="big">
-      <label for="id_1723h">Hint</label>
-      <input class="password"  type="password" name="hint" id="id_1723h">
-      </p>
-
-    <p class="big double-space">
-                <input class="button-submit" type="submit" onclick="return doValidateHint();" value="Submit">
-                <input class="button-submit" type="submit" name="cancel" value="Cancel">
+    <h2 class="center">Replace Password</h2>
+  <div id="centerlist">
+    <ul class="center">
+      <li class="left">Forgot Password</li>
+      <li class="left">Get Temporary Password</li>
+    </ul>
+  </div>
+    <p class="justify">If you forget your password, you can get a new
+       temporary one. You need to
+       login with it and reset it to a permanent one within 30-minutes.
+       If a temporary password has expired, you can get a
+       new temporary one here too. This applies to temporary passwords
+       for new accounts too.
+    </p>
+    <p class="justify">You should receive an email containing a temporary
+       password within a few minutes. Reset the password when you log-in
+       as the temporary password will only be valid for approximately
+       30 minutes.
+    </p>
+    <div class="center-entry">
+      <p class="center less-bottom-margin"><label for="email">Email</label></p>
+      <p class="center less-bottom-margin less-top-margin"><input class="text-box" type="text" name="emale" id="email"></p>
+    </div>
+    <p class="center big double-space">
+            <input class="button-submit" type="submit" onclick="return true;" value="Assign new password">
+            <input class="button-submit" type="submit" name="cancel" value="Cancel">
     </p>
 </form>
+
 <script>
-function doValidateHint() {
+function doValidate() {
     console.log('Validating...');
     try {
         addr = document.getElementById('email').value;
-        hnt = document.getElementById('id_1723h').value;
-        console.log("Validating addr="+addr+" hnt="+hnt);
-        if (addr == null || addr == "" || hnt == null || hnt == "") {
-            alert("Both fields must be filled out");
+        if (addr == null || addr == "" ) {
+            alert("Email is required.");
             return false;
         }
         if ( addr.indexOf('@') == -1 ) {
@@ -115,6 +176,6 @@ function doValidateHint() {
     }
     return false;
   }
-  </script>
+</script>
 </body>
 </html>

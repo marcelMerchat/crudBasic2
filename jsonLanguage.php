@@ -21,6 +21,10 @@ $detect = 'good';
 if(ofnsvCheck($t,$pdo)){
     $detect = 'bad';
 }
+// $_SESSION['message'] = $_SESSION['message']
+//           .' The term '.$t
+//           .' was submitted. The offensive status is '.$detect.'. ';
+store_error_messages();
 $detectArray = array($detect);
 $stuff = array('first' => $detect, 'second' => 'second thing');
 //echo(json_encode($detectArray));
