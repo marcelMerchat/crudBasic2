@@ -19,7 +19,7 @@ if ( isset($_POST['emale'])) {
      $_SESSION['error'] = "";
   // Validate email
      if (strpos($_POST['emale'], '@') === FALSE ) {
-        $_SESSION['error'] = $_SESSION['error'].' Invalid email address';.'. ';
+        $_SESSION['error'] = $_SESSION['error'].' Invalid email address'.'. ';
         // .$_POST['emale'].'. ';
         $numErrors = $numErrors + 1;
      }

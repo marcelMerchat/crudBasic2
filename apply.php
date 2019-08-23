@@ -1,4 +1,4 @@
-?php
+<?php
 session_start();
 require 'timeout.php';
 require_once 'pdo.php';
