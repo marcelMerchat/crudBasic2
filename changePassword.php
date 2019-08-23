@@ -112,7 +112,8 @@ if ( isset($_POST['pass'])) {
         header('Location: index.php');
         return;
     } else {
-		    $_SESSION['error'] = 'Please check that password; it should be at least eight characters long. Please try again.';
+		    $_SESSION['error'] = 'Please check that password; '
+        .' it should be at least eight characters long. Please try again.';
     } // long enough password
 }
 ?>

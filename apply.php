@@ -1,4 +1,4 @@
-<?php
+?php
 session_start();
 require 'timeout.php';
 require_once 'pdo.php';
@@ -11,7 +11,6 @@ $_SESSION['success'] = false;
 $myname = "";
 $mymail = "";
 $myhint = "";
-//print_r('Ready to check variables.');
 // 'if' statement fails for GET requests; there is no POST data.
 if ( isset($_POST['name'])  || isset($_POST['email'])  || isset($_POST['hint'])) {
   $myname = trim(htmlentities($_POST['name']));
@@ -41,37 +40,41 @@ if ( isset($_POST['name'])  || isset($_POST['email'])  || isset($_POST['hint']))
      $stmt->execute(array( ':em' => $email));
      $CountArray = $stmt->fetch(PDO::FETCH_ASSOC);
      $myCount = array_values($CountArray)[0];
- //  $myCount equals 1 if email was found
      if ($myCount > 0) {
-          $_SESSION['error'] = $_SESSION['error'].' Email address already exists. Please choose a different one. ';
+          $_SESSION['error'] = $_SESSION['error']
+             .' That e-mail address already exists.'
+             .' Please choose a different one. ';
           $numErrors = $numErrors + 1;
      } else if ($myCount === 0) {
           $valid_email = validateEmail($pdo);
           if (!$valid_email){
-              $_SESSION['error'] = $_SESSION['error'].' The email address was rejected. ';
+              $_SESSION['error'] = $_SESSION['error']
+                  .' The email address was rejected. ';
               $numErrors = $numErrors + 1;
           }
      }
  //  Validate Hint
      $hint = trim($_POST['hint']);
      if (strlen(trim($_POST['hint'])) < 5) {
-          $_SESSION['error'] = $_SESSION['error'].' Hint is too short: '.$_POST['hint'].'. ';
+          $_SESSION['error'] = $_SESSION['error']
+             .' Hint is too short: '.$_POST['hint'].'. ';
           $numErrors = $numErrors + 1;
      }
      $validHint = validateName($hint,$pdo);
      if(!$validHint) {
-          $_SESSION['error'] = $_SESSION['error'].' Please check the hint entry. Use letters and numbers. ';
+          $_SESSION['error'] = $_SESSION['error']
+            .' Please check the hint entry. Use letters and numbers. ';
           $numErrors = $numErrors + 1;
       }
   //  Error handling
       if ($numErrors > 0){
         $_SESSION['success'] = false;
-        if ($numErrors === 1){
-            $topicSentence = ' There is one thing to check. ';
-        } else if ($numErrors > 1){
-            $topicSentence = ' There are '.$numErrors.' things to check. ';
-        }
-        $_SESSION['error'] = $topicSentence.$_SESSION['error'];
+        // if ($numErrors === 1){
+        //     $topicSentence = ' There is one thing to check. ';
+        // } else if ($numErrors > 1){
+        //     $topicSentence = ' There are '.$numErrors.' things to check. ';
+        // }
+        //$_SESSION['error'] = $topicSentence.$_SESSION['error'];
         header( 'Location: apply.php' ) ;
         return;
      }
@@ -80,7 +83,8 @@ if ( isset($_POST['name'])  || isset($_POST['email'])  || isset($_POST['hint']))
      $stmt->execute(array( ':em' => $email));
      $row = $stmt->fetch(PDO::FETCH_ASSOC);
      if($row['block'] == 1) {
-          $_SESSION['error'] = 'That account was locked. Contact administrator regarding login.';
+          $_SESSION['error'] =
+              'That account was locked. Contact administrator regarding login.';
           unset($_SESSION['user_id']);
           error_log('Login blocked: '.$_POST['email']);
           header('Location: index.php');
@@ -94,7 +98,6 @@ if ( isset($_POST['name'])  || isset($_POST['email'])  || isset($_POST['hint']))
      $pass = generateRandomString(8);
      $hashed_pass = hash('md5', $salt.$pass);
      $hashed_hint = hash('md5', $salt.$hint);
-     //print_r('The temp password is '.$pass);
 //   Create time string
      $current_time = date("Y-m-d H:i:s");
 //   Generate date object with string
@@ -124,12 +127,13 @@ if ( isset($_POST['name'])  || isset($_POST['email'])  || isset($_POST['hint']))
         .'</p><p>'
         .'A new login was added at www.marcel-merchat.com for email address '
         .$email
-        .' with hint '.$_POST['hint']
         .'. You may login using the temporary password '.$pass
         .' at this <a href="http://www.marcel-merchat.com/crudBasic/login.php">'
         .'address.</a>'
         .'</p>'
         .'</body></html>';
+
+        // .' with hint '.$_POST['hint']
        // .' delete this <a href="localhost/crudBasic/login.php">local address</a>'
        //.' at this <a href="localhost/crudbasic/assignPassword.php">address</a> </p></body></html>';
        //.' at this <a href="http://www.marcel-merchat.com/crudbasic/assignPassword.php">address</a> </p></body></html>';
@@ -154,7 +158,8 @@ if ( isset($_POST['name'])  || isset($_POST['email'])  || isset($_POST['hint']))
         //require 'gmailer.php';
         //$_SESSION['success'] = 'To activate this new login account, send email to database administrator (merchatDataTools@gmail.com) or call 773-852-1689.';
         //$_SESSION['success'] = 'You may now login. If there are any questions, send email to database administrator (merchatDataTools@gmail.com).';
-      $_SESSION['success'] = 'A temporary password has been sent to your '.$mymail.' address.';
+      $_SESSION['success'] =
+            'A temporary password has been sent to your '.$mymail.' address.';
       header('Location: login.php');
       return;
     } else {
@@ -178,28 +183,39 @@ if ( isset($_POST['name'])  || isset($_POST['email'])  || isset($_POST['hint']))
 ?>
 <form method="POST" name="apply.php">
     <h2 class="center">Get New User Login</h2>
-    <p class="justify">You should receive an email containing a temporary password to login
-       within a few minutes. You can reset the password using the hint.
-       Please do not use security information for the hint.
+    <p class="justify">You should receive an email containing
+           a temporary password to login within a few minutes.
     </p>
     <div class="big center">
-      <p class="center less-bottom-margin less-top-margin"><label class="less-bottom-margin" for="username">Name</label></p>
-      <p class="center less-bottom-margin less-top-margin"><input class="text-box" type="text" name="name" value='<?= $myname ?>' id="username"></p>
+      <p class="center less-bottom-margin less-top-margin">
+             <label class="less-bottom-margin" for="username">Name</label>
+      </p><p class="center less-bottom-margin less-top-margin">
+             <input class="text-box" type="text" name="name"
+                    value='<?= $myname ?>' id="username">
+      </p>
     </div><div class="center-entry">
-      <p class="center less-bottom-margin"><label for="email">Email</label></p>
-      <p class="center less-bottom-margin less-top-margin"><input class="text-box" type="text" name="email" value='<?= $mymail ?>' id="email"></p>
+      <p class="center less-bottom-margin"><label for="email">Email</label>
+      </p><p class="center less-bottom-margin less-top-margin">
+           <input class="text-box" type="text" name="email"
+                  value='<?= $mymail ?>' id="email"></p>
     </div>
       <!-- <div>
       <p class="center less-bottom-margin"><label for="id_1723"> Password</label></p>
       <p class="center less-bottom-margin less-top-margin"><input class="text-box"  type="password" name="pass" id="id_1723"></p>
     </div> -->
     <div>
-      <p class="center less-bottom-margin"><label for="id_1723h"> Hint</label></p>
-      <p class="center less-bottom-margin less-top-margin"><input class="text-box"  type="password" name="hint" value='<?= $myhint ?>' id="hint"></p>
+      <p class="center less-bottom-margin"><label for="id_1723h"> Hint</label>
+      </p><p class="center less-bottom-margin less-top-margin">
+          <input class="text-box"  type="password" name="hint"
+                 value='<?= $myhint ?>' id="hint">
+      </p>
     </div>
       <p class="center big double-space">
-            <input class="button-submit" type="submit" onclick="return validateApplication();" value="Assign My Login">
-            <input class="button-submit" type="submit" name="cancel" value="Cancel">
+            <input class="button-submit" type="submit"
+                   onclick="return validateApplication();"
+                   value="Assign My Login">
+            <input class="button-submit" type="submit" name="cancel"
+                   value="Cancel">
      </p>
 </form>
       <p class="justify">All submitted information is added to the database. As
@@ -218,7 +234,8 @@ function doValidate() {
         //pw = document.getElementById('id_1723').value;
         hnt = document.getElementById('hint').value;
         //console.log("Validating addr="+addr+" pw="+pw);
-        if (addr == null || addr == "" || hnt == null || hnt == "" || uName == null || uName == "" ) {
+        if (addr == null || addr == "" || hnt == null ||
+             hnt == "" || uName == null || uName == "" ) {
             alert("Name, email, and hint are required.");
             return false;
         }

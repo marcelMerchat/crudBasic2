@@ -19,7 +19,8 @@ if ( isset($_POST['emale'])) {
      $_SESSION['error'] = "";
   // Validate email
      if (strpos($_POST['emale'], '@') === FALSE ) {
-        $_SESSION['error'] = $_SESSION['error'].' Invalid email address'.$_POST['emale'].'. ';
+        $_SESSION['error'] = $_SESSION['error'].' Invalid email address';.'. ';
+        // .$_POST['emale'].'. ';
         $numErrors = $numErrors + 1;
      }
      //print_r(" Checking count. ".$mymail);
@@ -31,9 +32,11 @@ if ( isset($_POST['emale'])) {
      $myCount = array_values($CountArray)[0];
  //  $myCount equals 1 if email was found
      if ($myCount == 1) {
-          $_SESSION['success'] = $_SESSION['success'].' Further instructions have been sent to that email address. ';
+          $_SESSION['success'] = $_SESSION['success']
+            .' Further instructions have been sent to that email address. ';
      } else if ($myCount === 0) {
-          $_SESSION['error'] = $_SESSION['error'].' Something went wrong. Please try again. ';
+          $_SESSION['error'] = $_SESSION['error']
+            .' Something went wrong. Please try again. ';
           $numErrors = $numErrors + 1;
           header( 'Location: forgotpass.php' ) ;
           return;
@@ -86,14 +89,15 @@ if ( isset($_POST['emale'])) {
         .'<p style="font-size:1.3em;color:#008800;margin-bottom:30px">'
         .' Attention: '.$userName
         .'</p><p>'
-        .'A new temporary password has been assigned at www.marcel-merchat.com for email address '
+        .'A new temporary password has been assigned at www.marcel-merchat.com '
+        .' for email address '
         .$mymail
         .'. You may login using the temporary password '.$pass
         .' at this <a href="http://www.marcel-merchat.com/crudBasic/login.php">'
         .'address</a>. This temporary password will expire in 30 minutes.'
-        .' delete this <a href="localhost/crudBasic/login.php">local address</a>'
         .'</p>'
         .'</body></html>';
+       //.' delete this <a href="localhost/crudBasic/login.php">local address</a>'
        //.' at this <a href="localhost/crudbasic/assignPassword.php">address</a> </p></body></html>';
        //.' at this <a href="http://www.marcel-merchat.com/crudbasic/assignPassword.php">address</a> </p></body></html>';
         error_log('Replacement password assigned for '.$mymail);
@@ -105,7 +109,9 @@ if ( isset($_POST['emale'])) {
           header( 'Location: forgotpass.php' );
           return;
       }
-      $_SESSION['success'] = 'A temporary password has been sent to the '.$mymail.' address.'.$pass;
+      $_SESSION['success'] = 'A temporary password has been sent to the '
+          .$mymail.' address. ';
+          //.$pass;
       header('Location: login.php');
       return;
     } else {
