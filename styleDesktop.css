@@ -31,39 +31,25 @@ div.short-input-label {
   margin-left: 0;
   margin-right: 0;
 }
-h1 {
-    padding-left: 2px;
-}
 h2 {
     margin-bottom: 10px;
-    padding-left: 2px;
 }
 h3 {
     font-size: 2rem;
-    padding-left: 1px;
 }
 h3 a {
     color: #0088ff;
     font-size: 2rem;
     margin-top: 20px;
-    padding-left: 1px;
-    padding-right: 5px;
 }
 h4 {
     font-size: 1.3rem;
     margin-top: 20px;
-    padding-left: 1px;
-    padding-right: 5px;
 }
 h5 {
     font-size: 1.05rem;
     color: #008800;
     margin-top: 10px;
-    padding-left: 1px;
-    padding-right: 5px;
-}
-.link-info {
-
 }
 a {
     font-size: inherit;
@@ -79,10 +65,7 @@ p {
 }
 input, textarea, select, button {
     font-size: 1.01rem;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    padding-left: 6px;
-    padding-right: 6px;
+    padding: 6px;
     margin-left: 3px;
     margin-right: 3px;
     text-rendering: auto;
@@ -107,12 +90,9 @@ img {
 }
 .button-submit {
     font-size: inherit;
-    /*width: 110px;*/
 }
 .button-cancel {
     width: 80px;
-}
-.anchor-button {
 }
 .button-small {
     font-size: 1.2rem;
@@ -121,10 +101,7 @@ img {
 .click-plus {
     font-size: 1.5rem;
     width: 1.6em;
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 1px;
-    padding-bottom: 1px;
+    padding: 1px;
     margin-bottom: 12px;
     margin-top: 6px;
 }
@@ -162,20 +139,14 @@ img {
 /* end auto-completion classes */
 .name-box-small {
     width: 120px;
-    padding-left: 5px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-right: 5px;
+    padding: 5px;
     margin-top: 8px;
     margin-bottom: 8px;
     background-color: #eef;
 }
 .year-entry-box {
     width: 5em;
-    padding-left: 5px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-right: 5px;
+    padding: 3px;
     margin-top: 2px;
     margin-bottom: 2px;
 }
@@ -183,80 +154,28 @@ img {
     font-size: 1.1rem;
     width: 80px;
 }
-.more-top-margin {
-    margin-top: 18px;
-}
-.margin-top {
-    margin-top: 0.8rem;
-}
 .map_canvas {
    max-width: none;
 }
 .gmnoprint img {
     max-width: none;
 }
-table {
-      border-collapse: collapse;
-      width: 100%;
-      cell-spacing: 0px;
-      padding-left: 8px;
-      padding-right 8px;
-      padding-top: 3px;
-      padding-bottom: 3px;
-      margin: 1px;
-      border: 2px solid #004400;
-      background-color: #CCEEFF;
-}
-.tablePosition {
-      border-collapse: collapse;
-      cell-spacing: 0px;
-      padding-left: 5px;
-      padding-right 5px;
-      padding-top: 2px;
-      padding-bottom: 2px;
-      margin: auto;
-      border: 2px solid #008800;
-      background-color: #554400;
-}
 th {
-    color: #008800;
     padding-left: 8px;
     padding-right: 8px;
-    padding-top: 3px;
-    padding-bottom: 3px;
     background-color: #BBDDAA;
-    border-spacing: 0px;
-    cell-spacing: 0px;
-    border: 1px solid #004400;
 }
 td {
     padding-left: 8px;
     padding-right: 8px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    border-spacing: 0px;
 }
 tr {
     line-height: 2rem;
 }
-.less-bottom-margin {
-    margin-bottom: 2px;
-    margin-block-end: 0.1rem;
-}
-.less-top-margin {
-    margin-top: 2px;
-    margin-block-start: 0px;
-}
-.more-top-margin-2x {
-    margin-top: 1.01rem;
-}
-.more-top-margin-3x {
-    margin-top: 1.5em;
-}
 #main {
     left: 25%;
+    right: 25%;
     width: 50%;
-    padding: 4px;
 }
 .content {
     margin-top: 15px;
@@ -264,9 +183,9 @@ tr {
 }
 #top_left {
     position: absolute;
-    width: 22%;
+    width: 19%;
     top: 15%;
-    left: 2%;
+    left: 3%;
     color: #080;
     background-color: #ffe;
     border: 2px #080 solid;
@@ -274,8 +193,8 @@ tr {
 }
 #under_top_left {
     position: absolute;
-    width: 22%;
-    left: 2%;
+    width: 19%;
+    left: 3%;
     color: #080;
     background-color: #ffe;
     border: 2px #080 solid;
@@ -287,16 +206,13 @@ tr {
   width: 80%;
   height: 38%;
   border: 0px orange solid;
-  padding-left: 1px;
-  padding-right: 1px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding-left: 2px;
 }
 #top_right {
     position: absolute;
-    width: 22%;
+    width: 19%;
     top: 15%;
-    right: 2%;
+    right: 3%;
     color: #080;
     background-color: #ffe;
     border: 2px #080 solid;
@@ -309,10 +225,7 @@ tr {
     left: 25%;
     width: 50%;
     border: 0px orange solid;
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 1px;
     position: relative;
 }
 #bottom {
@@ -328,15 +241,15 @@ tr {
     position: relative;
 }
 #map {
-          /*position: relative;
-          position: absolute;
-          top: 35%;*/
-          left: 20%;
-          height: 400px;
-          width: 60%;
-          max-width: none;
-          padding: 0px;
-          border: 2px solid #008800;
+    /*position: relative;
+    position: absolute;
+    top: 35%;*/
+    left: 20%;
+    height: 400px;
+    width: 60%;
+    max-width: none;
+    padding: 0px;
+    border: 2px solid #008800;
 }
 #map img {
    max-width: none;

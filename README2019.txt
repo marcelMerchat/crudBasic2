@@ -224,7 +224,6 @@ CREATE TABLE users (
    name VARCHAR(128),
    email VARCHAR(128),
    password VARCHAR(128),
-   hint VARCHAR(128),
    random VARCHAR(128),
    password_time TIMESTAMP,
    initial_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
@@ -233,20 +232,11 @@ CREATE TABLE users (
    INDEX(email)
 ) ENGINE=InnoDB CHARSET=utf8;
 
-INSERT INTO users (name,email,password,random,hint)
-    VALUES ('gramps^77','merchatDataTools@gmail.com','e76500c3d37247cb0564d800821a1311','XyZzy12*_','frank');
-UPDATE users SET random = 'XyZzy12*_';
-
-//password is 'mcp2tWc'; gramps77 is also the designed owner for pdo objects
-//in php.
-
-INSERT INTO users (name,email,password, hint) VALUES ('guest','guest@mycompany.com','bd244d460a85ee6e0883dbf56bcd30b6','myhint');
-                    'login123' corresponds to hashcode 'bd244d460a85ee6e0883dbf56bcd30b6'
-// password is 'login123'
-
-INSERT INTO users (name,email,password, hint)
-    VALUES ('Elvis','epresley@musicland.edu','eaa52980acd0bcfd0937ee5110c74817','myhint');
+INSERT INTO users (name,email,password, random)
+    VALUES ('Elvis','epresley@musicland.edu','eaa52980acd0bcfd0937ee5110c74817','XyZzy12*_');
 // password is 'rock123'
+
+// ALTER TABLE `users` DROP `hint`;
 
 #######################################################################
 
@@ -367,16 +357,13 @@ WHERE `Education`.`profile_id` = 277 AND
      `Education`.`institution_id` = 2 AND
      `Education`.`award_id` = 0;
 
-  UPDATE `Education` SET `award_id` = '1' WHERE `Education`.`profile_id` = 5 AND `Education`.`institution_id` = 8 AND `Education`.`award_id` = 0
-  UPDATE `Education` SET `award_id` = '1' WHERE `Education`.`profile_id` = 9 AND `Education`.`institution_id` = 1 AND `Education`.`award_id` = 0
-  UPDATE `Education` SET `award_id` = '1' WHERE `Education`.`profile_id` = 9 AND `Education`.`institution_id` = 8 AND `Education`.`award_id` = 0
-  UPDATE `Education` SET `award_id` = '1' WHERE `Education`.`profile_id` = 10 AND `Education`.`institution_id` = 2 AND `Education`.`award_id` = 0
-  UPDATE `Education` SET `award_id` = '1' WHERE `Education`.`profile_id` = 12 AND `Education`.`institution_id` = 9 AND `Education`.`award_id` = 0
+UPDATE `Education` SET `award_id` = '1'
+WHERE `Education`.`profile_id` = 5 AND `Education`.`institution_id` = 8 AND
+      `Education`.`award_id` = 0
 
 ##############################################################
  Change major column to award_id
 
-ALTER TABLE `Education` DROP `major`;
 ALTER TABLE `Education` ADD `award_id` INT NOT NULL AFTER `institution_id`;
 
 ###############################################################
@@ -410,7 +397,7 @@ To avoid an error, first insert a preliminary entry in the Award Table.
 The same is required for the Profile and Institution Tables. Then assign
 the new foreign key value for the Award Table to all of the records in
 the Institution Table. Existing foreign key values are required for the
-Profile and Institution Tables also.  
+Profile and Institution Tables also.
 
 ALTER TABLE `Education` ADD CONSTRAINT `education_ibfk_1`
 FOREIGN KEY (`profile_id`)

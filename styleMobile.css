@@ -18,7 +18,6 @@ div.container-edu-info {
 }
 h1 {
     font-size: 2rem;
-    padding-left: 1px;
 }
 h2 {
     font-size: 1.5rem;
@@ -27,36 +26,23 @@ h1 a {
     size: 2rem;
     color: #0055FF;
     text-decoration: underline;
-    text-align: center;
-    padding-left: 1px;
-    padding-top: 1px;
-    padding-bottom: 0px;
 }
 h3 {
     font-size: 1.3rem;
-    padding-left: 1px;
 }
 h3 a {
     color: #0088ff;
     font-size: 1.3rem;
     margin-top: 20px;
-    padding-left: 1px;
-    padding-right: 5px;
 }
 h4 {
     font-size: 1.2rem;
     margin-top: 12px;
-    padding-left: 1px;
-    padding-right: 5px;
 }
 h5 {
     font-size: 1rem;
     color: #008800;
     margin-top: 10px;
-    padding-top: 2px;
-    padding-bottom: 10px;
-    padding-left: 1px;
-    padding-right: 5px;
 }
 a {
     font-size: inherit;
@@ -72,13 +58,10 @@ p {
 }
 p a {
     font-size: 1.01rem;
-    padding-top: 1px;
-    padding-bottom: 1px;
 }
 input {
     font-size: 1.01rem;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding: 3px;
 }
 img {
     width: 90%;
@@ -87,8 +70,7 @@ textarea {
     font-size: 1.01rem;
     height: 180px;
     width: 98.5%;
-    padding-top: 2px;
-    padding-bottom: 6px;
+    padding: 2px;
     margin-top: 1px;
 }
 .button {
@@ -101,20 +83,13 @@ textarea {
 }
 .button-submit {
     font-size: 1rem;
-    padding-left: 3px;
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 3px;
 }
 .click-plus {
     font-size: 6vw;
     width: 6vw;
     text-indent: 0px;
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 1px;
-    padding-bottom: 1px;
+    padding: 2px;
     margin-bottom: 12px;
     margin-top: 6px;
 }
@@ -134,10 +109,7 @@ textarea {
 .password {
     font-size: 1rem;
     width: 49vw;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding: 2px;
     margin-top: 2px;
     margin-bottom: 10px;
     border: 1px solid #008800;
@@ -145,19 +117,13 @@ textarea {
 .skill {
     box-sizing: border-box;
     width: 98%;
-    padding-left: 5px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-right: 5px;
+    padding: 3px;
     margin-top: 2px;
     margin-bottom: 2px;width: 99%
     border: 1px solid #668800;
 }
 .text-box {
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-left: 3px;
-    padding-right: 3px;
+    padding: 3px;
     width: 99%;
 }
 .year-entry-box {
@@ -169,45 +135,12 @@ textarea {
 tr {
     line-height: 5vw;
 }
-table {
-      border-collapse: collapse;
-      width: 100%;
-      cell-spacing: 0px;
-      padding-top: 3px;
-      padding-bottom: 3px;
-      margin: 1px;
-      border: 2px solid #008800;
-      background-color: #CCEEFF;
-}
-.tablePosition {
-      border-collapse: collapse;
-      padding-left: 5px;
-      padding-right 5px;
-      padding-top: 2px;
-      padding-bottom: 2px;
-      margin: auto;
-      border: 2px solid #008800;
-      background-color: #554400;
-}
 th {
-    color: #008800;
-    font-size: 1.01rem;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 3px;
-    padding-bottom: 2px;
-    background-color: #BBDDEE;
-    border-spacing: 0px;
-    cell-spacing: 0px;
-    border: 2px solid #008800;
+    font-size: 0.9rem;
 }
 td {
-    font-size: 1.01rem;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    border-spacing: 0px;
+    font-size: 0.85rem;
+    word-break: break-word;
 }
 tr {
     line-height: 7vw;
@@ -226,26 +159,25 @@ tr {
 .more-top-margin-3x {
     margin-top: 6vw;
 }
+#main {
+    left: 2%;
+    right: 2%;
+    width: 96%;
+}
 #one {
   top: 5%;
   left: 10%;
   width: 80%;
   height: 38%;
   border: 0px orange solid;
-  padding-left: 1px;
-  padding-right: 1px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding: 2px;
 }
 #password {
     border: yellow solid;
     top: 63%;
     right: 42%;
     width: 10%;
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding: 2px;
     border: 0px;
 }
 #top {
@@ -255,10 +187,7 @@ tr {
     left: 25%;
     width: 50%;
     border: 0px orange solid;
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 2px;
     position: relative;
 }
 #bottom {
@@ -288,12 +217,12 @@ tr {
     display: block;
 }
 #map {
-          left: 20%;
-          height: 400px;
-          width: 60%;
-          max-width: none;
-          padding: 0px;
-          border: 2px solid #008800;
+    left: 20%;
+    height: 400px;
+    width: 60%;
+    max-width: none;
+    padding: 0px;
+    border: 2px solid #008800;
 }
 #map img {
    max-width: none;

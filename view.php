@@ -17,9 +17,9 @@ session_start();
       line-height: normal;
     }
     #main {
-        left: 15%;
-        right: 15%;
-        width: 70%;
+        left: 4%;
+        right: 4%;
+        width: 92%;
         border: 0px solid #008800;
     }
     div.edu-label {
@@ -30,7 +30,6 @@ session_start();
         height: 1.1em;
         border: 0px solid #008800;
         padding: 0px;
-        padding-left: 5px;
         margin-top: 0px;
         margin-bottom: 0px;
     }
@@ -38,11 +37,10 @@ session_start();
         display: inline-block;
         vertical-align: top;
         text-align: left;
-        width: 4rem;
+        width: 3.6rem;
         height: 1.1em;
         border: 0px solid #008800;
         padding: 0px;
-        padding-left: 5px;
         margin-top: 0px;
         margin-bottom: 0px;
     }
@@ -50,11 +48,10 @@ session_start();
       display: inline-block;
       vertical-align: top;
       text-align: left;
-      width: 6.2rem;
+      width: 5.9rem;
       height: 1.1em;
       border: 0px solid #008800;
       padding: 0px;
-      padding-left: 5px;
       margin-top: 0px;
       margin-bottom: 0px;
     }
@@ -66,7 +63,7 @@ session_start();
       height: 1.1em;
       border: 0px solid #008800;
       padding: 0px;
-      margin-top: 5px;
+      margin-top: 2px;
       margin-bottom: 0px;
     }
     div.container-edu-info {
@@ -86,29 +83,41 @@ session_start();
         display: inline-block;
         text-align: left;
         box-sizing: border-box;
-        padding-top: 0px;
-        padding-bottom: 0px;
         border: 0px solid #888800;
         margin-top: 0px;
         margin-bottom: 0px;
         width: 75%;
     }
+    div.job-info {
+        display: inline-block;
+        text-align: left;
+        box-sizing: border-box;
+        border: 0px solid #888800;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        word-break: break-word;
+        width: 65%;
+        min-width: 180px;
+        border: 0px solid #888800;
+    }
     .edu-row1 {
        border: 0px solid #008800;
-       margin: 0px
-       padding: 1px;
+       margin: 0px;
+       text-align: left;
     }
     .edu-row2 {
        border: 0px solid #008800;
-       padding-top: 0px;
-       padding-bottom: 0px;
        margin: 0px;
+       text-align: left;
     }
     .more-top-margin {
         margin-top: 8px;
     }
     .more-bottom-margin {
         margin-bottom: 30px;
+    }
+    .more-padding-top-4px {
+        margin-top: 4px;
     }
     ul {
        margin-top: 0px;
@@ -120,7 +129,7 @@ session_start();
     </style>
     </head>
     <body>
-      <div class="content" id="main">
+      <div class="center" id="main">
         <br />
 <?php
     $profileid = $_GET['profile_id'];
@@ -162,7 +171,7 @@ session_start();
                $stmt_skillname->execute(array(':iid' =>   $skill_id));
                $skillrow = $stmt_skillname->fetch(PDO::FETCH_ASSOC);
                //$skill = array_values($skillrow)[0];
-               echo '<li class="job-description-box">'.htmlentities($skillrow['name']).' &nbsp;&nbsp;&nbsp; </li>';
+               echo '<li class="job-description-box left">'.htmlentities($skillrow['name']).' &nbsp;&nbsp;&nbsp; </li>';
             }
             // $sqlSkill = 'SELECT name FROM Skill WHERE skill_id = :iid';
             // $stmt_skillname = $pdo->prepare($sqlSkill);
@@ -275,8 +284,11 @@ session_start();
                //echo              '<div class="job-label" style="font-size: 26px;"> &#9642</div>';
                // &#8226 for round bullet
                              //}
-               echo          '<div class="edu-info">'
-                                 .'<div>'.htmlentities($job['organization'])
+               echo          '<div class="job-info">'
+                                 .'<div>'
+                                  .'<p class="zero-bottom-margin">'
+                                   .htmlentities($job['organization'])
+                                  .'</p>'
                                 .'</div><div class="job-desc">'
                                   .'<p class="job-description-box">'
                                            .htmlentities($job['description'])
@@ -291,7 +303,6 @@ session_start();
         //echo '<p style="color:orange">No positions found</p>';
   }
 ?>
-<br />
 <p class="double-space center"><a href="index.php">Return to Main Page</a>
 </p>
 <!-- <button id="getmain">Get #Main Width</button>
@@ -301,55 +312,76 @@ session_start();
 <script>
 $(document).ready(function() {
   window.console && console.log('Document ready called ');
+  var w = $( window ).width();
+  window.console && console.log('The window width is = ' + w);
   isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
   isLargeDevice = !isMobileDevice;
-  window.console && console.log('Mobile device = ' + isMobileDevice);
-  var w = window.screen.width;
-  window.console && console.log('The screen width is = ' + w);
+  if(isLargeDevice){
+    var w = $( window ).width();
+    window.console && console.log('The window width is = ' + w);
+    if (isLargeDevice &&  w > 1300) {
+         $("#main").css("left", "28%");
+         $("#main").css("right", "28%");
+         $("#main").css("width", "44%");
+    }
+    if (isLargeDevice && w > 1100 && w < 1301) {
+        $("#main").css("left", "24%");
+        $("#main").css("right", "24%");
+        $("#main").css("width", "52%");
+        $("#top_left").hide();
+        $("#top_right").hide();
+    }
+    if (isLargeDevice && w > 850 && w < 1101) {
+        $("#main").css("left", "20%");
+        $("#main").css("right", "20%");
+        $("#main").css("width", "60%");
+        $("#top_left").hide();
+        $("#top_right").hide();
+    }
+    if (isLargeDevice && w > 600 && w < 851) {
+        $("#main").css("left", "10%");
+        $("#main").css("right", "10%");
+        $("#main").css("width", "80%");
+        $("#top_left").hide();
+        $("#top_right").hide();
+    }
+    if (isLargeDevice && w < 601) {
+        $("#main").css("left", "5%");
+        $("#main").css("right", "5%");
+        $("#main").css("width", "90%");
+        $("#top_left").css("display", "none");
+        $("#top_right").hide();
+    }
+  } else {
+      window.console && console.log('Mobile device = ' + isMobileDevice);
+      if (w < 350) {
+        $("#main").css("left", "3%");
+        $("#main").css("right", "3%");
+        $("#main").css("width", "94%");
+      //$("body").css("font-size", "0.9em");
+        $("p").css("font-size", "0.99em");
+        $("h4").css("font-size", "1em");
+        $("li").css("font-size", "0.9em");
+        $("div.container-edu-info").css("font-size", "0.9em");
+        //$("div.edu-info").css({"font-size": "0.8em"});
+        //$("div.job-info").css({"width": "63%","font-size": "0.8em"});
+        $("div.edu-year-label").css({"width": "3rem","font-size": "0.9em"});
+        $("div.job-label").css("width", "5rem");
+
+
+      }
+  }
   var tagId = document.getElementById("main");
   var tagIdcss = $('#main').attr("id");
-  var w = window.screen.width;
-  var w = $( window ).width();
-
-  window.console && console.log('The JavaScript TagId is '+tagId +' screen width is reset to 80%' + tagIdcss);
-
-  //showWidth("shoWidth");
-
-  //$( "div" ).text( "The width for the " + tagId + " is " + w + "px." );
-  if (isLargeDevice &&  w > 1100) {
-      $("#main").css("left", "22%");
-      $("#main").css("right", "22%");
-      $("#main").css("width", "55%");
-  }
-  if (isLargeDevice && w > 860 && w < 1101) {
-      //document.getElementById("main").style.width = "90%";
-      //document.getElementById("main").style.width = "80%";
-      //window.console && console.log('The screen width is reset to 80%' + w);
-      //$(tagIdcss).css("width": "90%");
-      //$("#main").css("width", 100);
-      $("#main").css("left", "18%");
-      $("#main").css("right", "18%");
-      $("#main").css("width", "64%");
-  }
-  if (isLargeDevice && w > 760 && w < 861) {
-      $("#main").css("left", "10%");
-      $("#main").css("right", "10%");
-      $("#main").css("width", "80%");
-  }
-  if (isLargeDevice && w < 761) {
-      $("#main").css("left", "5%");
-      $("#main").css("right", "5%");
-      $("#main").css("width", "90%");
-  }
-  $( "#getmain" ).click(function() {
-  showWidth( "main div", $( "#main" ).width() );
-  });
-  $("#getw").click(function() {
-  showWidth( "window", $( window ).width() );
-  });
-  $( "#getd" ).click(function() {
-  showWidth( "document", $( document ).width() );
-  });
+  // $( "#getmain" ).click(function() {
+  // showWidth( "main div", $( "#main" ).width() );
+  // });
+  // $("#getw").click(function() {
+  // showWidth( "window", $( window ).width() );
+  // });
+  // $( "#getd" ).click(function() {
+  // showWidth( "document", $( document ).width() );
+  // });
 });
 </script>
 </body>

@@ -18,6 +18,7 @@ session_start();
 }
 body {
   font-family: arial, sans-serif;
+  line-height: normal;
 }
 nav {
     background-color: lightgray;
@@ -37,13 +38,29 @@ nav li a {
   color: darkblue;
   text-decoration: none;
 }
-.back {
-    position: absolute;
-    left: 20px;
+div.container-edu-info {
+      width: 30em;
+      max-width: 100%;
+      box-sizing: border-box;
+      width: 100%;
+      border: 0px solid black;
+      padding-left: 1px;
+      padding-right: 1px;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      margin-top: 4px;
+      margin-bottom: 15px;
 }
-.forward {
-    position: absolute;
-    right: 20px;
+.edu-row1 {
+       border: 0px solid #008800;
+       margin: 0px
+       padding: 1px;
+}
+.more-top-margin {
+      margin-top: 8px;
+}
+.more-bottom-margin {
+    margin-bottom: 30px;
 }
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -55,7 +72,8 @@ nav li a {
 <div class="adgurd-alert-more"></div></div></div></div>
 <?php
 if(! isMobile()) {
-    echo '<div id="top_left">
+    echo
+    '<div id="top_left">
       <div>
       <img src="IMG_20151115_150532519PathinPark.jpg">
       <p class="more-top-margin">The path ahead leads into the trees,</p>
@@ -70,7 +88,7 @@ if(! isMobile()) {
             into a large organization.
       </p>
       </div>
-   </div>
+    </div>
    <div id="top_right" class="more-top-margin">
       <img src="IMG_20180919_124000517FlowersinMeadow.jpg">
       <p class="more-top-margin">The beginning usually doesn\'t go well</p>
@@ -93,27 +111,18 @@ else {
 $tableRows = 0;
 if ( isset($_SESSION['user_id']) && (strlen($_SESSION['user_id']) > 0) ) {
     echo '<p class="center">Profiles by '.$_SESSION['email'].'</p>';
-    echo('<p class="center">');
-        echo '<a class="anchor-button" href="add.php">Make New Profile</a> <a' ;
+    echo('<p class="center more-line-height-3x">');
+        echo '<a class="anchor-button more-right-margin" href="add.php">Make New Profile</a> <a' ;
         echo ' class="anchor-button" href="logout.php">Logout</a>' ;
     echo '</p>';
     //$ips = isPassWordSet($pdo);
     $mysqlfield = 'password_time';
     $ips = isPasswordSet($_SESSION['email'],$mysqlfield,$pdo);
-    // echo $ips;
-    // if($ips=="SetTimeout"){
-    //    echo '<p class="center message">Password must be <a href="changePassword.php">reset</a> before the 30 minute timeout.</p>';
-    // } else if ($ips=="PastTimeout"){
-    //    echo '<p class="center message">Temporary password expired after 30-minutes.'
-    //           .'Go to the <a href="changePassword.php">replace password</a> page to obtain a new password.</p>';
-    // }
     flashMessages();
     $sqlUsrCount = "SELECT COUNT(*) FROM Profile WHERE user_id = :sid";
     $stmtUsrCount = $pdo->prepare($sqlUsrCount);
     $stmtUsrCount->execute(array(':sid' => $_SESSION['user_id']));
     $rowCnt = $stmtUsrCount->fetch(PDO::FETCH_ASSOC);
-    //$row =  $stmt1->fetch(PDO::FETCH_ASSOC);
-    //echo('User record count is '.array_values($rowCnt)[0]);
     $tableRows = array_values($rowCnt)[0];
     //echo '<pre><p>User logged-in. There are ';
     //var_dump($tableRows);
@@ -161,10 +170,11 @@ if($tableRows > 0) {
             .htmlentities($row['last_name'])
             .'</td><td>'
             .htmlentities($row['profession'])
-            .'</td><td>
+            .'</td><td><p class="more-line-height-2x">
                <a href="view.php?profile_id='.$row['profile_id'].'">Details</a>&nbsp
                <a href="edit.php?profile_id='.$row['profile_id'].'">Edit</a>&nbsp
                <a href="delete.php?profile_id='.$row['profile_id'].'">Delete</a>
+               </p>
             </td></tr>';
         }
     } else {
@@ -203,5 +213,27 @@ if ( isset($_SESSION['user_id']) && strlen($_SESSION['user_id']) > 0 ) {
 }
 ?>
 </div> <!-- end main -->
+<script>
+$(document).ready(function() {
+  window.console && console.log('Document ready called ');
+  isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
+  isLargeDevice = !isMobileDevice;
+  if(isLargeDevice){
+    adjustWindow();
+  } else {
+      window.console && console.log('Mobile device = ' + isMobileDevice);
+  }
+  var tagIdcss = $('#main').attr("id");
+  // $( "#getmain" ).click(function() {
+  // showWidth( "main div", $( "#main" ).width() );
+  // });
+  // $("#getw").click(function() {
+  // showWidth( "window", $( window ).width() );
+  // });
+  // $( "#getd" ).click(function() {
+  // showWidth( "document", $( document ).width() );
+  // });
+});
+</script>
 </body>
 </html>

@@ -13,17 +13,14 @@ $_SESSION['success'] = false;
 if ( isset($_POST['emale'])) {
   $mymail = trim(htmlentities($_POST['emale']));
   if ( strlen($_POST['emale']) >= 1) {
-     //print_r(" Getting started inside. ".$mymail);
      unset($_SESSION['user_id']);
      $numErrors = 0;
      $_SESSION['error'] = "";
   // Validate email
      if (strpos($_POST['emale'], '@') === FALSE ) {
         $_SESSION['error'] = $_SESSION['error'].' Invalid email address'.'. ';
-        // .$_POST['emale'].'. ';
         $numErrors = $numErrors + 1;
      }
-     //print_r(" Checking count. ".$mymail);
      unset($_SESSION['user_id']);
      $sql = "SELECT Count(*) FROM users WHERE email = :em";
      $stmt = $pdo->prepare($sql);
@@ -46,7 +43,6 @@ if ( isset($_POST['emale'])) {
         header( 'Location: forgotpass.php' ) ;
         return;
      }
-     //print_r(" retrieving data. ".$mymail);
      $sql = "SELECT user_id, name, block, random FROM users WHERE email = :em";
      $stmt = $pdo->prepare($sql);
      $stmt->execute(array( ':em' => $mymail));
@@ -58,7 +54,6 @@ if ( isset($_POST['emale'])) {
           header('Location: index.php');
           return;
      }
-     //print_r(" retrieved data. ".$mymail);
      $userName = $row['name'];
 //   Application accepted
      $salt = $row['random'];
@@ -72,9 +67,6 @@ if ( isset($_POST['emale'])) {
      $sql = "SELECT user_id, name, block, random FROM users WHERE email = :em";
      $stmt = $pdo->prepare($sql);
      $stmt->execute(array( ':em' => $mymail));
-     //$sql = "UPDATE users SET timeout = 1 WHERE email = :em ";
-     //$stmt = $pdo->prepare($sql);
-     //$stmt->execute(array(':em' => $mymail ));
      $sql = "UPDATE users SET password = :hpw, timeout = :tout WHERE email = :em ";
      $stmt = $pdo->prepare($sql);
      $stmt->execute(array(':hpw' => $hashed_pass,
@@ -97,13 +89,8 @@ if ( isset($_POST['emale'])) {
         .'address</a>. This temporary password will expire in 30 minutes.'
         .'</p>'
         .'</body></html>';
-       //.' delete this <a href="localhost/crudBasic/login.php">local address</a>'
-       //.' at this <a href="localhost/crudbasic/assignPassword.php">address</a> </p></body></html>';
-       //.' at this <a href="http://www.marcel-merchat.com/crudbasic/assignPassword.php">address</a> </p></body></html>';
-        error_log('Replacement password assigned for '.$mymail);
-        //  Attempt email notification before entering new password into database.
+      error_log('Replacement password assigned for '.$mymail);
       require 'gmailer.php';
-      //$_SESSION['success'] = true;
       if ($_SESSION['success'] === false) {
           $_SESSION['emailMessage'] = 'Problem sending e-mail. ';
           header( 'Location: forgotpass.php' );
@@ -129,7 +116,7 @@ if ( isset($_POST['emale'])) {
 <title>Replace Password</title>
 </head>
 <body>
-<div class="content center" id="main">
+<div class="center" id="main">
 <?php
     flashMessages();
 ?>

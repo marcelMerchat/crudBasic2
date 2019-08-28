@@ -624,3 +624,32 @@ function deleteJob(group,year1_field, year2_field,orgfield,descfield){
     deleteFromAuditList(orgfield);
     deleteFromAuditList(descfield);
 }
+function adjustWindow(){
+  //showWidth("shoWidth");
+  //$( "div" ).text( "The width for the " + tagId + " is " + w + "px." );
+  //document.getElementById("main").style.width = "90%";
+  //var ws = window.screen.width;
+  //window.console && console.log('The screen width is = ' + ws);
+  var w = $( window ).width();
+  window.console && console.log('The window width is = ' + w);
+  if (isLargeDevice && w > 860 && w < 1100) {
+      $("#main").css("left", "10%");
+      $("#main").css("right", "10%");
+      $("#main").css("width", "80%");
+      $("#top_left").hide();
+      $("#top_right").hide();
+  }
+  if (isLargeDevice && w < 861) {
+      $("#main").css("left", "5%");
+      $("#main").css("right", "5%");
+      $("#main").css("width", "90%");
+      $("#top_left").css("display", "none");
+      $("#top_right").hide();
+  }
+  if (w < 761) {
+      //document.getElementById("top_left").style.display = "none";
+      $("#top_left").hide();
+      $("#top_right").hide();
+  }
+
+}

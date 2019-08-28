@@ -45,6 +45,7 @@ div {
 }
 .job-description-box {
     box-sizing: border-box;
+    text-align: left;
     word-wrap: break-word;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -89,30 +90,30 @@ div.box-input-label {
     display: inline-block;
     border: 0px solid blue;
     text-align: left;
-    padding-left: 4px;
+    padding-left: 0px;
 }
 div.position-input-label {
     border: 0px solid black;
     display: inline-block;
-    padding-left: 4px;
+    padding-left: 0px;
 }
 div.year-input-label {
     width: 6em;
     text-align: left;
     border: 0px solid blue;
-    padding-left: 4px;
+    padding-left: 0px;
     display: inline-block;
 }
 div.short-input-label {
     display: inline-block;
     width: 4em;
     text-align: left;
-    padding-left: 4px;
+    padding-left: 0px;
 }
 div.phrase-input-label {
   width: 6em;
   text-align: left;
-  padding-left: 4px;
+  padding-left: 0px;
 }
 div.profile-input-form {
     box-sizing: border-box;
@@ -126,19 +127,13 @@ div.inline-block {
     display: inline-block;
 }
 form {
-    padding-top: 0.2vw;
-    padding-bottom: 0.2vw;
-    padding-left: 0.2vw;
-    padding-right: 0.2vw;
+    padding: 0.2vw;
 }
 h1 {
     color: #008800;
     margin-top: 5px;
     margin-bottom: 1px;
-    padding-top: 2px;
-    padding-bottom: 1px;
-    padding-left: 1px;
-    padding-right: 5px;
+    padding: 2px;
 }
 .headline-green {
     color: #008800;
@@ -146,44 +141,35 @@ h1 {
 h2 {
     color: #008800;
     margin-top: 10px;
-    padding-top: 1px;
-    padding-bottom: 1px;
-    padding-left: 1px;
-    padding-right: 5px;
+    padding: 1px;
 }
 h3 {
     color: #008800;
     margin-top: 18px;
     padding-top: 2px;
     padding-bottom: 8px;
+    text-align: left;
 }
 h4 {
     margin-top: 10px;
     color: #008800;
+    text-align: left;
 }
 h5 {
     color: #008800;
     margin-top: 10px;
     padding-top: 2px;
-    padding-left: 1px;
-    padding-right: 5px;
     font-size: 1em;
+    text-align: left;
     font-weight: normal;
 }
 p {
     color: #1A301A;
-    padding-top: 1px;
-    padding-bottom: 0px;
-    padding-left: 1px;
-    padding-right: 1px;
     font-size: 1em;
 }
 h5 span {
     color: #1A301A;
-    padding-top: 1px;
-    padding-bottom: 0px;
-    padding-left: 1px;
-    padding-right: 1px;
+    padding: 1px;
     font-size: 1em;
 }
 .note {
@@ -195,25 +181,18 @@ a {
     color: #0055FF;
     text-decoration: underline;
     text-align: center;
-    padding-left: 2px;
-    padding-top: 1px;
-    padding-bottom: 1px;
+    padding: 2px;
 }
 p a {
     color: #0055FF;
     text-decoration: underline;
     text-align: center;
-    padding-left: 2px;
-    padding-top: 1px;
-    padding-bottom: 0px;
+    padding: 2px;
     font-size: inherit;
 }
 input {
     box-sizing: border-box;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    padding-left: 6px;
-    padding-right: 6px;
+    padding: 6px;
     /*background-color: #eef;*/
     background-color: rgb(249, 255, 185);
     border: 2px solid #886600;
@@ -232,16 +211,26 @@ input:-internal-autofill-selected {
     background-image: none !important;
     color: rgb(0, 0, 0) !important;
 }
+label {
+    border: 0px solid #886600;
+    margin: 0px !important;
+    padding: 0px;
+}
+label.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.padding-zero {
+    padding: 0px;
+}
 div.inline-block-layout {
     /*display: inline-block;
     vertical-align: baseline;
     margin-left: auto;
     margin-right: auto;
     */
-    padding-top: 2px;
-    padding-bottom: 2px;
-    margin-bottom: 2px;
-    margin-right: 2px;
+    padding: 2px;
     width: 200px;
     font-size: 1em;
 }
@@ -262,9 +251,7 @@ textarea {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 1em;
     height: 180px;
-    padding-left: 2px;
-    padding-top: 2px;
-    padding-bottom: 3px;
+    padding: 3px;
     border: 2px solid #886600;
     /*background-color: #eef;*/
     background-color: rgb(249, 255, 180);
@@ -315,17 +302,13 @@ a:hover {
     font-size: 1.5em;
     margin-top: 4px;
     margin-bottom: 4px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    padding-left: 6px;
-    padding-right: 6px;
+    padding: 6px;
     font-weight: bold;
     background-color: #ffe;
     border: 3px solid #008800;
 }
 .message {
-    padding-top: 1px;
-    padding-bottom: 1px;
+    padding: 1px;
     margin-bottom: 10px;
     color: #bb4422;
 }
@@ -339,10 +322,7 @@ a:hover {
 .button {
     font-size: 1.5rem;
     width: 8vw;
-    padding-left: 3px;
-    padding-right: 3px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding: 3px;
     border: 1px solid #008800;
     background-color: #eff;
     margin-left: 10px;
@@ -353,10 +333,7 @@ a:hover {
 .button-css {
     font-size: 2rem;
     text-align: center;
-    padding-left: 4px;
-    padding-right: 4px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 3px;
     margin-top: 8px;
     margin-bottom: 8px;
     border: 1px solid #008800;
@@ -364,38 +341,29 @@ a:hover {
     margin: 6px;
 }
 .button-submit {
-
     font-size: 2rem;
-    padding-right: 8px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 4px;
     margin-top: 8px;
     margin-bottom: 8px;
-    border: 1px solid #008800;
+    border: 2px solid #008800;
     background-color: #def;
     margin: 6px;
 }
 .button-cancel {
     font-size: 2rem;
     width: 7vw;
-    padding-left: 3px;
-    padding-right: 3px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding: 3px;
     border: 1px solid #008800;
     background-color: #def;
     margin-top: 10px;
 }
 .anchor-button {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0.2rem;
-    padding-bottom: 0.2rem;
+    padding: 0.2rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
     border: 2px solid #008800;
     background-color: #eff;
     margin-top: 0.2rem;
-    margin-left: 1rem;
-    margin-right: 1rem;
     color: 333;
     text-decoration: none;
 }
@@ -411,10 +379,7 @@ a:hover {
 .button-small {
     font-size: 1.5rem;
     width: 30px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 2px;
     border: 1px solid #008800;
     background-color: #def;
     margin-top: 4px;
@@ -445,15 +410,11 @@ a:hover {
     font-size: 1em;
     border: 2px solid #886600;
     text-align: left;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding: 3px;
     box-sizing: border-box;
 }
 .year-entry-box {
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding: 3px;
     border: 2px solid #886600;
 }
 .subject-name {
@@ -462,10 +423,7 @@ a:hover {
 .name-box-small {
     font-size: 2.5vw;
     width: 120px;
-    padding-left: 5px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-right: 5px;
+    padding: 3px;
     margin-top: 8px;
     margin-bottom: 8px;
     background-color: #eef;
@@ -474,26 +432,14 @@ a:hover {
     font-size: 3vw;
     width: 100%;
     padding-top: 2px;
-    padding-bottom: 2px;
-    padding-left: 3px;
-    padding-right: 3px;
     margin-top: 2px;
     margin-bottom: 5px;
     border: 2px solid #008800;
     background-color: #eef;
 }
-.margin-top-small {
-    margin-top: 1px;
-}
-.margin-bottom-small {
-    margin-bottom: 1px;
-}
 .school {
     width: 98%;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding: 3px;
     margin-top: 2px;
     margin-bottom: 2px;
     border: 2px solid #886600;
@@ -501,20 +447,14 @@ a:hover {
 }
 .award {
     width: 98%;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding: 3px;
     margin-top: 2px;
     margin-bottom: 2px;
     border: 2px solid #886600;
     box-sizing: border-box;
 }
 .name-box {
-    padding-left: 5px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-right: 5px;
+    padding: 3px;
     margin-top: 2px;
     margin-bottom: 2px;
     border: 1px solid #008800;
@@ -522,10 +462,7 @@ a:hover {
 }
 .skill {
     box-sizing: border-box;
-    padding-left: 5px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-right: 5px;
+    padding: 3px;
     margin-top: 2px;
     margin-bottom: 2px;
     border: 2px solid #886600;
@@ -533,10 +470,7 @@ a:hover {
 .small-word-button {
     font-size: 2.5vw;
     width: 80px;
-    padding-left: 2px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    padding-right: 2px;
+    padding: 2px;
     margin-top: 20px;
     border: 1px solid #008800;
     background-color: #def;
@@ -545,28 +479,49 @@ a:hover {
     margin-top: 7px;
     margin-bottom: 7px;
 }
-.more-top-margin {
-    margin-top: 4vw;
-}
 .more-left-margin {
     margin-left: 3vw;
 }
-.margin-top {
-    margin-top: 0.6vw;
+.more-right-margin {
+    margin-right: 2em;
+}
+.more-top-margin {
+    margin-top: 4vw;
+}
+.less-top-margin {
+    margin-top: 0.2vw;
+    margin-block-start: 0.1vw;
+}
+.more-bottom-margin {
+    margin-bottom: 1.5em;
+}
+.more-line-height-2x {
+    line-height: 2em;
+}
+.more-line-height-3x {
+    line-height: 3em;
 }
 .less-bottom-margin {
     margin-bottom: 0.1vw;
     margin-block-end: 0.1vw;
 }
-.more-bottom-margin {
-    margin-bottom: 1.5em;
+.margin-top-small {
+    margin-top: 1px;
 }
-.less-top-margin {
-    margin-top: 0.4vw;
-    margin-block-start: 0.4vw;
+.margin-bottom-small {
+    margin-bottom: 1px;
 }
-.more-right-margin {
-    margin-right: 2em;
+.more-top-margin-2x {
+    margin-top: 1.01rem;
+}
+.more-top-margin-3x {
+    margin-top: 1.5em;
+}
+.zero-bottom-margin {
+    margin-bottom: 0px;
+}
+.zero-top-margin {
+    margin-top: 0px;
 }
 .div-edu {
     border-style: dashed;
@@ -588,42 +543,28 @@ div.short-input-form {
 }
 table {
       border-collapse: collapse;
+      table-layout:fixed;
       width: 100%;
-      cell-spacing: 0px;
-      padding-top: 3px;
-      padding-bottom: 3px;
-      margin: 1px;
+      padding: 3px;
       border: 2px solid #008800;
       background-color: #CCEEFF;
 }
 .tablePosition {
       border-collapse: collapse;
-      padding-left: 5px;
-      padding-right 5px;
-      padding-top: 2px;
-      padding-bottom: 2px;
       margin: auto;
       border: 0px solid #008800;
-      background-color: #554400;
 }
 th {
     color: #008800;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 3px;
-    padding-bottom: 2px;
+    padding: 3px;
     margin-left: auto ;
     margin-right: auto ;
     background-color: #BBDDEE;
     border-spacing: 0px;
-    cell-spacing: 0px;
     border: 2px solid #008800;
 }
 td {
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 3px;
     margin-left: auto ;
     margin-right: auto ;
     border: 1px solid #008800;
@@ -631,20 +572,14 @@ td {
     background-color: #EEEEFF;
 }
 ul {
-    padding-top: 2px;
-    padding-bottom: 0px;
-    padding-left: 8px;
-    padding-right: 1px;
-    margin-left: 14px;
     margin-bottom: 10px;
+    padding-inline-start: 20px;
     list-style-type: square;
 }
 li {
-    font-size: 1rem;
-    padding-top: 4px;
-    padding-bottom: 6px;
     padding-left: 1px;
-    padding-right: 1px;
+    padding-top: 4px;
+    padding-bottom: 4px;
     margin-top: 3px;
     list-style-type: square;
     color: #222;
@@ -660,10 +595,7 @@ li {
     left: 25%;
     width: 50%;
     border: 0px orange solid;
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 1px;
     position: relative;
 }
 #centerlist {

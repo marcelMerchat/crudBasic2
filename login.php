@@ -37,25 +37,13 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
             return;
     }
     $totalseconds = -1;
+    $time_limit = 3000;
+    // Login blocked after time limit
     if($row['timeout'] == 1){
-        //print_r('. The apply time was '.strtotime($row['password_time']));
-        // $request_num = strtotime($row['password_time']);
-        // $request_time = date("Y-m-d H:i:s", $request_num);
-        // print_r('. The apply time was '.$request_time);
-        // $current_time = date("Y-m-d H:i:s");
-        // $requested = new DateTime($request_time);
-        // $current = new DateTime($current_time);
-        // $interval = $requested->diff($current);
-        // $days = $interval->d;
-        // $hrs = $interval->h;
-        // $mins = $interval->i;
-        // $secs = $interval->s;
-        // //$totalmins = 24*60*$days+60*$hrs + $mins;
-        // $totalsecs = 24*3600*$days + 3600*$hrs + 60*$mins + $secs;
         $mysqlfield = 'password_time';
         $totalsecs = getElapsedSeconds($_POST['email'],$mysqlfield,$pdo);
-        print_r('. The elapsed time was '.$totalsecs);
-        if($totalsecs > 600) {
+        //print_r('. The elapsed time was '.$totalsecs);
+        if($totalsecs > $time_limit) {
           $_SESSION['error'] = 'Temporary password expired after 30 minutes. '
           . 'To get a new password, enter your email address.';
           //print_r('. The elapsed time exceeded 30 minutes. ');
@@ -68,9 +56,7 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
           .'call 773-852-1689. ';
           error_log('Time difference was not greater than zero for '.$_POST['email']);
         }
-        if( !($totalsecs > 0) || $totalsecs > 1000) {
-          //header( 'Location: forgotpass.php' );
-          //return;
+        if( !($totalsecs > 0) || $totalsecs > $time_limit) {
           print_r('. Something wrong here. The elapsed time was '.$totalsecs);
         }
      }
@@ -128,7 +114,7 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
   <title>Login</title>
 </head>
 <body>
-<div class="content form center" id="main">
+<div class="form center" id="main">
 <form method="POST" action="login.php">
     <h1>Please Log In</h1>
     <p>
@@ -138,18 +124,20 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
 
       <div class="container-form-entry more-top-margin-3x">
         <div class="more-input-margin less-bottom-margin less-top-margin box-input-label">
-          <label class="less-bottom-margin less-top-margin" for="email">Email</label>
+                <label class="less-bottom-margin less-top-margin center" for="email">Email</label>
         </div><div class="less-top-margin less-bottom-margin box-profile-input">
           <input class="text-box" type="text" name="email" value='<?= htmlentities("") ?>' id="email">
         </div></div>
      <div class="container-form-entry more-top-margin-3x">
-       <div class="more-input-margin less-bottom-margin less-top-margin box-input-label"><label for="id_1723">Password</label>
+       <div class="more-input-margin less-bottom-margin less-top-margin box-input-label center">
+               <label class="center" for="id_1723">Password</label>
        </div><div class="less-top-margin less-bottom-margin box-profile-input">
           <input class="text-box" type="password" name="pass" value='<?= htmlentities("") ?>' id="id_1723" />
        </div>
      </div>
-     <h3 class="more-top-margin-3x">
+     <h3 class="more-top-margin-3x center">
          <input class="button-submit" type="submit" onclick="return doValidate();" value="Login">
+         &nbsp;
          <input class="button-submit" type="submit" name="cancel" value="Cancel">
          <!-- doValidate() is a JavaScript function (see script.js) for preliminary validation
              which runs before the post to the website. The server program
