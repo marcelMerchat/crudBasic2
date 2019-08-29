@@ -132,18 +132,12 @@ textarea {
 .max-entry-box-width {
     max-width: 99%;
 }
-tr {
-    line-height: 5vw;
-}
 th {
     font-size: 0.9rem;
 }
 td {
     font-size: 0.85rem;
     word-break: break-word;
-}
-tr {
-    line-height: 7vw;
 }
 .less-bottom-margin {
     margin-bottom: 0.1vw;

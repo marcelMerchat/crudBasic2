@@ -59,9 +59,9 @@ function isPassWordSet($mail_address,$mysql_field,$pdo){
     if($row['timeout'] == 1){
         $mysql_field = 'password_time';
         $totalsecs = getElapsedSeconds($mail_address,$mysql_field,$pdo);
-        if($totalsecs > 500) {
+        if($totalsecs > 3000) {
             $_SESSION['error'] =
-               '<p class="center message">Temporary password expired after'
+               '<p class="center message">Temporary passwword expired after'
                  .' 30-minutes.'
                  .' Go to the <a href="forgotpass.php">replace password</a>'
                  .' page to obtain a new password.</p>';

@@ -495,6 +495,9 @@ a:hover {
 .more-bottom-margin {
     margin-bottom: 1.5em;
 }
+.more-line-height-1p5em {
+    line-height: 1.5em;
+}
 .more-line-height-2x {
     line-height: 2em;
 }
@@ -545,7 +548,7 @@ table {
       border-collapse: collapse;
       table-layout:fixed;
       width: 100%;
-      padding: 3px;
+      padding: 5px;
       border: 2px solid #008800;
       background-color: #CCEEFF;
 }
@@ -562,6 +565,9 @@ th {
     background-color: #BBDDEE;
     border-spacing: 0px;
     border: 2px solid #008800;
+}
+tr {
+    line-height: normal;
 }
 td {
     padding: 3px;

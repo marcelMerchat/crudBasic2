@@ -36,8 +36,7 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
             header( 'Location: login.php' );
             return;
     }
-    $totalseconds = -1;
-    $time_limit = 3000;
+    $time_limit = 4000;
     // Login blocked after time limit
     if($row['timeout'] == 1){
         $mysqlfield = 'password_time';
@@ -51,13 +50,15 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
           error_log('Temporary password expired for '.$_POST['email']);
         } else if ( !($totalsecs > 0) ){
           unset($_SESSION['user_id']);
-          $_SESSION['error'] = 'Something went wrong. To get a new password, '
+          $_SESSION['error'] = 'Something did not work. To get a new password, '
           .'contact the administrator at merchatDataTools@gmail.com or '
           .'call 773-852-1689. ';
           error_log('Time difference was not greater than zero for '.$_POST['email']);
         }
         if( !($totalsecs > 0) || $totalsecs > $time_limit) {
-          print_r('. Something wrong here. The elapsed time was '.$totalsecs);
+          print_r('. Something did not work. '
+          .'contact the administrator at merchatDataTools@gmail.com or '
+          .'call 773-852-1689. '.'The elapsed time was '.$totalsecs);
         }
      }
     //$salt = 'XyZzy12*_';
@@ -70,8 +71,8 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
     $user_pass = $row['password'];
     $salt = $row['random'];
     $posted_pass = hash('md5',$salt.$_POST['pass']);
-          //print_r('The posted password is '.$posted_pass);
-          //print_r('The database pass '.$row['password']);
+          print_r('The posted password is '.$posted_pass);
+          print_r('The database pass '.$row['password']);
     $hashed_hint2 = hash('md5', $salt.'admin1r23');
     echo("<br />");
           //print_r('. The salt is '.$salt);
@@ -91,8 +92,8 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
     } else {
 			        $_SESSION['error'] = 'Incorrect password';
               error_log('Login failure: '.$_POST['email'].' Password is incorrect.');
-              header( 'Location: login.php' );
-              return;
+              //header( 'Location: login.php' );
+              //return;
     }
   } else {
       $_SESSION['error'] = ' Incorrect email or password. ';

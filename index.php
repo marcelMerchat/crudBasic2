@@ -165,12 +165,12 @@ if($tableRows > 0) {
        $stmtUsr = $pdo->prepare($sqlUsr);
        $stmtUsr->execute(array(':sid' => $_SESSION['user_id']));
        while ( $row = $stmtUsr->fetch(PDO::FETCH_ASSOC) ) {
-          echo '<tr><td>'
+          echo '<tr><td><p class="zero-bottom-margin more-line-height-1p5em">'
             .htmlentities($row['first_name']).' '
             .htmlentities($row['last_name'])
-            .'</td><td>'
+            .'</p></td><td><p class="zero-bottom-margin more-line-height-1p5em">'
             .htmlentities($row['profession'])
-            .'</td><td><p class="more-line-height-2x">
+            .'</p></td><td><p class="zero-bottom-margin more-line-height-1p5em">
                <a href="view.php?profile_id='.$row['profile_id'].'">Details</a>&nbsp
                <a href="edit.php?profile_id='.$row['profile_id'].'">Edit</a>&nbsp
                <a href="delete.php?profile_id='.$row['profile_id'].'">Delete</a>
