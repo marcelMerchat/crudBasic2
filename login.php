@@ -67,12 +67,12 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
     $stmt->execute(array(
         ':em' => $_POST['email']));
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    var_dump($row);
+    //var_dump($row);
     $user_pass = $row['password'];
     $salt = $row['random'];
     $posted_pass = hash('md5',$salt.$_POST['pass']);
-          print_r('The posted password is '.$posted_pass);
-          print_r('The database pass '.$row['password']);
+          //print_r('The posted password is '.$posted_pass);
+          //print_r('The database pass '.$row['password']);
     $hashed_hint2 = hash('md5', $salt.'admin1r23');
     echo("<br />");
           //print_r('. The salt is '.$salt);
