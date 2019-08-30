@@ -239,12 +239,7 @@ $(document).ready(function() {
      window.console && console.log('Mobile device = ' + isMobileDevice);
      var w = $( window ).width();
      window.console && console.log('The window width is = ' + w);
-     adjustDataEntryWindow();
-     // if(isLargeDevice){
-     // } else {
-     //     window.console && console.log('Mobile device = ' + isMobileDevice);
-     //     adjustWindow();
-     // }
+     adjustWindow();
      submitted = false;
      countPosition = 0;
      count_edu =  0;

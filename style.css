@@ -596,25 +596,12 @@ li {
 #main {
     position: absolute;
     top: 2%;
-    border: 1px orange solid;
+    border: 0px orange solid;
 }
-/*#dialog-confirm {
-    width: 200px !important;
-}
-#ui-id-1 {
-  width: 200px !important;
-
-}*/
 div.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-dialog-buttons.ui-draggable {
     box-sizing: border-box !important;
     width: 300px !important;
     margin: auto; !important;
-
-/*
-    left: auto; !important;
-    margin : 5% !important;
-      float: none; !important;*/
-
 }
 #top {
     bottom: 30%;

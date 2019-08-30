@@ -77,7 +77,7 @@ $(document).ready(function() {
   window.console && console.log('Mobile device = ' + isMobileDevice);
   var w = $( window ).width();
   window.console && console.log('The window width is = ' + w);
-  adjustDataEntryWindow();
+  adjustWindow();
 });
 </script>
 </body>

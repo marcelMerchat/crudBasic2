@@ -355,7 +355,7 @@ $(document).ready(function() {
         window.console && console.log('Mobile device = ' + isMobileDevice);
         var w = $( window ).width();
         window.console && console.log('The window width is = ' + w);
-        adjustDataEntryWindow();
+        adjustWindow();
         submitted = false;
         count_position = Number("<?php echo $pos      ?>");
         count_edu =      Number("<?php echo $count_edu ?>");

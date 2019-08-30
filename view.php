@@ -317,7 +317,7 @@ $(document).ready(function() {
   isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
   isLargeDevice = !isMobileDevice;
   window.console && console.log('Mobile device = ' + isMobileDevice);
-  adjustDataEntryWindow();
+  adjustWindow();
 });
   // if(isLargeDevice){
   //   var w = $( window ).width();
