@@ -6,13 +6,13 @@ function doValidate() {
     window.console && console.log('At JSON Dictionary. Tag id is ' + last_text_box);
     var text_info = p.value;
     if ( text_info == null || text_info == "") {
-          triggerAlert("The last entry box you clicked is incomplete. " + eid,true );
+          triggerAlert("At least one entry box is incomplete. ",true );
           flagDataEntryBox(last_text_box);
           return false;
     }
     var text_info = p.value.trim();
     if ( text_info == null || text_info == "") {
-        triggerAlert("The last entry box you visited is still empty. " + eid,true );
+        triggerAlert("The last entry box you clicked is still empty. ",true );
         flagDataEntryBox(last_text_box);
         return false;
     }
