@@ -156,6 +156,15 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
   </form>
 </div>
 <script>
+$(document).ready(function() {
+  window.console && console.log('Document ready called ');
+  isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
+  isLargeDevice = !isMobileDevice;
+  window.console && console.log('Mobile device = ' + isMobileDevice);
+  var w = $( window ).width();
+  window.console && console.log('The window width is = ' + w);
+  adjustDataEntryWindow();
+});
 function doValidate() {
     //console.log('Validating...');
     try {

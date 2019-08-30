@@ -42,7 +42,7 @@ if ( $row === false ) {
 ?>
 </head>
 <body>
-<div class="content center" id="main">
+<div class="center" id="main">
 <br />
 <h3 class="center">Confirm Deletion</h3>
 <br />
@@ -69,5 +69,16 @@ if ( $row === false ) {
 <h2 class="center spacer"><a href="index.php">Cancel</h2>
 </form>
 </div>
+<script>
+$(document).ready(function() {
+  window.console && console.log('Document ready called ');
+  isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
+  isLargeDevice = !isMobileDevice;
+  window.console && console.log('Mobile device = ' + isMobileDevice);
+  var w = $( window ).width();
+  window.console && console.log('The window width is = ' + w);
+  adjustDataEntryWindow();
+});
+</script>
 </body>
 </html>

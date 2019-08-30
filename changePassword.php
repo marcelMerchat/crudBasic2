@@ -130,7 +130,7 @@ if ( isset($_POST['pass'])) {
 <title>Change Password</title>
 </head>
 <body>
-<div class="content center" id="main">
+<div class="center" id="main">
 
 <br />
 <form method="POST">
@@ -160,6 +160,15 @@ if ( isset($_POST['pass'])) {
   </p>
 </div>
 <script>
+$(document).ready(function() {
+  window.console && console.log('Document ready called ');
+  isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
+  isLargeDevice = !isMobileDevice;
+  window.console && console.log('Mobile device = ' + isMobileDevice);
+  var w = $( window ).width();
+  window.console && console.log('The window width is = ' + w);
+  adjustDataEntryWindow();
+});
 function doValidatePass() {
     console.log('Validating...');
     //pss = document.getElementById('id_1723').value;

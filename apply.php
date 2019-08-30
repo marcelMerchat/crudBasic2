@@ -175,6 +175,15 @@ if ( isset($_POST['name'])  || isset($_POST['email'])  ) {
           in any of the form fields, either now or later when logged-in.
       </p>
 <script>
+$(document).ready(function() {
+  window.console && console.log('Document ready called ');
+  isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
+  isLargeDevice = !isMobileDevice;
+  window.console && console.log('Mobile device = ' + isMobileDevice);
+  var w = $( window ).width();
+  window.console && console.log('The window width is = ' + w);
+  adjustDataEntryWindow();
+});
 function doValidate() {
     console.log('Validating...');
     try {

@@ -639,6 +639,13 @@ function adjustWindow(){
       $("#top_left").hide();
       $("#top_right").hide();
   }
+  if (isMobileDevice && w < 1100) {
+      $("#main").css("left", "8%");
+      $("#main").css("right", "8%");
+      $("#main").css("width", "84%");
+      $("#top_left").hide();
+      $("#top_right").hide();
+  }
   if (isLargeDevice && w < 861) {
       $("#main").css("left", "5%");
       $("#main").css("right", "5%");
@@ -646,10 +653,85 @@ function adjustWindow(){
       $("#top_left").css("display", "none");
       $("#top_right").hide();
   }
-  if (w < 761) {
-      //document.getElementById("top_left").style.display = "none";
+  if (w < 490) {
+      window.console && console.log('Found small device; width = ' + w);
+      //$("#main").css("left", "2%");
+      $("#main").css({"left":"2%","right":"2%"});
+      $("#main").each(function () {
+               this.style.setProperty( "width", "96%", "important" );
+      });
+
+      //$("div.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-dialog-buttons.ui-draggable").css("cssText","width : 200px !important;");
+      // $("div.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-dialog-buttons.ui-draggable").each(function () {
+      //        this.style.setProperty( "width", "200px", "important" );
+      // });
+
+      //$("div.#dialog-confirm.ui-dialog-content.ui-widget-content").css({"width":"200px","left":"5%","right":"5%"});
+      //$("div.ui-dialog-buttonpane ui-widget-content ui-helper-clearfix").css({"width":"200px"});
+      //$("div.ui-dialog-content.ui-widget-content").css({"width":"200px","left":"5%","right":"5%"});
+      //$("#message_field").css({"width":"100px","left":"5%","right":"5%"});
+      //$("#message_template").css({"width":"100px","left":"5%","right":"5%"});
+  }
+
+}
+function adjustDataEntryWindow(){
+  //showWidth("shoWidth");
+  //$( "div" ).text( "The width for the " + tagId + " is " + w + "px." );
+  //document.getElementById("main").style.width = "90%";
+  //var ws = window.screen.width;
+  //window.console && console.log('The screen width is = ' + ws);
+  var w = $( window ).width();
+  window.console && console.log('The window width is = ' + w);
+  if ( w > 1100) {
+      $("#main").css("left", "30%");
+      $("#main").css("right", "30%");
+      $("#main").each(function () {
+          this.style.setProperty( "width", "40%");
+          //this.style.setProperty( "width", "40%", "important" );
+      });
+      $("h1").css("font-size", "1.8rem");
+      $(".button-submit").css("font-size", "1.8rem");
+  } else {
       $("#top_left").hide();
       $("#top_right").hide();
   }
-
+  if (w > 900 && w < 1101) {
+      $("#main").css("left", "26%");
+      $("#main").css("right", "26%");
+      $("#main").css("width", "48%");
+      $("h1").css("font-size", "1.7rem");
+      $(".button-submit").css("font-size", "1.7rem");
+  }
+  if (w > 700 && w < 901) {
+      $("#main").css("left", "25%");
+      $("#main").css("right", "25%");
+      $("#main").css("width", "50%");
+      $("h1").css("font-size", "1.6rem");
+      $(".button-submit").css("font-size", "1.6rem");
+  }
+  if (w > 500 && w < 701) {
+      $("#main").css("left", "15%");
+      $("#main").css("right", "15%");
+      $("#main").css("width", "70%");
+      $("h1").css("font-size", "1.5rem");
+      $(".button-submit").css("font-size", "1.5rem");
+  }
+  if (w > 400 && w < 501) {
+      window.console && console.log('Found small device; width = ' + w);
+      $("h1").css("font-size", "1.4rem");
+      $(".button-submit").css("font-size", "1.4rem");
+      $("#main").css({"left":"6%","right":"6%"});
+      $("#main").each(function () {
+               this.style.setProperty( "width", "88%", "important" );
+      });
+  }
+  if (w < 401) {
+      window.console && console.log('Found small device; width = ' + w);
+      $("h1").css("font-size", "1.3rem");
+      $(".button-submit").css("font-size", "1.3rem");
+      $("#main").css({"left":"3%","right":"3%"});
+      $("#main").each(function () {
+               this.style.setProperty( "width", "94%", "important" );
+      });
+  }
 }

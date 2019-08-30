@@ -2,7 +2,7 @@ body {
     min-width: 314px;
 }
 .content {
-    margin: 10px;
+    margin: 0px;
 }
 div.box-input-label {
     width: 32%;
@@ -212,7 +212,7 @@ td {
 }
 #map {
     left: 20%;
-    height: 400px;
+    height: 390px;
     width: 60%;
     max-width: none;
     padding: 0px;

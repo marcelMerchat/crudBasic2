@@ -116,7 +116,7 @@ if (
 ?>
 </head>
 <body>
-<div class="content" id="main">
+<div class="center" id="main">
 <?php
    flashMessages();
 ?>
@@ -237,6 +237,14 @@ $(document).ready(function() {
      isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
      isLargeDevice = !isMobileDevice;
      window.console && console.log('Mobile device = ' + isMobileDevice);
+     var w = $( window ).width();
+     window.console && console.log('The window width is = ' + w);
+     adjustDataEntryWindow();
+     // if(isLargeDevice){
+     // } else {
+     //     window.console && console.log('Mobile device = ' + isMobileDevice);
+     //     adjustWindow();
+     // }
      submitted = false;
      countPosition = 0;
      count_edu =  0;

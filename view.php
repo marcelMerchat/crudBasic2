@@ -30,7 +30,7 @@ session_start();
         height: 1.1em;
         border: 0px solid #008800;
         padding: 0px;
-        margin-top: 0px;
+        margin-top: -4px;
         margin-bottom: 0px;
     }
     div.edu-year-label {
@@ -316,63 +316,63 @@ $(document).ready(function() {
   window.console && console.log('The window width is = ' + w);
   isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
   isLargeDevice = !isMobileDevice;
-  if(isLargeDevice){
-    var w = $( window ).width();
-    window.console && console.log('The window width is = ' + w);
-    if (isLargeDevice &&  w > 1300) {
-         $("#main").css("left", "28%");
-         $("#main").css("right", "28%");
-         $("#main").css("width", "44%");
-    }
-    if (isLargeDevice && w > 1100 && w < 1301) {
-        $("#main").css("left", "24%");
-        $("#main").css("right", "24%");
-        $("#main").css("width", "52%");
-        $("#top_left").hide();
-        $("#top_right").hide();
-    }
-    if (isLargeDevice && w > 850 && w < 1101) {
-        $("#main").css("left", "20%");
-        $("#main").css("right", "20%");
-        $("#main").css("width", "60%");
-        $("#top_left").hide();
-        $("#top_right").hide();
-    }
-    if (isLargeDevice && w > 600 && w < 851) {
-        $("#main").css("left", "10%");
-        $("#main").css("right", "10%");
-        $("#main").css("width", "80%");
-        $("#top_left").hide();
-        $("#top_right").hide();
-    }
-    if (isLargeDevice && w < 601) {
-        $("#main").css("left", "5%");
-        $("#main").css("right", "5%");
-        $("#main").css("width", "90%");
-        $("#top_left").css("display", "none");
-        $("#top_right").hide();
-    }
-  } else {
-      window.console && console.log('Mobile device = ' + isMobileDevice);
-      if (w < 350) {
-        $("#main").css("left", "3%");
-        $("#main").css("right", "3%");
-        $("#main").css("width", "94%");
-      //$("body").css("font-size", "0.9em");
-        $("p").css("font-size", "0.99em");
-        $("h4").css("font-size", "1em");
-        $("li").css("font-size", "0.9em");
-        $("div.container-edu-info").css("font-size", "0.9em");
-        //$("div.edu-info").css({"font-size": "0.8em"});
-        //$("div.job-info").css({"width": "63%","font-size": "0.8em"});
-        $("div.edu-year-label").css({"width": "3rem","font-size": "0.9em"});
-        $("div.job-label").css("width", "5rem");
+  window.console && console.log('Mobile device = ' + isMobileDevice);
+  adjustDataEntryWindow();
+});
+  // if(isLargeDevice){
+  //   var w = $( window ).width();
+  //   window.console && console.log('The window width is = ' + w);
+  //   if (isLargeDevice &&  w > 1300) {
+  //        $("#main").css("left", "28%");
+  //        $("#main").css("right", "28%");
+  //        $("#main").css("width", "44%");
+  //   }
+  //   if (isLargeDevice && w > 1100 && w < 1301) {
+  //       $("#main").css("left", "24%");
+  //       $("#main").css("right", "24%");
+  //       $("#main").css("width", "52%");
+  //       $("#top_left").hide();
+  //       $("#top_right").hide();
+  //   }
+  //   if (isLargeDevice && w > 850 && w < 1101) {
+  //       $("#main").css("left", "20%");
+  //       $("#main").css("right", "20%");
+  //       $("#main").css("width", "60%");
+  //       $("#top_left").hide();
+  //       $("#top_right").hide();
+  //   }
+  //   if (isLargeDevice && w > 600 && w < 851) {
+  //       $("#main").css("left", "10%");
+  //       $("#main").css("right", "10%");
+  //       $("#main").css("width", "80%");
+  //       $("#top_left").hide();
+  //       $("#top_right").hide();
+  //   }
+  //   if (isLargeDevice && w < 601) {
+  //       $("#main").css("left", "5%");
+  //       $("#main").css("right", "5%");
+  //       $("#main").css("width", "90%");
+  //       $("#top_left").css("display", "none");
+  //       $("#top_right").hide();
+  //   }
+  // } else {
+  //     window.console && console.log('Mobile device = ' + isMobileDevice);
+  //     if (w < 350) {
+  //       $("#main").css("left", "3%");
+  //       $("#main").css("right", "3%");
+  //       $("#main").css("width", "94%");
+  //     //$("body").css("font-size", "0.9em");
+  //       $("p").css("font-size", "0.99em");
+  //       $("h4").css("font-size", "1em");
+  //       $("li").css("font-size", "0.9em");
+  //       $("div.container-edu-info").css("font-size", "0.9em");
+  //       //$("div.edu-info").css({"font-size": "0.8em"});
+  //       //$("div.job-info").css({"width": "63%","font-size": "0.8em"});
+  //       $("div.edu-year-label").css({"width": "3rem","font-size": "0.9em"});
+  //       $("div.job-label").css("width", "5rem");
+  //     }
+  // }
 
-
-      }
-  }
-  var tagId = document.getElementById("main");
-  var tagIdcss = $('#main').attr("id");
   // $( "#getmain" ).click(function() {
   // showWidth( "main div", $( "#main" ).width() );
   // });
@@ -382,7 +382,6 @@ $(document).ready(function() {
   // $( "#getd" ).click(function() {
   // showWidth( "document", $( document ).width() );
   // });
-});
 </script>
 </body>
 </html>

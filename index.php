@@ -218,12 +218,11 @@ $(document).ready(function() {
   window.console && console.log('Document ready called ');
   isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
   isLargeDevice = !isMobileDevice;
-  if(isLargeDevice){
-    adjustWindow();
-  } else {
-      window.console && console.log('Mobile device = ' + isMobileDevice);
-  }
-  var tagIdcss = $('#main').attr("id");
+  window.console && console.log('Mobile device = ' + isMobileDevice);
+  var w = $( window ).width();
+  window.console && console.log('The window width is = ' + w);
+  adjustDataEntryWindow();
+  //var tagIdcss = $('#main').attr("id");
   // $( "#getmain" ).click(function() {
   // showWidth( "main div", $( "#main" ).width() );
   // });

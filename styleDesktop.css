@@ -129,7 +129,7 @@ img {
     width: 70%;
 }
 .subject-name {
-    width: 400px;
+    width: 390px;
 }
 /* auto-completion classes */
 .skill {
@@ -161,13 +161,13 @@ img {
     max-width: none;
 }
 th {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
     background-color: #BBDDAA;
 }
 td {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
 }
 #main {
     left: 25%;
@@ -242,7 +242,7 @@ td {
     position: absolute;
     top: 35%;*/
     left: 20%;
-    height: 400px;
+    height: 390px;
     width: 60%;
     max-width: none;
     padding: 0px;

@@ -557,7 +557,11 @@ table {
       margin: auto;
       border: 0px solid #008800;
 }
+tr {
+    line-height: normal;
+}
 th {
+    font-size: 0.9rem;
     color: #008800;
     padding: 3px;
     margin-left: auto ;
@@ -566,10 +570,9 @@ th {
     border-spacing: 0px;
     border: 2px solid #008800;
 }
-tr {
-    line-height: normal;
-}
 td {
+    font-size: 0.86rem;
+    word-break: break-word;
     padding: 3px;
     margin-left: auto ;
     margin-right: auto ;
@@ -591,8 +594,27 @@ li {
     color: #222;
 }
 #main {
+    position: absolute;
     top: 2%;
-    border: 0px orange solid;
+    border: 1px orange solid;
+}
+/*#dialog-confirm {
+    width: 200px !important;
+}
+#ui-id-1 {
+  width: 200px !important;
+
+}*/
+div.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-dialog-buttons.ui-draggable {
+    box-sizing: border-box !important;
+    width: 300px !important;
+    margin: auto; !important;
+
+/*
+    left: auto; !important;
+    margin : 5% !important;
+      float: none; !important;*/
+
 }
 #top {
     bottom: 30%;

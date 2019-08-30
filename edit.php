@@ -99,7 +99,7 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
 ?>
 </head>
 <body>
-    <div class="content" id="main">
+    <div class="center" id="main">
     <h4 class="less-bottom-margin center">Editing profile</h4>
     <div id="dialog-confirm" title="New Message: ">
       <p id="message_field">
@@ -353,8 +353,10 @@ $(document).ready(function() {
         isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
         isLargeDevice = !isMobileDevice;
         window.console && console.log('Mobile device = ' + isMobileDevice);
+        var w = $( window ).width();
+        window.console && console.log('The window width is = ' + w);
+        adjustDataEntryWindow();
         submitted = false;
-
         count_position = Number("<?php echo $pos      ?>");
         count_edu =      Number("<?php echo $count_edu ?>");
         count_skill =   Number("<?php echo $count_skill ?>");
@@ -369,7 +371,6 @@ $(document).ready(function() {
         edu_removed = 0;
         position_removed =  0;
         last_text_box =  'fn';
-        //nextTextBox =  'fn';
         test_box =  'fn';
         audit_array = ["fn","ln","em","pf","gl"];
         //Object o = new Object();
