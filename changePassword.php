@@ -14,11 +14,16 @@ if ( isset($_POST['cancel'] ) ) {
 }
 $_SESSION['success'] = false;
 //  $_SESSION['email'] was set at login
-$email = $_SESSION['email'];
+$email = trim($_SESSION['email']);
 if ( isset($_POST['pass'])) {
-  print_r('Past first if '.$_POST['pass']);
+  //print_r('Past first if '.$_POST['pass']);
   if ( strlen($_POST['pass']) > 7) {
      // If user Name and password fields have entries:
+        if ($email == 'guest@mycompany.com') {
+          $_SESSION['error'] = 'The guest password cannot be changed. ';
+          header( 'Location: login.php' );
+          return;
+        }
         $sql = "SELECT Count(*) FROM users WHERE email = :em";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(array( ':em' => $email));
@@ -29,7 +34,7 @@ if ( isset($_POST['pass'])) {
     //    if($row === false) {
             $_SESSION['error'] = 'That e-mail was not found: Please try again. ';
             error_log('Login failure: '.$_SESSION['email'].' is not in database.');
-            header( 'Location: login.php' );
+            header( 'Location: index.php' );
             return;
         }
     //  Record was found

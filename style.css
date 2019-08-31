@@ -617,7 +617,7 @@ div.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-dialog-butto
     top: 20%;
     left: 30%;
     width: 58%;
-    border: 1px orange solid;
+    border: 0px orange solid;
 }
 #bottom {
     left: 35%;

@@ -16,6 +16,11 @@ if ( isset($_POST['emale'])) {
      unset($_SESSION['user_id']);
      $numErrors = 0;
      $_SESSION['error'] = "";
+     if ($mymail == 'guest@mycompany.com') {
+       $_SESSION['error'] = 'The guest password cannot be changed. ';
+       header( 'Location: login.php' );
+       return;
+     }
   // Validate email
      if (strpos($_POST['emale'], '@') === FALSE ) {
         $_SESSION['error'] = $_SESSION['error'].' Invalid email address'.'. ';
