@@ -10,8 +10,16 @@ body {
 .form-background {
   background-color: rgba(230, 230, 175);
 }
-div {
-    position: relative;
+div.absolute-left {
+    position: absolute;
+    width: 22%;
+    left: 1%;
+    box-sizing: border-box;
+}
+div.absolute-right {
+    position: absolute;
+    width: 22%;
+    right: 1%;
     box-sizing: border-box;
 }
 * {
@@ -20,17 +28,39 @@ div {
 .content {
   margin: 2%;
 }
-.goal-box-layout {
-  display: inline-block;
+div.div-form-group {
   box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 4px;
+  margin: auto; !important;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+    /*-moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;*/
+  width: 100%;
+  border: 1px brown solid;
+}
+div.year-group {
+  box-sizing: border-box;
+  padding: 4px;
+  margin: auto; !important;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+    /*-moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;*/
+  width: 100%;
+  border: 0px brown solid;
+}
+div.no-border {
+  border: 0px;
+}
+div.goal-box-layout {
+  box-sizing: border-box;
+    /*-moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;*/
   padding-left: 1px;
   padding-right: 1px;
-  width: 96%;
   border: 0px blue solid;
+  margin: auto; !important;
 }
 .box-size {
   box-sizing: border-box;
@@ -40,25 +70,37 @@ div {
     box-sizing: border-box;
     padding-top: 3px;
     padding-bottom: 3px;
-    margin-left: auto;
-    margin-right: auto;
 }
 .job-description-box {
     box-sizing: border-box;
     text-align: left;
     word-wrap: break-word;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding-top: 1px;
+    padding-bottom: 1px;
     width: 98%;
+}
+div.container-section {
+    font-size: 1em;
+    box-sizing: border-box;
+    border: 1px solid black;
+    padding: 3px;
+    margin-top: 0.7em;
+    margin-bottom: 3px;
+    margin: auto; !important;
+    width: 100%;
 }
 div.container-form-entry {
     font-size: 1em;
-    width: 99%;
     box-sizing: border-box;
     border: 0px solid black;
     padding: 3px;
-    margin-top: 3px;
+    margin-top: 0.7em;
     margin-bottom: 3px;
+    margin: auto; !important;
+    width: 100%;
+}
+div.center {
+    margin: auto; !important;
 }
 .year-form-input {
     width: 8em;
@@ -91,25 +133,39 @@ div.box-input-label {
     border: 0px solid blue;
     text-align: left;
     padding-left: 0px;
+    width: 6em;
 }
 div.position-input-label {
     border: 0px solid black;
     display: inline-block;
     padding-left: 0px;
 }
+div.input-form {
+  margin: 5px;
+  border-width: 0px;
+  border-color: #FF6600;
+}
+div.short-input-form {
+  width: 4em;
+  margin-right: 1em;
+  border-width: 0px;
+  border-color: #FF6600;
+}
 div.year-input-label {
-    width: 6em;
+    width: 5em;
     text-align: left;
     border: 0px solid blue;
     padding-left: 0px;
     display: inline-block;
+    font-size: 16px;
+    margin: 3px;
 }
 div.short-input-label {
     display: inline-block;
-    width: 4em;
+    width: 3em;
     text-align: left;
-    padding-left: 0px;
 }
+
 div.phrase-input-label {
   width: 6em;
   text-align: left;
@@ -123,11 +179,17 @@ div.profile-input-form {
 div.inline {
     display: inline;
 }
+.float-left {
+    display: inline-block;
+    border: 0px solid blue;
+    float:left
+}
 div.inline-block {
     display: inline-block;
 }
 form {
     padding: 0.2vw;
+    margin: auto; !important;
 }
 h1 {
     color: #008800;
@@ -165,7 +227,8 @@ h5 {
 }
 p {
     color: #1A301A;
-    font-size: 1em;
+    font-size: 0.95em;
+    margin-block-end: 0.6em;
 }
 h5 span {
     color: #1A301A;
@@ -197,6 +260,7 @@ input {
     background-color: rgb(249, 255, 185);
     border: 2px solid #886600;
     font-size: 1em;
+    width: 18em;
 }
 input:-webkit-autofill {
     -webkit-box-shadow:0 0 0 50px #F9FFBA inset; /* Change the color to your own background color */
@@ -210,6 +274,13 @@ input:-internal-autofill-selected {
     background-color: rgb(249, 255, 185) !important;
     background-image: none !important;
     color: rgb(0, 0, 0) !important;
+}
+input.click-plus {
+    width: 2.2em;
+}
+input.year-entry-box {
+    margin: 3px;
+    width: 4em;
 }
 label {
     border: 0px solid #886600;
@@ -244,17 +315,33 @@ img {
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 90%;
-    top: 15px;
+    width: 98%;
+    top: 12px;
+}
+input, textarea, select, button {
+    font-size: 1.01rem;
+    padding: 6px;
+    text-rendering: auto;
+    color: initial;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 1px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
 }
 textarea {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 1em;
-    height: 180px;
+    height: 300px;
+    width: 99.5%;
+    max-width: 650px;
     padding: 3px;
     border: 2px solid #886600;
     /*background-color: #eef;*/
     background-color: rgb(249, 255, 180);
+    box-sizing: border-box;
 }
 /* unvisited link */
 a:link {
@@ -286,6 +373,10 @@ a:hover {
 }
 .left {
     text-align: left;
+}
+div.left {
+    left: 2%;
+    margin: 1%:
 }
 .float-left {
     float: left;
@@ -384,10 +475,61 @@ a:hover {
     background-color: #def;
     margin-top: 4px;
 }
+button.button-small {
+    font-size: 2rem;
+    width: 46px;
+    padding: 2px;
+    border: 1px solid #008800;
+    background-color: #def;
+    margin-top: 4px;
+}
+input.wide-10char {
+    font-size: 1.4rem;
+    text-align: center;
+    width: 5em;
+    padding: 2px;
+    border: 1px solid #008800;
+    background-color: #def;
+    margin-top: 4px;
+}
+input.wide-15char {
+    font-size: 1.2rem;
+    text-align: center;
+    width: 9em;
+    padding: 2px;
+    border: 1px solid #008800;
+    background-color: #def;
+    margin-top: 4px;
+}
+input.wide-20char {
+    font-size: 1.4rem;
+    text-align: center;
+    width: 10em;
+    padding: 2px;
+    border: 1px solid #008800;
+    background-color: #def;
+    margin-top: 4px;
+}
+
 .click-plus {
     text-align: center;
     border: 1px solid #008800;
     background-color: #ffd;
+    width: 2.2em;
+}
+.click-plus-activities {
+    text-align: center;
+    border: 1px solid #008800;
+    background-color: #ffd;
+    width: 6em;
+    margin: 0.5rem;
+}
+.click-plus-activities-input-button {
+    text-align: center;
+    border: 1px solid #008800;
+    background-color: #ffd;
+    width: 6em;
+    margin: 0.5rem;
 }
 .ui-autocomplete-custom {
     background-color: rgb(249, 255, 185);
@@ -412,6 +554,14 @@ a:hover {
     text-align: left;
     padding: 3px;
     box-sizing: border-box;
+}
+.text-box-long {
+    font-size: 1em;
+    border: 2px solid #886600;
+    text-align: left;
+    padding: 3px;
+    box-sizing: border-box;
+    width: 80%;
 }
 .year-entry-box {
     padding: 3px;
@@ -488,12 +638,33 @@ a:hover {
 .more-top-margin {
     margin-top: 4vw;
 }
+div.more-top-margin {
+    margin-top: 4vw;
+}
 .less-top-margin {
     margin-top: 0.2vw;
     margin-block-start: 0.1vw;
 }
 .more-bottom-margin {
     margin-bottom: 1.5em;
+}
+.more-bottom-margin-1x {
+    margin-bottom: 0.5em;
+}
+.more-bottom-margin-1p5x {
+    margin-bottom: 0.75em;
+}
+.more-bottom-margin-2x {
+    margin-bottom: 1em;
+}
+div.more-bottom-margin-2x {
+    margin-bottom: 1em;
+}
+.more-bottom-margin-3x {
+    margin-bottom: 1.5em;
+}
+.no-bottom-margin {
+    margin-bottom: 0.05em;
 }
 .more-line-height-1p5em {
     line-height: 1.5em;
@@ -505,7 +676,7 @@ a:hover {
     line-height: 3em;
 }
 .less-bottom-margin {
-    margin-bottom: 0.1vw;
+    margin-bottom: 0.2vw;
     margin-block-end: 0.1vw;
 }
 .margin-top-small {
@@ -513,6 +684,12 @@ a:hover {
 }
 .margin-bottom-small {
     margin-bottom: 1px;
+}
+.more-margin-1x {
+    margin: 0.5rem;
+}
+.more-top-margin-1x {
+    margin-top: 0.5rem;
 }
 .more-top-margin-2x {
     margin-top: 1.01rem;
@@ -523,7 +700,10 @@ a:hover {
 .zero-bottom-margin {
     margin-bottom: 0px;
 }
-.zero-top-margin {
+input.zero-top-margin {
+    margin-top: 0px;
+}
+div.zero-top-margin {
     margin-top: 0px;
 }
 .div-edu {
@@ -532,11 +712,8 @@ a:hover {
     /*background-color: #FDF0A0;*/
     padding: 10px;
 }
-div.short-input-form {
-  width: 5em;
-  margin-right: 1em;
-  border-width: 0px;
-  border-color: #FF6600;
+.align-content-left {
+    text-align: left;
 }
 .border-top-bottom {
     border-top-style: solid;

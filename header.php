@@ -1,6 +1,5 @@
 <?php
  $mobile = isMobile();
- //require_once 'jquery.php';
  require_once 'timeout.php';
 ?>
 <!-- Latest compiled and minified CSS-->
@@ -34,5 +33,6 @@ Optional theme
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" crossorigin="anonymous">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="style.css">
+<!-- The styleDesktop.css and styleMobile.css stylesheets are included by
+running the PHP methods 'isMobile()' and loadMobilityStyles() in sequence.-->
 <?php
-  loadMobilityStyles();

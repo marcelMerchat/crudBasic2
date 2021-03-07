@@ -112,7 +112,12 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
   <?php
      require_once 'header.php';
   ?>
-  <title>Login</title>
+ <style type="text/css">
+    input {
+        width: 12em;
+    }
+ </style>
+ <title>Login</title>
 </head>
 <body>
 <div class="form center" id="main">
@@ -137,9 +142,9 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
        </div>
      </div>
      <h3 class="more-top-margin-3x center">
-         <input class="button-submit" type="submit" onclick="return doValidate();" value="Login">
+         <button class="button-submit" onclick="return doValidate();">Login</button>
          &nbsp;
-         <input class="button-submit" type="submit" name="cancel" value="Cancel">
+         <button class="button-submit" name="cancel">Cancel</button>
          <!-- doValidate() is a JavaScript function (see script.js) for preliminary validation
              which runs before the post to the website. The server program
              at the website (see util.php) performs a final validation check.-->

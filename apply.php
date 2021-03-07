@@ -158,12 +158,12 @@ if ( isset($_POST['name'])  || isset($_POST['email'])  ) {
            <input class="text-box" type="text" name="email"
                   value='<?= $mymail ?>' id="email"></p>
     </div>
-    <p class="center big double-space">
-            <input class="button-submit" type="submit"
+    <p class="center double-space">
+            <input class="button-submit wide-15char" type="submit"
                    onclick="return validateApplication();"
                    value="Assign My Login">
             &nbsp;
-            <input class="button-submit" type="submit" name="cancel"
+            <input class="button-submit wide-10char" type="submit" name="cancel"
                    value="Cancel">
      </p>
 </form>

@@ -11,11 +11,11 @@ function doValidate() {
           return false;
     }
     var text_info = p.value.trim();
-    if ( text_info == null || text_info == "") {
-        triggerAlert("The last entry box you clicked is still empty. ",true );
-        flagDataEntryBox(last_text_box);
-        return false;
-    }
+    // if ( text_info == null || text_info == "") {
+    //     triggerAlert("The last entry box you clicked is still empty. ",true );
+    //     flagDataEntryBox(last_text_box);
+    //     return false;
+    // }
     //window.console && console.log('info is '+text_info);
     var len = text_info.length;
     myresult = "blank";
@@ -79,6 +79,7 @@ function doValidate() {
    }
    //     skillSet
    skillnum = skill_array.length;
+   //triggerAlert("The skill count is ", skillnum);
    for(i=0; i<skillnum; i++){
      var j = i + 1;
      var field = skill_array[i];
@@ -239,7 +240,7 @@ function doValidate() {
             }
             var num = parseInt(text_info);
             if ( isNaN(num)) {
-                 flagDataEntryBox(field);
+                 flagDaEntryBox(field);
                  triggerAlert("Final Year-" + j +
                      " of the work history requires a 4-digit year.", true);
                  return false;
@@ -275,6 +276,103 @@ function doValidate() {
                return false;
           }
       } // end of for loop for position description
+  return true;
+}
+function doValidateContacts() {
+    submitted = true;
+    var p = document.getElementById(last_text_box);
+    triggerAlert("The last box was ",last_text_box);
+    var eid = '#'+last_text_box;
+    triggerAlert('The contents of ' + p.name + ' are ' + p.value);
+    //var tagId = $(this).attr(id);
+    window.console && console.log('At JSON Dictionary. Tag id is ' + eid);
+    window.console && console.log('The last box was ' + p.id);
+    window.console && console.log('The contents of ' + p.name + ' are ' + p.value);
+    var text_info = p.value;
+    if ( text_info == null || text_info == "") {
+          triggerAlert("At least one entry box is incomplete. ",true );
+          flagDataEntryBox(last_text_box);
+          return false;
+    }
+    var text_info = p.value.trim();
+    // if ( text_info == null || text_info == "") {
+    //     triggerAlert("The last entry box you clicked is still empty. ",true );
+    //     flagDataEntryBox(last_text_box);
+    //     return false;
+    // }
+    //window.console && console.log('info is '+text_info);
+    var len = text_info.length;
+    myresult = "blank";
+    if( Boolean(len > 2) && len > 2){
+        try
+        {
+           window.console && console.log('Ready for ajax ' + len);
+           $.ajax({
+               dataType: "json",
+               url: "jsonLanguage.php?ter"+"m="+text_info,
+               success: function(data) {
+                    myresult = data.first;
+               },
+               async: false
+           });
+           // window.console && console.log('my result is '+ myresult);
+           if (myresult == "bad") {
+              $(eid).css("borderWidth", "2px");
+              $(eid).css("background-color", "bisque");
+              $(eid).css("border-color", "#980200");
+              $(eid).val(text_info+" . . . Language filter was triggered.");
+              triggerAlert("Language filter for the last modified text box was triggered.",true);
+              return false;
+           }
+           $(eid).css("background-color", 'rgb(249, 255, 185)');
+           $(eid).css("borderWidth", "2px");
+           $(eid).css("border-color", "#886600");
+         } catch(e) {
+            triggerAlert("Something went wrong. Please try again.",true);
+            return false;
+         }
+   }
+   phone = document.getElementById('ph').value;
+   addr = document.getElementById('em').value;
+     //profession = document.getElementById('pf').value;
+     //goals = document.getElementById('gl').value;
+   if (addr == null || addr == "" )
+   {
+         triggerAlert("e-mail is required.",true);
+         return false;
+   }
+   phone = phone.trim();
+   addr = addr.trim();
+   if(!validateEmail(form1.email)){
+        // Search with regular expression.
+        // Offensive language check of parts at website.
+        return false;
+   }
+   //     skillSet
+   contactnum = contact_array.length;
+   //triggerAlert("The skill count is ", skillnum);
+   for(i=0; i < contactnum; i++){
+     var j = i + 1;
+     var field = contact_array[i];
+     var p = document.getElementById(field);
+     if (p===null)
+     {
+        continue;
+     }
+     var text_info = p.value;
+     //alert(" For skill "+field+ ", the info is "+ text_info);
+     if ( text_info == null || text_info == "") {
+         triggerAlert("Contact " + field + " is incomplete.", true);
+         flagDataEntryBox(contact_array[i]);
+         return false;
+     }
+     var text_info = p.value.trim();
+     if ( text_info == null || text_info == "") {
+          triggerAlert("A contact is still incomplete.", true);
+          flagDataEntryBox(contact_array[i]);
+          return false;
+     }
+  } // end of for loop
   return true;
 }
 function validateApplication() {
@@ -355,16 +453,6 @@ function checkLanguage(element_id) {
       {
         audit_list[element_id] = -1;
       }
-    // element_exists = document.body.contains(test_box);
-    // if (!element_exists)
-    // {
-    //     if(audit_array.includes(test_box) && (audit_array.length > 1)){
-    //        var index = audit_array.indexOf(test_box);
-    //        audit_array.splice(index, 1);
-    //        test_box = audit_array[0];
-    //     }
-    //     return false;
-    // }
     p = document.getElementById(id=test_box);
     if (p===null)
     {
@@ -383,7 +471,6 @@ function checkLanguage(element_id) {
         }
         return false;
     }
-    thisPhrase = thisPhrase.trim();
     if (thisPhrase == null || thisPhrase == "" )
     {
       if(audit_array.includes(test_box) && (audit_array.length > 1)){
@@ -394,6 +481,9 @@ function checkLanguage(element_id) {
       return false;
     }
     var phrase_len = thisPhrase.length;
+    if(phrase_len > 0) {
+       thisPhrase = thisPhrase.trim();
+    }
     if(phrase_len < 3 || audit_list[test_box]==phrase_len) {
         var index = audit_array.indexOf(test_box);
         if(audit_array.includes(test_box) && (audit_array.length > 1)){
@@ -404,8 +494,8 @@ function checkLanguage(element_id) {
     }
     window.console && console.log("Check language triggered for " + test_box);
     checkJsonDictionary(test_box).then(function(result){
-    eid = '#'+ test_box;
-    if (result == "bad" ) {
+       eid = '#'+ test_box;
+       if (result == "bad" ) {
               window.console && console.log(" processing bad data ... ");
               $(eid).css("borderWidth", "2px");
               $(eid).css("background-color", "bisque");
@@ -421,9 +511,9 @@ function checkLanguage(element_id) {
               window.console && console.log(" New test box will be " + test_box);
               return false;
        }
-        $(eid).css("background-color", 'rgb(249, 255, 185)');
-        $(eid).css("borderWidth", "2px");
-        $(eid).css("border-color", "#886600");
+       $(eid).css("background-color", 'rgb(249, 255, 185)');
+       $(eid).css("borderWidth", "2px");
+       $(eid).css("border-color", "#886600");
         //window.console && console.log(" language filter passed test "+result);
         window.console && console.log(" Good test result for. " + test_box);
         if(audit_array.includes(test_box) && (audit_array.length > 1)){
@@ -525,6 +615,22 @@ function showWidth( ele, w ) {
     triggerAlert(" The shoWidth function was called "+ w, true);
     $( "#shoWidth" ).text( "The width for the " + ele + " is " + w + "px." );
 }
+function makeActivityArray(n){
+    var a = [];
+    for(i=0; i<n; i++){
+        j = i + 1;
+        a[i] = "activity"+j;
+    }
+    return a;
+}
+function makeContactArray(n){
+    var a = [];
+    for(i=0; i<n; i++){
+        j = i + 1;
+        a[i] = "contact_id"+j;
+    }
+    return a;
+}
 function makeSkillArray(n){
     var a = [];
     for(i=0; i<n; i++){
@@ -600,6 +706,24 @@ function deleteSkill(group,field){
     skill_array.splice(index, 1);
     deleteFromAuditList(field);
 }
+function deleteContact(group,field){
+    $(group).remove();
+    contact_removed = contact_removed + 1;
+    var index = contact_array.indexOf(field);
+    contact_array.splice(index, 1);
+    deleteFromAuditList(field);
+}
+function deleteActivity(group, activity_field){
+    //triggerAlert('delete activity', true);
+    $(group).remove();
+    //$('#activity_div1').remove();
+    activity_removed = activity_removed + 1;
+    window.console && console.log('Removed group is = ' + group);
+    window.console && console.log('Removed activity is = ' + activity_field);
+    var index = activity_array.indexOf(activity_field);
+    activity_array.splice(index, 1);
+    deleteFromAuditList(activity_field);
+}
 function deleteEdu(group,schoolfield,award_field){
     $(group).remove();
     edu_removed = edu_removed + 1;
@@ -625,44 +749,38 @@ function deleteJob(group,year1_field, year2_field,orgfield,descfield){
     deleteFromAuditList(descfield);
 }
 function adjustWindow(){
-  //showWidth("shoWidth");
-  //$( "div" ).text( "The width for the " + tagId + " is " + w + "px." );
-  //document.getElementById("main").style.width = "90%";
-  //var ws = window.screen.width;
-  //window.console && console.log('The screen width is = ' + ws);
   var w = $( window ).width();
-  window.console && console.log('The window width is = ' + w);
   if ( w > 1100) {
-      $("#main").css("left", "30%");
-      $("#main").css("right", "30%");
+      $("#main").css("left", "25%");
+      $("#main").css("right", "25%");
       $("#main").each(function () {
-          this.style.setProperty( "width", "40%");
+          this.style.setProperty( "width", "50%");
           //this.style.setProperty( "width", "40%", "important" );
       });
       $("h1").css("font-size", "1.8rem");
-      $(".button-submit").css("font-size", "1.8rem");
+      $(".button-submit").css("font-size", "1.4rem");
   } else {
       $("#top_left").hide();
       $("#top_right").hide();
   }
   if (w > 900 && w < 1101) {
-      $("#main").css("left", "26%");
-      $("#main").css("right", "26%");
-      $("#main").css("width", "48%");
+      $("#main").css("left", "20%");
+      $("#main").css("right", "20%");
+      $("#main").css("width", "60%");
       $("h1").css("font-size", "1.7rem");
       $(".button-submit").css("font-size", "1.7rem");
   }
   if (w > 700 && w < 901) {
-      $("#main").css("left", "25%");
-      $("#main").css("right", "25%");
-      $("#main").css("width", "50%");
+      $("#main").css("left", "10%");
+      $("#main").css("right", "10%");
+      $("#main").css("width", "80%");
       $("h1").css("font-size", "1.6rem");
       $(".button-submit").css("font-size", "1.6rem");
   }
   if (w > 500 && w < 701) {
-      $("#main").css("left", "15%");
-      $("#main").css("right", "15%");
-      $("#main").css("width", "70%");
+      $("#main").css("left", "5%");
+      $("#main").css("right", "5%");
+      $("#main").css("width", "90%");
       $("h1").css("font-size", "1.5rem");
       $(".button-submit").css("font-size", "1.5rem");
   }
@@ -670,9 +788,9 @@ function adjustWindow(){
       window.console && console.log('Found small device; width = ' + w);
       $("h1").css("font-size", "1.4rem");
       $(".button-submit").css("font-size", "1.4rem");
-      $("#main").css({"left":"6%","right":"6%"});
+      $("#main").css({"left":"3%","right":"3%"});
       $("#main").each(function () {
-               this.style.setProperty( "width", "88%", "important" );
+               this.style.setProperty( "width", "94%", "important" );
       });
   }
   if (w < 401) {
@@ -685,13 +803,66 @@ function adjustWindow(){
       });
   }
 }
-//$("div.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-dialog-buttons.ui-draggable").css("cssText","width : 200px !important;");
-// $("div.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-dialog-buttons.ui-draggable").each(function () {
-//        this.style.setProperty( "width", "200px", "important" );
-// });
-
-//$("div.#dialog-confirm.ui-dialog-content.ui-widget-content").css({"width":"200px","left":"5%","right":"5%"});
-//$("div.ui-dialog-buttonpane ui-widget-content ui-helper-clearfix").css({"width":"200px"});
-//$("div.ui-dialog-content.ui-widget-content").css({"width":"200px","left":"5%","right":"5%"});
-//$("#message_field").css({"width":"100px","left":"5%","right":"5%"});
-//$("#message_template").css({"width":"100px","left":"5%","right":"5%"});
+function adjustResumeWindow(){
+  //showWidth("shoWidth");
+  //$( "div" ).text( "The width for the " + tagId + " is " + w + "px." );
+  //document.getElementById("main").style.width = "90%";
+  //var ws = window.screen.width;
+  //window.console && console.log('The screen width is = ' + ws);
+  var w = $( window ).width();
+  window.console && console.log('The window width is = ' + w);
+  if ( w > 1100) {
+      $("#main").css("left", "25%");
+      $("#main").css("right", "25%");
+      $("#main").each(function () {
+          this.style.setProperty( "width", "50%");
+          //this.style.setProperty( "width", "40%", "important" );
+      });
+      $("h1").css("font-size", "1.8rem");
+      $(".button-submit").css("font-size", "1.8rem");
+  } else {
+      $("#top_left").hide();
+      $("#top_right").hide();
+  }
+  if (w > 900 && w < 1101) {
+      $("#main").css("left", "10%");
+      $("#main").css("right", "10%");
+      $("#main").css("width", "80%");
+      $("h1").css("font-size", "1.7rem");
+      $(".button-submit").css("font-size", "1.7rem");
+  }
+  if (w > 700 && w < 901) {
+      $("#main").css("left", "5%");
+      $("#main").css("right", "5%");
+      $("#main").css("width", "90%");
+      $("h1").css("font-size", "1.6rem");
+      $(".button-submit").css("font-size", "1.6rem");
+  }
+  if (w > 500 && w < 701) {
+      $("#main").css("left", "3%");
+      $("#main").css("right", "3%");
+      $("#main").css("width", "94%");
+      $("h1").css("font-size", "1.5rem");
+      $(".button-submit").css("font-size", "1.5rem");
+  }
+  if (w > 400 && w < 501) {
+      window.console && console.log('Found small device; width = ' + w);
+      $("h1").css("font-size", "1.4rem");
+      $(".button-submit").css("font-size", "1.4rem");
+      $(".justify").css("text-align" , "left");
+      $("#main").css({"left":"2%","right":"2%"});
+      $("#main").each(function () {
+               this.style.setProperty( "width", "96%", "important" );
+      });
+  }
+  if (w < 401) {
+      window.console && console.log('Found small device; width = ' + w);
+      $("h1").css("font-size", "1.3rem");
+      $(".button-submit").css("font-size", "1.3rem");
+      $(".justify").css("text-align" , "left");
+      $("#main").css({"left":"3%","right":"3%"});
+      $("#main").each(function () {
+               this.style.setProperty( "width", "94%", "important" );
+      });
+  }
+}

@@ -158,8 +158,8 @@ if ( isset($_POST['pass'])) {
     <p class="center less-bottom-margin less-top-margin"><input class="text-box"  type="password" name="hint" id="id_1723h"></p>
   </div> -->
   <br/>
-      <input class="button-submit" type="submit" onclick="return doValidatePass();" value="Assign Password"/>
-      <input class="button-submit" type="submit" name="cancel" value="Cancel"/>
+      <input class="button-submit wide-15char" type="submit" onclick="return doValidatePass();" value="Assign Password"/>
+      <input class="button-submit wide-10char" type="submit" name="cancel" value="Cancel"/>
 </form>
   <p class="left"> Please enter a password at least 8 characters in length.
   </p>

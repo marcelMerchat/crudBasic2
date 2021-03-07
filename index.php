@@ -73,23 +73,23 @@ div.container-edu-info {
 <?php
 if(! isMobile()) {
     echo
-    '<div id="top_left">
-      <div>
+    '<div class="more-top-margin absolute-left" id="top_left">
+
       <img src="IMG_20151115_150532519PathinPark.jpg">
       <p class="more-top-margin">The path ahead leads into the trees,</p>
       <p>And I wished I could follow it</p>
       <p>long I looked until I dared.</p>
-      </div>
+
       <br />
       <div>
-      <p class="more-top-margin">This is an example of a simple website and database
+      <p class="more-top-margin justify">This is an example of a simple website and database
             that is suitable for a relatively small organization or business
             with less than 50,000 members, but is it modeled for future growth
             into a large organization.
       </p>
       </div>
     </div>
-   <div id="top_right" class="more-top-margin">
+   <div id="top_right" class="more-top-margin absolute-right">
       <img src="IMG_20180919_124000517FlowersinMeadow.jpg">
       <p class="more-top-margin">The beginning usually doesn\'t go well</p>
       <p>and things need time to develop,</p>

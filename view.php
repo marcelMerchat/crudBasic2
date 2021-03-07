@@ -96,7 +96,7 @@ session_start();
         margin-top: 0px;
         margin-bottom: 0px;
         word-break: break-word;
-        width: 65%;
+        width: calc(100% - 6rem);
         min-width: 180px;
         border: 0px solid #888800;
     }
@@ -114,10 +114,16 @@ session_start();
         margin-top: 8px;
     }
     .more-bottom-margin {
-        margin-bottom: 30px;
+        margin-bottom: 10px;
     }
     .more-padding-top-4px {
         margin-top: 4px;
+    }
+    .job-title {
+        color: #008888;
+    }
+    h4 {
+        font-size: 1.2rem;
     }
     ul {
        margin-top: 0px;
@@ -126,26 +132,57 @@ session_start();
       padding-bottom: 0px;
       margin-bottom: 0px;
     }
-    </style>
-    </head>
-    <body>
-      <div class="center" id="main">
+</style>
+</head>
+<body>
+  <div class="center" id="main">
         <br />
 <?php
     $profileid = $_GET['profile_id'];
-    $stmt = $pdo->prepare('SELECT first_name, last_name,
+    $stmt = $pdo->prepare('SELECT first_name, last_name, phone,
                   email, profession, goal FROM Profile WHERE profile_id = :pid');
     $stmt->execute(array(':pid' => $_GET['profile_id']));
     $row =  $stmt->fetch(PDO::FETCH_ASSOC);
-        echo '<p class="center big less-bottom-margin">'.htmlentities($row['first_name']).' '.
+        echo '<h4 class="center big more-bottom-margin">'.htmlentities($row['first_name']).' '.
                               htmlentities($row['last_name']).'
-              </p><p class="center">'.
+              </h4><h4 class="center more-bottom-margin">'.
                                htmlentities($row['profession']).
-              '</p>';
-        echo '<p class="center small more-top-margin">Email: '.htmlentities($row['email']).'</p>';
+              '</h4>';
+    $sqlContactCount = 'SELECT COUNT(*) FROM ContactList WHERE profile_id = :pid';
+    $stmtCount = $pdo->prepare($sqlContactCount);
+    $stmtCount->execute(array(':pid' => $_GET['profile_id']) );
+    $contactrows = $stmtCount->fetch(PDO::FETCH_ASSOC);
+    $contact_cnt = array_values($contactrows)[0];
+
+    //if( $length !== 0) {
+    if( $contact_cnt  > 0) {
+        $sqlContactList = 'SELECT contact_id FROM ContactList WHERE profile_id = :pid';
+        $stmt_contactList = $pdo->prepare($sqlContactList);
+        $stmt_contactList->execute(array(':pid' => $_GET['profile_id']));
+        $contactList = $stmt_contactList->fetchALL(PDO::FETCH_ASSOC);
+      // school id list
+        $contact_list_rows = $contactList;
+        $length_contact_list_rows = count($contact_list_rows);
+
+        echo '<p class="center small less-bottom-margin">e-mail: '
+             .htmlentities($row['email']).' | phone: '.htmlentities($row['phone']);
+        for ($i = 0; $i < $length_contact_list_rows; $i++){
+           $contact_id = $contact_list_rows[$i]['contact_id'];
+           $sqlContact = 'SELECT info FROM Contact WHERE contact_id = :iid';
+           $stmt_contact = $pdo->prepare($sqlContact);
+           $stmt_contact->execute(array(':iid' =>   $contact_id));
+           $contactrow = $stmt_contact->fetch(PDO::FETCH_ASSOC);
+           //$skill = array_values($skillrow)[0];
+           echo ' | '.htmlentities($contactrow['info']);
+        }
+        echo '</p>';
+    }
+
+
+
         //echo '<br />';
-        echo '<h4>Goals</h4>';
-        echo '<p class="job-description-box">'.htmlentities($row['goal']).'</p>';
+        echo '<h4 class="more-top-margin-3x">Goals</h4>';
+        echo '<p class="job-description-box justify">'.htmlentities($row['goal']).'</p>';
 
         $sqlSkillCount = 'SELECT COUNT(*) FROM SkillSet WHERE profile_id = :pid';
         $stmtCount = $pdo->prepare($sqlSkillCount);
@@ -173,15 +210,6 @@ session_start();
                //$skill = array_values($skillrow)[0];
                echo '<li class="job-description-box left">'.htmlentities($skillrow['name']).' &nbsp;&nbsp;&nbsp; </li>';
             }
-            // $sqlSkill = 'SELECT name FROM Skill WHERE skill_id = :iid';
-            // $stmt_skillname = $pdo->prepare($sqlSkill);
-            // $stmt_skillname->execute(array(':iid' => $_GET['profile_id']));
-            // $skillrows = $stmt_skillname->fetch(PDO::FETCH_ASSOC);
-            // $length = count($skillrows);
-            // for ($i = 0; $i < $length; $i++){
-            //     $skill = $skillrows['skill'];
-            //     echo '<li>'.htmlentities($skill).' &nbsp;&nbsp;&nbsp; </li>';
-            // }
             echo '</ul>';
         } else {
               //echo '<p style="color:orange">No skills found</p>';
@@ -262,45 +290,70 @@ session_start();
         } else {
               //echo '<p style="color:orange">No education found</p>';
         }
-  $sql = 'SELECT yearStart, yearLast, organization, description FROM Position WHERE profile_id = :pid';
+// Positions
+  $sql = 'SELECT position_id, yearStart, yearLast, organization, title, summary FROM Position WHERE profile_id = :pid';
   $stmt_positions = $pdo->prepare($sql);
   $stmt_positions->execute(array(':pid' => $_GET['profile_id']));
   $row = $stmt_positions->fetchALL(PDO::FETCH_ASSOC);
   $rows = array_values($row);
+  //$position_array = array_values($position_id);
+  // $rows is a key-value pair array
   $worklength = count($rows);
+  echo '<h4 class="more-top-margin-2x more-bottom-margin-1p5x">Employment History</h4>';
   if($worklength > 0) {
-      echo '<h4>Employment History</h4>';
-      foreach($rows as $job){
-
-               echo '<div class="container-edu-info">
+        foreach($rows as $job){
+          //$task_id = $activity_rows[$i]['activity_id'];
+          $position_id = $job['position_id'];
+          echo '<div class="container-edu-info more-top-margin">
                        <div class="edu-row1">';
                              //if($year > 0){
-               echo          '<div class="job-label">'
+          echo          '<div class="job-label job-title">'
                                      .htmlentities($job['yearStart'])
                                      .'-'
                                      .htmlentities($job['yearLast'])
                              .'</div>';
-                             //} else {
-               //echo              '<div class="job-label" style="font-size: 26px;"> &#9642</div>';
-               // &#8226 for round bullet
-                             //}
-               echo          '<div class="job-info">'
-                                 .'<div>'
-                                  .'<p class="zero-bottom-margin">'
+          echo          '<div class="job-info">'  // &#8226 for round bullet
+                           .'<div>'  // &#9642
+                               .'<p class="job-title">'
                                    .htmlentities($job['organization'])
-                                  .'</p>'
-                                .'</div><div class="job-desc">'
-                                  .'<p class="job-description-box">'
-                                           .htmlentities($job['description'])
-                                  .'</p>'
-                              .'</div>'
+                               .'</p>'.'<p class="job-title">'
+                                   .htmlentities($job['title'])
+                               .'</p>'
+                           .'</div><div class="job-desc">'
+                               .'<p class="job-description-box justify">'
+                                           .htmlentities($job['summary'])
+                               .'</p>';
+                                  //echo '<h4 class="less-bottom-margin">Job Skills</h4>';
+          echo '<ul class="less-top-margin">';
+          $sqlActivitySet = 'SELECT activity_id FROM Activity
+                       WHERE profile_id = :pid AND position_id = :posid';
+          $stmt_activitySet = $pdo->prepare($sqlActivitySet);
+          $stmt_activitySet->execute(array(':pid' => $_GET['profile_id'],
+                                         ':posid' => $position_id));
+          $activityList = $stmt_activitySet->fetchALL(PDO::FETCH_ASSOC);
+       // activity list
+          $activity_rows = $activityList;
+          $length = count($activity_rows);
+          for ($i = 0; $i < $length; $i++){
+              $task_id = $activity_rows[$i]['activity_id'];
+              $sqlActivity = 'SELECT description FROM Activity
+                      WHERE profile_id = :pid AND position_id = :posid AND
+                          activity_id = :aid';
+              $stmt_activityname = $pdo->prepare($sqlActivity);
+              $stmt_activityname->execute(array(':pid' =>   $_GET['profile_id'],
+                      ':posid' =>   $position_id, ':aid' =>   $task_id));
+              $taskrow = $stmt_activityname->fetch(PDO::FETCH_ASSOC);
+                                     //$skill = array_values($skillrow)[0];
+           echo '<li class="job-description-box justify">'.htmlentities($taskrow['description']).'</li>';
+        }
+        echo '</ul>'
                             .'</div>'
-                           .'</div>'
-
-                   .'</div>';
+                        .'</div>'
+                    .'</div>'
+               .'</div>';
         }
   } else {
-        //echo '<p style="color:orange">No positions found</p>';
+        //<p style="color:orange">No positions found</p>
   }
 ?>
 <p class="double-space center"><a href="index.php">Return to Main Page</a>
@@ -319,69 +372,6 @@ $(document).ready(function() {
   window.console && console.log('Mobile device = ' + isMobileDevice);
   adjustWindow();
 });
-  // if(isLargeDevice){
-  //   var w = $( window ).width();
-  //   window.console && console.log('The window width is = ' + w);
-  //   if (isLargeDevice &&  w > 1300) {
-  //        $("#main").css("left", "28%");
-  //        $("#main").css("right", "28%");
-  //        $("#main").css("width", "44%");
-  //   }
-  //   if (isLargeDevice && w > 1100 && w < 1301) {
-  //       $("#main").css("left", "24%");
-  //       $("#main").css("right", "24%");
-  //       $("#main").css("width", "52%");
-  //       $("#top_left").hide();
-  //       $("#top_right").hide();
-  //   }
-  //   if (isLargeDevice && w > 850 && w < 1101) {
-  //       $("#main").css("left", "20%");
-  //       $("#main").css("right", "20%");
-  //       $("#main").css("width", "60%");
-  //       $("#top_left").hide();
-  //       $("#top_right").hide();
-  //   }
-  //   if (isLargeDevice && w > 600 && w < 851) {
-  //       $("#main").css("left", "10%");
-  //       $("#main").css("right", "10%");
-  //       $("#main").css("width", "80%");
-  //       $("#top_left").hide();
-  //       $("#top_right").hide();
-  //   }
-  //   if (isLargeDevice && w < 601) {
-  //       $("#main").css("left", "5%");
-  //       $("#main").css("right", "5%");
-  //       $("#main").css("width", "90%");
-  //       $("#top_left").css("display", "none");
-  //       $("#top_right").hide();
-  //   }
-  // } else {
-  //     window.console && console.log('Mobile device = ' + isMobileDevice);
-  //     if (w < 350) {
-  //       $("#main").css("left", "3%");
-  //       $("#main").css("right", "3%");
-  //       $("#main").css("width", "94%");
-  //     //$("body").css("font-size", "0.9em");
-  //       $("p").css("font-size", "0.99em");
-  //       $("h4").css("font-size", "1em");
-  //       $("li").css("font-size", "0.9em");
-  //       $("div.container-edu-info").css("font-size", "0.9em");
-  //       //$("div.edu-info").css({"font-size": "0.8em"});
-  //       //$("div.job-info").css({"width": "63%","font-size": "0.8em"});
-  //       $("div.edu-year-label").css({"width": "3rem","font-size": "0.9em"});
-  //       $("div.job-label").css("width", "5rem");
-  //     }
-  // }
-
-  // $( "#getmain" ).click(function() {
-  // showWidth( "main div", $( "#main" ).width() );
-  // });
-  // $("#getw").click(function() {
-  // showWidth( "window", $( window ).width() );
-  // });
-  // $( "#getd" ).click(function() {
-  // showWidth( "document", $( document ).width() );
-  // });
 </script>
 </body>
 </html>

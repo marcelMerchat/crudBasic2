@@ -246,6 +246,7 @@ CREATE TABLE Profile (
    first_name VARCHAR(128),
    last_name VARCHAR(128),
    email VARCHAR(128),
+   phone VARCHAR(128),
    profession VARCHAR(128),
    goal Text,
 
@@ -256,22 +257,56 @@ CREATE TABLE Profile (
    ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB CHARSET=utf8;
 
-INSERT INTO Profiles (user_id, first_name, last_name, email, profession, goal)
+ALTER TABLE `Profile` ADD `phone` VARCHAR(128) AFTER email;
+
+INSERT INTO Profile (user_id, first_name, last_name, email, profession, goal)
            VALUES (1, 'Elvis', 'Presley', 'epresley@musicland.com', 'great singer', 'Changed America') ;
 INSERT INTO Profile (user_id, first_name, last_name, email, profession, goal)
             VALUES (1, 'Marilyn', 'Monroe', 'mmonroe@hollyland.com', 'great actress', 'America Icon, Changed the world.') ;
-INSERT INTO Profiles (user_id, first_name, last_name, email, profession, goal)
+INSERT INTO Profile (user_id, first_name, last_name, email, profession, goal)
                             VALUES (1, 'U', 'MSI', 'umsi@umich.edu', 'great coach', 'Inspiration to students') ;
+
+#######################################################################
+
+CREATE TABLE Contact (
+  contact_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  info VARCHAR(128) NOT NULL DEFAULT '',
+  INDEX(info)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO Contact (info) VALUES ('Joe 773-000-9999');
+
+#######################################################################
+
+Many-to-Many table:
+
+CREATE TABLE ContactList(
+  profile_id INTEGER,
+  contact_id INTEGER,
+  rank INTEGER,
+
+  CONSTRAINT contactset_ibfk_1
+  FOREIGN KEY (profile_id)
+  REFERENCES Profile (profile_id)
+  ON DELETE CASCADE ON UPDATE CASCADE,
+
+  CONSTRAINT contactset_ibfk_2
+  FOREIGN KEY (contact_id)
+  REFERENCES Contact (contact_id)
+  ON DELETE CASCADE ON UPDATE CASCADE,
+
+  PRIMARY KEY(profile_id, contact_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 #######################################################################
 
 CREATE TABLE Skill (
   skill_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(128) NOT NULL DEFAULT '',
-  profile_id INTEGER,
-  description VARCHAR(255),
-  INDEX(description)
+  INDEX(name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO Skill (name) VALUES ('Inspiration to students');
 
 #######################################################################
 
@@ -419,11 +454,12 @@ ON DELETE CASCADE ON UPDATE CASCADE;
 CREATE TABLE Position (
   position_id INTEGER NOT NULL AUTO_INCREMENT,
   profile_id INTEGER,
-  rank INTEGER,
+  job_rank INTEGER,
   yearStart INTEGER,
   yearLast INTEGER,
   organization VARCHAR(128),
-  description TEXT,
+  title VARCHAR(128),
+  summary TEXT,
   PRIMARY KEY(position_id),
 
   CONSTRAINT position_ibfk_1
@@ -432,7 +468,38 @@ CREATE TABLE Position (
   ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE `Position` ADD `title` VARCHAR(128) AFTER `organization`;
+VERSION 8: ALTER TABLE `Position` RENAME COLUMN `description` TO `summary`;
+ALTER TABLE `Position` CHANGE `description`  `summary` TEXT;
+
 ######################################################################
+
+Many-to-Many table between Job Positions and Activities
+
+CREATE TABLE Activity (
+  activity_id INTEGER NOT NULL AUTO_INCREMENT,
+  profile_id INTEGER,
+  position_id INTEGER,
+  description TEXT,
+  activity_rank INTEGER,
+
+  CONSTRAINT activitylist_ibfk_1
+  FOREIGN KEY (profile_id)
+  REFERENCES Profile (profile_id)
+  ON DELETE CASCADE ON UPDATE CASCADE,
+
+  CONSTRAINT activitylist_ibfk_2
+  FOREIGN KEY (position_id)
+  REFERENCES Position (position_id)
+  ON DELETE CASCADE ON UPDATE CASCADE,
+
+  PRIMARY KEY(activity_id, profile_id, position_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `ActivityList` ADD `position_id` INT NOT NULL AFTER `activity_id`;
+ALTER TABLE `ActivityList` RENAME `Activity`;
+
+#######################################################################
 
 drop table if exists Dictionary;
 
@@ -454,7 +521,7 @@ Ubuntu for Windows-10: /var/lib/mysql-files
 Copy it to the folder with a command like this:
 sudo cp /mnt/c/ProgramData/MySQL/"MySQL Server 5.7"/Uploads/dictionary.csv /var/lib/mysql-files
 
-MySQL Command to fill Dictionary table.
+MySQL Command to fill Dictionary table with file data.
 
 LOAD DATA INFILE '/var/lib/mysql-files/dictionary.csv'
 INTO TABLE Dictionary
@@ -462,6 +529,28 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
+
+
+INSERT INTO Dictionary (Word, Freq) VALUES ('analysis,',0);
+INSERT INTO Dictionary (Word, Freq) VALUES ('analysis.',0);
+INSERT INTO Dictionary (Word, Freq) VALUES ('analysis?',0);
+
+
+INSERT INTO Dictionary (Word, Freq) VALUES ('scraps',0);
+INSERT INTO Dictionary (Word, Freq) VALUES  ('scraps',0);
+INSERT INTO Dictionary (Word, Freq) VALUES ('scraps,',0);
+INSERT INTO Dictionary (Word, Freq) VALUES ('scraps.',0);
+INSERT INTO Dictionary (Word, Freq) VALUES ('scraps?',0);
+
+INSERT INTO Dictionary (Word, Freq) VALUES  ('scraped',0);
+INSERT INTO Dictionary (Word, Freq) VALUES ('scraped,',0);
+INSERT INTO Dictionary (Word, Freq) VALUES ('scraped.',0);
+INSERT INTO Dictionary (Word, Freq) VALUES ('scraped?',0);
+
+INSERT INTO Dictionary (Word, Freq) VALUES ('scraped',0);
+INSERT INTO Dictionary (Word) VALUES ('scrap');
+UPDATE Dictionary SET Freq = 0 WHERE Dictionary.Word = 'scrap'
+
 
 #########################################################################
 
@@ -471,6 +560,84 @@ CREATE TABLE Offensive (
    word VARCHAR(128)
 
 ) ENGINE=InnoDB CHARSET=utf8;
+
+INSERT INTO Offensive (word) VALUES ('anal');
+INSERT INTO Offensive (word) VALUES ('anus');
+INSERT INTO Offensive (word) VALUES ('arse');
+INSERT INTO Offensive (word) VALUES ('ass');
+INSERT INTO Offensive (word) VALUES ('ballsack');
+INSERT INTO Offensive (word) VALUES ('balls');
+INSERT INTO Offensive (word) VALUES ('bastard');
+INSERT INTO Offensive (word) VALUES ('bitch');
+INSERT INTO Offensive (word) VALUES ('biatch');
+INSERT INTO Offensive (word) VALUES ('bloody');
+INSERT INTO Offensive (word) VALUES ('blowjob');
+INSERT INTO Offensive (word) VALUES ('blow job');
+INSERT INTO Offensive (word) VALUES ('bollock');
+INSERT INTO Offensive (word) VALUES ('bollok');
+INSERT INTO Offensive (word) VALUES ('boner');
+INSERT INTO Offensive (word) VALUES ('boob');
+INSERT INTO Offensive (word) VALUES ('bugger');
+INSERT INTO Offensive (word) VALUES ('bum');
+INSERT INTO Offensive (word) VALUES ('butt');
+INSERT INTO Offensive (word) VALUES ('buttplug');
+INSERT INTO Offensive (word) VALUES ('clitoris');
+INSERT INTO Offensive (word) VALUES ('cock');
+INSERT INTO Offensive (word) VALUES ('coon');
+INSERT INTO Offensive (word) VALUES ('crap');
+INSERT INTO Offensive (word) VALUES ('cunt');
+INSERT INTO Offensive (word) VALUES ('damn');
+INSERT INTO Offensive (word) VALUES ('dick');
+INSERT INTO Offensive (word) VALUES ('dildo');
+INSERT INTO Offensive (word) VALUES ('dyke');
+INSERT INTO Offensive (word) VALUES ('fag');
+INSERT INTO Offensive (word) VALUES ('feck');
+INSERT INTO Offensive (word) VALUES ('fellate');
+INSERT INTO Offensive (word) VALUES ('fellatio');
+INSERT INTO Offensive (word) VALUES ('felching');
+INSERT INTO Offensive (word) VALUES ('fuck');
+INSERT INTO Offensive (word) VALUES ('f u c k');
+INSERT INTO Offensive (word) VALUES ('fudgepacker');
+INSERT INTO Offensive (word) VALUES ('fudge packer');
+INSERT INTO Offensive (word) VALUES ('flange');
+INSERT INTO Offensive (word) VALUES ('Goddamn');
+INSERT INTO Offensive (word) VALUES ('God damn');
+INSERT INTO Offensive (word) VALUES ('hell');
+INSERT INTO Offensive (word) VALUES ('homo');
+INSERT INTO Offensive (word) VALUES ('jerk');
+INSERT INTO Offensive (word) VALUES ('jizz');
+INSERT INTO Offensive (word) VALUES ('knobend');
+INSERT INTO Offensive (word) VALUES ('knob end');
+INSERT INTO Offensive (word) VALUES ('labia');
+INSERT INTO Offensive (word) VALUES ('lmao');
+INSERT INTO Offensive (word) VALUES ('lmfao');
+INSERT INTO Offensive (word) VALUES ('muff');
+INSERT INTO Offensive (word) VALUES ('nigger');
+INSERT INTO Offensive (word) VALUES ('nigga');
+INSERT INTO Offensive (word) VALUES ('omg');
+INSERT INTO Offensive (word) VALUES ('penis');
+INSERT INTO Offensive (word) VALUES ('piss');
+INSERT INTO Offensive (word) VALUES ('poop');
+INSERT INTO Offensive (word) VALUES ('prick');
+INSERT INTO Offensive (word) VALUES ('pube');
+INSERT INTO Offensive (word) VALUES ('pussy');
+INSERT INTO Offensive (word) VALUES ('queer');
+INSERT INTO Offensive (word) VALUES ('scrotum');
+INSERT INTO Offensive (word) VALUES ('sex');
+INSERT INTO Offensive (word) VALUES ('shit');
+INSERT INTO Offensive (word) VALUES ('s hit');
+INSERT INTO Offensive (word) VALUES ('sh1t');
+INSERT INTO Offensive (word) VALUES ('slut');
+INSERT INTO Offensive (word) VALUES ('smegma');
+INSERT INTO Offensive (word) VALUES ('spunk');
+INSERT INTO Offensive (word) VALUES ('tit');
+INSERT INTO Offensive (word) VALUES ('tosser');
+INSERT INTO Offensive (word) VALUES ('turd');
+INSERT INTO Offensive (word) VALUES ('twat');
+INSERT INTO Offensive (word) VALUES ('vagina');
+INSERT INTO Offensive (word) VALUES ('wank');
+INSERT INTO Offensive (word) VALUES ('whore');
+INSERT INTO Offensive (word) VALUES ('wtf');
 
 #########################################################################
 
@@ -496,3 +663,22 @@ the folder to the Ubuntu server folder.
 #########################################################################
 
 THE END
+
+junk
+<script id="activity-template" type="text">
+  <div id="activity_div@COUNT@">
+    <input
+     class="activity ui-autocomplete-custom
+            text-box max-entry-box-width"
+     name="job_task@COUNT@"
+     id="activity@COUNT@"/>
+   <p class="less-top-margin box-input-label
+             less-bottom-margin">
+      Delete preceeding activity: <input
+      type="button" class="click-plus" value="-"
+      onclick="deleteActivity(
+        '#activity_div@COUNT@',
+        'activity@COUNT@');
+        return false;"/></p>
+  </div>
+</script>

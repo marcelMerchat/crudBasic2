@@ -156,14 +156,14 @@ function validate_year($year_string){
           return true;
        } else {
           $_SESSION['message'] = $_SESSION['message']
-              .' Please enter a 4-digit year. ';
+               .' Please enter a 4-digit year. ';
           store_error_messages();
           return false;
        }
   } else {
-     $_SESSION['message'] = $_SESSION['message']
-       .' A 4-digit year is required. ';
-     store_error_messages();
+     // $_SESSION['message'] = $_SESSION['message']
+     //   .' A 4-digit year is required. ';
+     // store_error_messages();
      return false;
   }
   return false;
@@ -348,6 +348,60 @@ function insertProfile($pdo,$isUpdate) {
         return true;
     }
 }
+function insertEmail($pdo,$isUpdate) {
+    if
+     ( ! isset($_POST['email']) ||
+       ! strlen($_POST['email']) > 0
+     )
+     {
+       $_SESSION['message'] = $_SESSION['message']
+                .' E-mail address is required. ';
+       store_error_messages();
+       return false;
+     } else {
+        $e_m = trim($_POST['email']);
+        $valid_email = validateEmail($pdo);
+        $valid = $valid_email;
+        if(! $valid ) {
+            store_error_messages();
+            return false;
+        }
+        $sql = 'UPDATE Profile SET email = :em
+              WHERE profile_id = :pid';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(
+             ':em' => $e_m,
+             ':pid' => $_POST['profile_id']));
+        return true;
+    }
+}
+function insertPhone($pdo,$isUpdate) {
+    if
+     ( ! isset($_POST['phone']) ||
+       ! strlen($_POST['phone']) > 0
+     )
+     {
+       $_SESSION['message'] = $_SESSION['message']
+                .' No phone number was provided. ';
+       store_error_messages();
+       return false;
+     } else {
+        $phone = trim($_POST['phone']);
+        $valid_phone = true; // validateEmail($pdo);
+        $valid = $valid_phone;
+        if(! $valid ) {
+            store_error_messages();
+            return false;
+        }
+        $sql = 'UPDATE Profile SET phone = :ph
+              WHERE profile_id = :pid';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(
+             ':ph' => $phone,
+             ':pid' => $_POST['profile_id']));
+        return true;
+    }
+}
 function insertProfession($profile_id,$pdo,$isUpdate) {
     $prof = trim($_POST['profession']);
     $valid = get_text_input_validation('profession','profession',$pdo);
@@ -373,6 +427,95 @@ function insertProfessionalGoals($profile_id,$pdo,$isUpdate) {
   $stmt->execute(array(
             ':goal' => $g_l, ':pid' => $profile_id ) );
   return $valid;
+}
+
+function insertContactList($profile_id,$pdo) {
+    $rank = 1;
+    for($i=1; $i<=5; $i++) {
+      $field_name = 'contact'.$i;
+      if ( ! isset($_POST[$field_name]) ){
+          continue;
+      }
+      //$_SESSION['message'] = $_SESSION['message']
+        //                   .$field_name. ' is set with value '.$_POST[$field_name];
+        //store_error_messages();
+
+      $info = trim($_POST[$field_name]);
+      if ( ! strlen($info) > 0){
+        $_SESSION['message'] = $_SESSION['message']
+                             .' trimmed too short: '.$field_name;
+          store_error_messages();
+          continue;
+      }
+      $text_insert = 'Contact-'.$i;
+      $valid = get_text_input_validation($field_name,$text_insert,$pdo);
+      if ( ! $valid) {
+          $_SESSION['message'] = $_SESSION['message']
+                               .' Contact-'.$i.' was rejected for '
+                               .': '.$_POST[$field_name].'; ';
+          store_error_messages();
+          continue;
+      }
+      //$_SESSION['message'] = $_SESSION['message']
+        //                   .' Contact info was validated for '
+          //                 .': '.$_POST[$field_name].'; ';
+      //store_error_messages();
+  //  lookup the contact in the Contacts Table
+      $sql = 'SELECT COUNT(*) FROM Contact WHERE info = :info';
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute(array(':info' => $info) );
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      $cnt = (int) array_values($row)[0];
+      //  If the contact already exists, retrieve it using the Contacts ID number.
+      $contact_id = false;
+      if($cnt > 0) {
+          //$_SESSION['message'] = $_SESSION['message']
+            //                 .' Positive count exists:  ';
+          //store_error_messages();
+          $sql = 'SELECT contact_id FROM Contact WHERE info = :info';
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute(array(':info' => $info) );
+          $row = $stmt->fetch(PDO::FETCH_ASSOC);
+          $contact_id = $row['contact_id'] + 0;
+          //$_SESSION['message'] = $_SESSION['message'].' Found contact with id = '
+            //               .$contact_id;
+          //store_error_messages();
+      }
+  //  Look for duplicate contact
+      $sqldup = 'SELECT COUNT(*) FROM ContactList WHERE profile_id = :pid AND contact_id = :cid';
+      $stmtdup = $pdo->prepare($sqldup);
+      $stmtdup->execute(array(':pid' => $profile_id, ':cid' => $contact_id) );
+      $rowcountdup = $stmtdup->fetch(PDO::FETCH_ASSOC);
+      $cntduplicate = (int) array_values($rowcountdup)[0];
+      if ($cntduplicate > 0){
+        //$_SESSION['message'] = $_SESSION['message'].' Duplicate contact found'
+          // .' for "'.$contact.'". ';
+           //' ('.$cntduplicate.'). ';
+        // store_error_messages();
+        continue;
+      }
+  //  if contact does not exist in Contact table, insert it
+      if($cnt === 0) {
+          $sql = 'INSERT INTO Contact (info) VALUES (TRIM(:info))';
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute(array(':info' => $info) );
+          // Retrieve the newly assigned skill_id
+          $contact_id = $pdo->lastInsertId() + 0;
+      }
+      //$_SESSION['message'] = $_SESSION['message']
+        //                 .' Ready for insertion:  '.$contact_id;
+      //store_error_messages();
+      if (is_numeric($contact_id) && $contact_id > 0 ) {
+          $sql = 'INSERT INTO ContactList(profile_id, contact_id, `rank`)
+                    VALUES ( :pid, :cid, :rnk)';
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute(array(
+                  ':pid' => $profile_id, ':cid' => $contact_id,
+                  ':rnk' => $rank ) );
+          $rank++;
+      }
+      }
+      return true;
 }
 // InsertSkillSet is always an INSERT MYSQL COMMAND
 // because the old set is always erased first
@@ -467,25 +610,27 @@ function insertSkillSet($profile_id,$pdo) {
                   ':rnk' => $rank ) );
           $rank++;
       }
-      }
       store_error_messages();
       return true;
+   }
 }
 // InsertEducation is always an INSERT MYSQL COMMAND
 // because the old set is always erased first
 function insertEducations($profile_id,$pdo) {
   $rank = 0;
+  //print_r('Inserting education');
   for( $i=1 ; $i <= 9 ; $i++) {
     $year_field = 'edu_year'.$i;
     $school_field_name = 'edu_school'.$i;
     $award_field_name = 'edu_award'.$i;
-    print_r('The posted award is '.$_POST[$award_field_name]);
+    //print_r('The posted award is '.$_POST[$award_field_name]);
     if ( ! (
              isset($_POST[$school_field_name]) &&
              isset($_POST[$award_field_name])
            )
        )
     {
+        //print_r('Nothing posted '.$i);
         continue;
     }
     $school = trim($_POST[$school_field_name]);
@@ -514,7 +659,6 @@ function insertEducations($profile_id,$pdo) {
       store_error_messages();
       continue;
     }
-    //print_r($award);
     $text_insert = 'award for Education-'.$i;
     $valid_award = get_text_input_validation($award_field_name ,$text_insert,$pdo);
     if( ! ($valid_award===true)){
@@ -627,13 +771,13 @@ function insertEducations($profile_id,$pdo) {
               $year_string = trim($_POST['edu_year'.$i]);
               $valid_yr = validate_year($year_string);
               if ( ! $valid_yr ) {
-                      $_SESSION['message'] = $_SESSION['message']
-                          .' Please check the year for Education-'.$i
-                          .' for '.$school.'.'
-                          .' When a year is not provided for an education,'
-                          .' it is removed for all education in the resume'
-                          .' view. The year for any other education is still'
-                          .' saved in the database if it was submitted. ';
+                      // $_SESSION['message'] = $_SESSION['message']
+                      //     .' Please check the year for Education-'.$i
+                      //     .' for '.$school.'.'
+                      //     .' When a year is not provided for an education,'
+                      //     .' it is removed for all education in the resume'
+                      //     .' view. The year for any other education is still'
+                      //     .' saved in the database if it was submitted. ';
               } else {
                  $year_int = get_year($year_string,' ');
               }
@@ -658,13 +802,109 @@ function insertEducations($profile_id,$pdo) {
   $_SESSION['countSchools'] = $rank;
   return true;
 }
+// InsertActivitySet is always an INSERT MYSQL COMMAND
+// because the old set is always erased first
+function insertActivityList($profile_id,$activity_position_tag,$position_id,$pdo) {
+    //$_SESSION['message'] = $_SESSION['message']
+      //                      .' The task position-tag is Number '.$activity_position_tag.'.';
+    store_error_messages();
+    $rank = 0;
+    for($i=1; $i<=100; $i++) {
+       $tag = 'activity_position_tag'.$i;
+       if ( isset($_POST[$tag])) {
+          $positionid = $_POST[$tag];
+       } else {
+          continue;
+       }
+       //$_SESSION['message'] = $_SESSION['message']         //                       .' In activity loop: '
+        //     .'The tag was set for '.$tag;
+       //store_error_messages();
+       $field_name = 'task'.$i;
+       if (  isset($_POST[$field_name])) {
+          $activity = trim($_POST[$field_name]);
+       } else {
+          continue;
+       }
+
+       //if ( !isset($_POST[$tag]) || (!isset($_POST[$field_name])) ){
+        //$_SESSION['message'] = $_SESSION['message']         //                       .' In activity loop: '
+          //    .'Tag and field were set for '.$field_name;
+        //store_error_messages();
+
+       //}
+       // The position tag will only match for the particular position ID.
+       if ( $_POST[$tag] != $activity_position_tag ){
+       // $_SESSION['message'] = $_SESSION['message']         //                       .' In activity loop: '
+       //                        .'Positions do not match for '.
+       //                        ' Task-'.$i.'. The activity tag of '.$_POST[$tag]
+       //                        .' does not equal the passed tag value of '
+       //                        .$activity_position_tag;
+       //   store_error_messages();
+          continue;
+       }
+       if ( isset($_POST[$tag])) {
+          $positionid = $_POST[$tag];
+          $activity = trim($_POST[$field_name]);
+         //$_SESSION['message'] = $_SESSION['message']
+          //.$tag.' is '.$positionid.'.';
+          //store_error_messages();
+       }
+       // $_SESSION['message'] = $_SESSION['message']         //                       .' In activity loop: '
+       //                         .' Task-'.$i.' posted for '
+       //                         . ' Task Position-Tag-'.$i;
+       // store_error_messages();
+       //$pos_id = $activity_rows[$i]['position_id'];
+        if ( ! strlen($activity) > 0){
+             $_SESSION['message'] = $_SESSION['message']
+                                .' The entry box for '
+                                .' Task-'.$i.' was not completed. ';
+                                store_error_messages();
+                                continue;
+      }
+      $text_insert = 'Task-'.$i;
+      //$_SESSION['message'] = $_SESSION['message']
+        //                 .' The activity for Field '.$field_name
+          //               .' is '.$activity.' Ready for text validation: ';
+      store_error_messages();
+      $valid = get_text_input_validation($field_name,$text_insert,$pdo);
+      // $_SESSION['message'] = $_SESSION['message']
+      //                         .' Completed text validation: ';
+      // store_error_messages();
+      if ( ! $valid) {
+          $_SESSION['message'] = $_SESSION['message']
+                               .' Task-'.$i.' was rejected for '
+                               .': '.$_POST[$field_name].'; ';
+          store_error_messages();
+          continue;
+      }
+      //print_r($row);
+      //var_dump($row);
+      //$_SESSION['message'] = $_SESSION['message']
+        //                      .' Ready to add to database for '
+          //                    .' Task-'.$i.': '.$activity;
+      //store_error_messages();
+      $sql = 'INSERT INTO Activity (profile_id,position_id,description, activity_rank)
+                           VALUES ( :pid, :pos ,TRIM(:dscrp), :rnk)';
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute(array(
+                   ':pid' => $profile_id, ':pos' => $position_id,
+                   ':dscrp' => $activity,
+                   ':rnk' => $rank ) );
+      // $rank++;
+      // $_SESSION['message'] = $_SESSION['message']
+      //                         .' Next rank is '.$rank;
+      // store_error_messages();
+    }
+    return true;
+}
 function insertPositions($profile_id,$pdo) {
     $rank = 0;
     $count = 0;
-    //$yr2 = 'wrkFinalYr';
+
     for($i=1; $i<=9; $i++) {
       $org_field_name = 'org'.$i;
-      $job_description_field_name = 'desc'.$i;
+      $job_title_field_name = 'title'.$i;
+      $job_description_field_name = 'job_summary'.$i;
       $yr1_field_name = 'wrk_start_yr'.$i;
       $yr2_field_name = 'wrk_final_yr'.$i;
       if ( ! (isset($_POST[$org_field_name]))) {
@@ -674,6 +914,17 @@ function insertPositions($profile_id,$pdo) {
       if ( ! strlen($org) > 0){
         $_SESSION['message'] = $_SESSION['message']
                   .' The organization name for '
+                  .' Work History-'.$i.' was empty. ';
+        store_error_messages();
+        continue;
+      }
+      if ( ! (isset($_POST[$job_title_field_name]))) {
+          continue;
+      }
+      $title = trim($_POST[$job_title_field_name]);
+      if ( ! strlen($title) > 0){
+        $_SESSION['message'] = $_SESSION['message']
+                  .' The job title for '
                   .' Work History-'.$i.' was empty. ';
         store_error_messages();
         continue;
@@ -742,46 +993,73 @@ function insertPositions($profile_id,$pdo) {
             store_error_messages();
             continue;
         }
-        //continue;
+        $text_insert = 'Job title for Work History-'.$i;
+        $valid = get_text_input_validation($job_title_field_name,$text_insert,$pdo);
+        if ( ! $valid) {
+            $_SESSION['message'] = $_SESSION['message']
+              .' The job title was rejected for Work History-'.$i
+              .'. ';
+            store_error_messages();
+            continue;
+        }
         $rank++;
         $stmt = $pdo->prepare('INSERT INTO Position (
-                profile_id, `rank`, yearStart, yearLast, organization)
-                VALUES ( :pid, :rnk, :yrStart, :yrLast, TRIM(:org)) ');
+                profile_id, job_rank, yearStart, yearLast, organization,
+                     title)
+                VALUES ( :pid, :rnk, :yrStart, :yrLast, :org, :title) ');
         $stmt->execute(array(
                ':pid' => $profile_id,  ':rnk' => $rank,
                ':yrStart' => $year_start,
                ':yrLast' => $year_final,
-               ':org' => $org));
-
+               ':org' => $org,
+               ':title' => $title
+             ));
         $position_id = $pdo->lastInsertId() + 0;
         $rank++;
-    //  job description
+        //  job description
         if ( ! (isset($_POST[$job_description_field_name]))) {
+          $_SESSION['message'] = $_SESSION['message']
+                    .' The job summary for '
+                    .' Work History-'.$i.' was not posted. ';
+          store_error_messages();
             continue;
         }
-        $desc = trim($_POST[$job_description_field_name]);
-        if ( ! (strlen($desc) > 0)){
-            continue;
+        $summary = trim($_POST[$job_description_field_name]);
+        if ( ! strlen($summary) > 0){
+          $_SESSION['message'] = $_SESSION['message']
+                    .' The job summary for '
+                    .' Work History-'.$i.' was empty. ';
+          store_error_messages();
+          continue;
         }
         $text_insert = 'job description for Work History-'.$i;
         $valid = get_text_input_validation($job_description_field_name ,$text_insert,$pdo);
         if( ! ($valid===true)){
-            $desc = get_censored_input($job_description_field_name ,$text_insert,$pdo)[1];
+            $summary = trim(get_censored_input($job_description_field_name ,$text_insert,$pdo)[1]);
             //$_SESSION['message'] = $_SESSION['message']
                //.' After any deletions, it becomes "'.$desc.'." ';
         }
-        if ( ! (strlen($desc) > 0)) {
+        if ( ! (strlen($summary) > 0)) {
             $_SESSION['message'] = $_SESSION['message']
                  .' The job description for '
                    .' Work History-'.$i.' was removed entirely. ';
             store_error_messages();
             continue;
         }
-        $sql = 'UPDATE Position SET description = TRIM(:de)
+        $sql = 'UPDATE Position SET summary = :jobsumm
                       WHERE position_id = :posid';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(array(':de'  => $desc,
-                                 ':posid' => $position_id ));
+        $stmt->execute(array(':jobsumm' => $summary,
+                               ':posid' => $position_id ));
+        // $_SESSION['message'] = $_SESSION['message']
+        //           .' Ready to insert activities for '
+        //           .' Work History-'.$i.'.';
+        store_error_messages();
+        insertActivityList($profile_id,$i,$position_id,$pdo);
+        // $_SESSION['message'] = $_SESSION['message']
+        //     .' Activities were inserted.';
+        // store_error_messages();
+
       } // end of 'for' loop
       $_SESSION['count_position'] = $rank;
       if($rank < 1){
@@ -789,6 +1067,15 @@ function insertPositions($profile_id,$pdo) {
       }
       store_error_messages();
       return true;
+}
+function loadContactList($profile_id,$pdo) {
+  $sql = 'SELECT Contact.info FROM ContactList JOIN Contact
+      ON Contact.contact_id = ContactList.contact_id
+      WHERE profile_id = :prof';
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(array(':prof' => $profile_id) );
+  $contacts = $stmt->fetchALL(PDO::FETCH_ASSOC);
+  return $contacts;
 }
 function loadSkill($profile_id,$pdo) {
   $sql = 'SELECT Skill.name FROM SkillSet JOIN Skill
@@ -799,9 +1086,17 @@ function loadSkill($profile_id,$pdo) {
   $skill = $stmt->fetchALL(PDO::FETCH_ASSOC);
   return $skill;
 }
+function loadActivity($profile_id,$position_id,$pdo) {
+  $sql = 'SELECT position_id, description, activity_rank FROM Activity
+          WHERE profile_id = :prof AND position_id = :posid';
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(array(':prof' => $profile_id, ':posid' => $position_id) );
+  $tasks = $stmt->fetchALL(PDO::FETCH_ASSOC);
+  return $tasks;
+}
 function loadPos($profile_id,$pdo) {
  $stmt = $pdo->prepare('SELECT * FROM Position
-     WHERE profile_id = :prof ORDER BY rank');
+     WHERE profile_id = :prof ORDER BY job_rank');
  $stmt->execute(array(':prof' => $profile_id) );
  $positions = $stmt->fetchALL(PDO::FETCH_ASSOC);
  return $positions;
@@ -880,29 +1175,37 @@ function censorPost($postField,$pdo) {
    return $field;
 }
 function getPhraseArray($phrase) {
-    $newPhrase = '';
+    //$newPhrase = '';
+    $trimmed = trim($phrase);
+    if ( ! (strlen($trimmed) > 0)  )  {
+        return false;
+    }
     $replaced ='';
     $punct = array(',','.','!','?','@');
     $replace = array(' ');
     foreach ($punct as $punc) {
-            $replaced = str_replace($punc,' ',$phrase);
+            $replaced = str_replace($punc,' ',$trimmed);
     }
     $exploded = explode(' ',$replaced);
     return  $exploded;
 }
 function ofnsvCheck($phrase, $pdo) {
     $offense = false;
-    $exploded = getPhraseArray($phrase);
+    $no_punct = str_replace(array('.','. ',   ',',', ',  '?','? ',
+                  '!','! ',  ';','; ',  ':',': ', '[','[ '),
+                            ' ' , $phrase);
+    $exploded = getPhraseArray($no_punct);
     foreach ($exploded as $word) {
         // $_SESSION['message'] = $_SESSION['message']
         //                      .' Checking dictionary: '.$phrase;
+
         $len = strlen($word);
         if( $len > 2 ) {
             $check = checkDictionary($word,$pdo);
             // $_SESSION['message'] = $_SESSION['message']
             //                      .' Dictionary Result: '.$check;
             if($check == true) {
-                // Found in dictionary; do nothing;
+                // Found in dictionry; do nothing;
             } else {
                 // Word is not in main dictionary
                 // Rather than find our word with an offensive word, we need the Reverse
@@ -966,7 +1269,9 @@ function filterPhrase($phrase, $pdo) {
             // find "abcMyOffensiveWordabc"
             // (A) Reject offensive words with exactly 3-letters
             // (B) Accept longer words that contain offensive 3-letter words internally.
-            $stmt = $pdo->prepare('SELECT COUNT(*) FROM Offensive WHERE (? = word) AND (LENGTH(word) = 3) OR ((? LIKE CONCAT("%", word, "%")) AND LENGTH(word) > 3)');
+            $stmt = $pdo->prepare('SELECT COUNT(*) FROM Offensive
+                 WHERE (? = word) AND (LENGTH(word) = 3)
+                 OR ((? LIKE CONCAT("%", word, "%")) AND LENGTH(word) > 3)');
             $stmt->execute([$word, $word]);
             $cnt2 = $stmt->fetch(PDO::FETCH_COLUMN);
             $chk = checkOffensiveList($word, $pdo);

@@ -18,7 +18,7 @@ $mail->SMTPDebug = 2;
 //$mail->Port = '467';
 $mail->isHTML(true);
 $mail->Username = 'merchatDataTools@gmail.com';
-$mail->Password = '';
+$mail->Password = 'jpS%sis$1973R7';
 $mail->SetFrom('merchatDataTools@gmail.com','Support Team');
 $mail->Subject = $_SESSION['emailSubject'];
 //'Account Change';

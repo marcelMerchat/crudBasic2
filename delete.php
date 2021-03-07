@@ -7,6 +7,10 @@ session_start();
 if ( ! isset($_SESSION['user_id']))  {
       die('ACCESS DENIED');
 }
+if ( isset($_POST['cancel'] ) ) {
+    header('Location: index.php');
+    return;
+}
 if ( isset($_POST['delete']) && isset($_POST['profile_id']) ) {
     $sql = "DELETE FROM Profile WHERE profile_id = :zip";
     $stmt = $pdo->prepare($sql);
@@ -15,6 +19,7 @@ if ( isset($_POST['delete']) && isset($_POST['profile_id']) ) {
     header( 'Location: index.php' ) ;
     return;
 }
+
 
 if ( ! isset($_GET['profile_id']) ) {
   $_SESSION['error'] = "Missing profile_id";
@@ -62,11 +67,11 @@ if ( $row === false ) {
 <br />
 <h4 class="center">
 <input type="hidden" name="profile_id" value="<?= $row['profile_id'] ?>">
-<input class="button-submit spacer" type="submit" value="Delete" name="delete">
+<input class="button-submit spacer wide-10char" type="submit" value="Delete" name="delete">
 </h4>
 </br>
 </br>
-<h2 class="center spacer"><a href="index.php">Cancel</h2>
+<input class="button-submit spacer wide-10char" type="submit" value="Cancel" name="cancel">
 </form>
 </div>
 <script>

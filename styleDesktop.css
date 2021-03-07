@@ -3,26 +3,15 @@ form {
     margin-bottom: 5px;
 }
 div.container-form-entry {
-  width: 98%;
   max-width: 40em;
-  box-sizing: border-box;
-}
-div.profile-input-form {
-    width: 67%;
-}
-.goal-box-layout {
-    margin-left: auto;
-    margin-right: auto;
-    width: 40em;
-    max-width: 98.5%;
+  width: calc(100%);
 }
 .paragraph-box {
-    width: 98.5%;
+
 }
 div.box-input-label {
-    display: inline-block;
     text-align: left;
-    width: 6em;
+    width: 5em;
 }
 div.short-input-label {
   display: inline-block;
@@ -43,19 +32,13 @@ h3 a {
     margin-top: 20px;
 }
 h4 {
-    font-size: 1.3rem;
-    margin-top: 20px;
+    font-size: 1.1rem;
+    margin-top: 12px;
 }
 h5 {
     font-size: 1.05rem;
     color: #008800;
     margin-top: 10px;
-}
-a {
-    font-size: inherit;
-}
-p {
-    font-size: 1rem;
 }
 .big {
     font-size: 1.3rem;
@@ -63,24 +46,8 @@ p {
 .small {
     font-size: 0.9rem;
 }
-input, textarea, select, button {
-    font-size: 1.01rem;
-    padding: 6px;
-    margin-left: 3px;
-    margin-right: 3px;
-    text-rendering: auto;
-    color: initial;
-    letter-spacing: normal;
-    word-spacing: normal;
-    text-transform: none;
-    text-indent: 1px;
-    text-shadow: none;
-    display: inline-block;
-    text-align: start;
-}
 textarea {
-    height: 150px;
-    width: 98.5%;
+    height: 400px;
 }
 .ui-autocomplete-custom {
     font: 400 Arial;
@@ -90,6 +57,7 @@ img {
 }
 .button-submit {
     font-size: inherit;
+    width: 80px;
 }
 .button-cancel {
     width: 80px;
@@ -133,6 +101,10 @@ img {
 }
 /* auto-completion classes */
 .skill {
+    width: 98.5%;
+    max-width: 30em;
+}
+.activity {
     width: 98.5%;
     max-width: 30em;
 }
@@ -185,7 +157,7 @@ td {
     left: 3%;
     color: #080;
     background-color: #ffe;
-    border: 2px #080 solid;
+    border: 5px #080 solid;
     padding: 20px
 }
 #under_top_left {

@@ -150,8 +150,8 @@ if ( isset($_POST['emale'])) {
       <p class="center less-bottom-margin less-top-margin"><input class="text-box" type="text" name="emale" id="email"></p>
     </div>
     <p class="center big double-space">
-            <input class="button-submit" type="submit" onclick="return true;" value="Assign new password">
-            <input class="button-submit" type="submit" name="cancel" value="Cancel">
+            <input class="button-submit wide-20char" type="submit" onclick="return true;" value="Assign my password">
+            <input class="button-submit wide-10char" type="submit" name="cancel" value="Cancel">
     </p>
 </form>
 
