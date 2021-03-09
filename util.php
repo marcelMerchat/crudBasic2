@@ -375,7 +375,28 @@ function insertEmail($pdo,$isUpdate) {
         return true;
     }
 }
-function insertPhone($pdo,$isUpdate) {
+function changeResumeStyle($pdo) {
+  if ( isset($_POST['resume_type']))
+  {
+    $style = trim($_POST['resume_type']);
+    $_SESSION['message'] = $_SESSION['message']
+             .' Changing resume style to '.$_POST['resume_type'];
+    store_error_messages();
+    $sql = 'UPDATE Profile SET resume_style = :rs
+              WHERE profile_id = :pid';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array(
+         ':rs' => $style,
+         ':pid' => $_POST['profile_id']));
+    return true;
+  } else {
+    // $_SESSION['message'] = $_SESSION['message']
+    //          .' No resume style was provided. ';
+    // store_error_messages();
+    return false;
+  }
+}
+function insertPhone($pdo) {
     if
      ( ! isset($_POST['phone']) ||
        ! strlen($_POST['phone']) > 0
@@ -399,6 +420,33 @@ function insertPhone($pdo,$isUpdate) {
         $stmt->execute(array(
              ':ph' => $phone,
              ':pid' => $_POST['profile_id']));
+        return true;
+    }
+}
+function insertLinkedin($pdo) {
+    if
+     ( ! isset($_POST['linkedin']) ||
+       ! strlen($_POST['linkedin']) > 0
+     )
+     {
+       $_SESSION['message'] = $_SESSION['message']
+                .' No linked-in address was provided. ';
+       store_error_messages();
+       return false;
+     } else {
+        $linkedin = trim($_POST['linkedin']);
+        $valid_li = true; // validateEmail($pdo);
+        $valid = $valid_li;
+        if(! $valid ) {
+            store_error_messages();
+            return false;
+        }
+        $sql = 'UPDATE Profile SET linkedin = :li
+                   WHERE profile_id = :pid';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(
+                  ':li' => $linkedin,
+                  ':pid' => $_POST['profile_id']));
         return true;
     }
 }
@@ -429,7 +477,7 @@ function insertProfessionalGoals($profile_id,$pdo,$isUpdate) {
   return $valid;
 }
 
-function insertContactList($profile_id,$pdo) {
+function insertContactList($pdo) {
     $rank = 1;
     for($i=1; $i<=5; $i++) {
       $field_name = 'contact'.$i;
@@ -484,7 +532,7 @@ function insertContactList($profile_id,$pdo) {
   //  Look for duplicate contact
       $sqldup = 'SELECT COUNT(*) FROM ContactList WHERE profile_id = :pid AND contact_id = :cid';
       $stmtdup = $pdo->prepare($sqldup);
-      $stmtdup->execute(array(':pid' => $profile_id, ':cid' => $contact_id) );
+      $stmtdup->execute(array(':pid' => $_POST['profile_id'], ':cid' => $contact_id) );
       $rowcountdup = $stmtdup->fetch(PDO::FETCH_ASSOC);
       $cntduplicate = (int) array_values($rowcountdup)[0];
       if ($cntduplicate > 0){
@@ -510,7 +558,7 @@ function insertContactList($profile_id,$pdo) {
                     VALUES ( :pid, :cid, :rnk)';
           $stmt = $pdo->prepare($sql);
           $stmt->execute(array(
-                  ':pid' => $profile_id, ':cid' => $contact_id,
+                  ':pid' => $_POST['profile_id'], ':cid' => $contact_id,
                   ':rnk' => $rank ) );
           $rank++;
       }
@@ -523,19 +571,23 @@ function insertSkillSet($profile_id,$pdo) {
     $rank = 1;
     for($i=1; $i<=12; $i++) {
       $field_name = 'skill_name'.$i;
+      store_error_messages();
       if ( ! isset($_POST[$field_name]) ){
-        // $_SESSION['message'] = $_SESSION['message']
-        //                        .' The entry box for '
-        //                        .' Skill-'.$i.' was empty. ';
-        store_error_messages();
-          continue;
+         // $_SESSION['message'] = $_SESSION['message']
+         //                        .' The entry box for '
+         //                        .' Skill-'.$i.' was empty. ';
+        //store_error_messages();
+        continue;
       }
+      // $_SESSION['message'] = $_SESSION['message']
+      //                         .' The entry box for '
+      //                         .' Skill-'.$i.' is now evaluated. ';
       $skill = trim($_POST[$field_name]);
       if ( ! strlen($skill) > 0){
-        // $_SESSION['message'] = $_SESSION['message']
-        //                        .' The entry box for '
-        //                        .' Skill-'.$i.' was not completed. ';
-        // store_error_messages();
+         $_SESSION['message'] = $_SESSION['message']
+                                .' The entry box for '
+                                .' Skill-'.$i.' was not completed. ';
+        store_error_messages();
         continue;
       }
       $text_insert = 'Skill-'.$i;
@@ -553,9 +605,9 @@ function insertSkillSet($profile_id,$pdo) {
       $stmt->execute(array(':nme' => $skill) );
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
       $cnt = (int) array_values($row)[0];
-      // $_SESSION['message'] = $_SESSION['message']
-      //     .' For Skill-'.$i.', the count in the database is '
-      //     .': '.$cnt.'; ';
+       // $_SESSION['message'] = $_SESSION['message']
+       //     .' For Skill-'.$i.', the count in the database is '
+       //     .': '.$cnt.'; ';
       //print_r($row);
       //var_dump($row);
   //  If the job skill already exists, retrieve it using the Skill ID number.
@@ -567,13 +619,13 @@ function insertSkillSet($profile_id,$pdo) {
           $row = $stmt->fetch(PDO::FETCH_ASSOC);
           $skill_id = $row['skill_id'] + 0;
           // $_SESSION['message'] = $_SESSION['message']
-          //                         .$_POST[$field_name].'at Skill-'.$i
-          //                         .' already exists. ';
+          //                          .$_POST[$field_name].'at Skill-'.$i
+          //                          .' already exists. ';
       }
   //  Look for duplicate skills
-      $sqldup = 'SELECT COUNT(*) FROM SkillSet WHERE profile_id = :pid AND skill_id = :kid';
+      $sqldup = 'SELECT COUNT(*) FROM SkillSet WHERE profile_id = :pid AND skill_id = :sid';
       $stmtdup = $pdo->prepare($sqldup);
-      $stmtdup->execute(array(':pid' => $profile_id, ':kid' => $skill_id) );
+      $stmtdup->execute(array(':pid' => $profile_id, ':sid' => $skill_id) );
       $rowcountdup = $stmtdup->fetch(PDO::FETCH_ASSOC);
       $cntduplicate = (int) array_values($rowcountdup)[0];
       if ($cntduplicate > 0){
@@ -586,8 +638,8 @@ function insertSkillSet($profile_id,$pdo) {
   //  if skill does not exist in Skill table, insert it
       if($cnt === 0) {
           // $_SESSION['message'] = $_SESSION['message']
-          //   .' For Skill-'.$i.', the zero count condition is true '
-          //   .' and the skill is being added to the skill table. ';
+          //    .' For Skill-'.$i.', the zero count condition is true '
+          //    .' and the skill is being added to the skill table. ';
           $sql = 'INSERT INTO Skill (`name`) VALUES (TRIM(:nme))';
           $stmt = $pdo->prepare($sql);
           $stmt->execute(array(':nme' => trim($skill)) );
@@ -599,9 +651,9 @@ function insertSkillSet($profile_id,$pdo) {
       }
       if (is_numeric($skill_id) && $skill_id > 0 ) {
           // $_SESSION['message'] = $_SESSION['message']
-          // .' For Skill-'.$i.', '
-          // .$skill.' is being added to the SkillSet Table'
-          // .' for '.$Skill_id;
+          //  .' For Skill-'.$i.', '
+          //  .$skill.' is being added to the SkillSet Table'
+          //  .' for '.$skill_id;
           $sql = 'INSERT INTO SkillSet (profile_id, skill_id, `rank`)
                     VALUES ( :pid, :sid, :rnk)';
           $stmt = $pdo->prepare($sql);
@@ -610,9 +662,107 @@ function insertSkillSet($profile_id,$pdo) {
                   ':rnk' => $rank ) );
           $rank++;
       }
-      store_error_messages();
-      return true;
    }
+   return true;
+}
+// InsertHobyList is always an INSERT MYSQL COMMAND
+// because the old set is always erased first
+function insertHobbyList($profile_id,$pdo) {
+    $rank = 1;
+    for($i=1; $i<=12; $i++) {
+      $field_name = 'hobby_name'.$i;
+       // $_SESSION['message'] = $_SESSION['message']
+       //                        .' The entry box for '
+       //                        .' Hobby-'.$i.' is now evaluated. ';
+      store_error_messages();
+      if ( ! isset($_POST[$field_name]) ){
+        //  $_SESSION['message'] = $_SESSION['message']
+        //                         .' The entry box for '
+        //                         .' Hobby-'.$i.' was empty. ';
+        // store_error_messages();
+        continue;
+      }
+      $hobby = trim($_POST[$field_name]);
+      if ( ! strlen($hobby) > 0){
+         $_SESSION['message'] = $_SESSION['message']
+                                .' The entry box for '
+                                .' Hobby-'.$i.' was not completed. ';
+        store_error_messages();
+        continue;
+      }
+      $text_insert = 'Hobby-'.$i;
+      $valid = get_text_input_validation($field_name,$text_insert,$pdo);
+      if ( ! $valid) {
+          $_SESSION['message'] = $_SESSION['message']
+                               .' Hobby-'.$i.' was rejected for '
+                               .': '.$_POST[$field_name].'; ';
+          store_error_messages();
+          continue;
+      }
+  //  lookup the hobby in the Hobby Table
+      $sql = 'SELECT COUNT(*) FROM Hobby WHERE name = :nme';
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute(array(':nme' => $hobby) );
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      $cnt = (int) array_values($row)[0];
+       // $_SESSION['message'] = $_SESSION['message']
+       //     .' For Hobby-'.$i.', the count in the database is '
+       //     .': '.$cnt.'; ';
+      //print_r($row);
+      //var_dump($row);
+  //  If the hobby already exists, retrieve it using the Hobby ID number.
+      $hobby_id = false;
+      if($cnt > 0) {
+          $sql = 'SELECT hobby_id FROM Hobby WHERE name = :nme';
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute(array(':nme' => $hobby) );
+          $row = $stmt->fetch(PDO::FETCH_ASSOC);
+          $hobby_id = $row['hobby_id'] + 0;
+          // $_SESSION['message'] = $_SESSION['message']
+          //                          .$_POST[$field_name].'at Hobby-'.$i
+          //                          .' already exists. ';
+      }
+  //  Look for duplicate hobbies
+      $sqldup = 'SELECT COUNT(*) FROM HobbyList WHERE profile_id = :pid AND hobby_id = :sid';
+      $stmtdup = $pdo->prepare($sqldup);
+      $stmtdup->execute(array(':pid' => $profile_id, ':sid' => $hobby_id) );
+      $rowcountdup = $stmtdup->fetch(PDO::FETCH_ASSOC);
+      $cntduplicate = (int) array_values($rowcountdup)[0];
+      if ($cntduplicate > 0){
+        // $_SESSION['message'] = $_SESSION['message'].' Duplicate hobby found'
+        //    .' for "'.$hobby.'". ';
+        //store_error_messages();
+        continue;
+      }
+  //  if hobby does not exist in Hobby table, insert it
+      if($cnt === 0) {
+          // $_SESSION['message'] = $_SESSION['message']
+          //    .' For Hobby-'.$i.', the zero count condition is true '
+          //    .' and the hobby is being added to the Hobby table. ';
+          $sql = 'INSERT INTO Hobby (`name`) VALUES (TRIM(:nme))';
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute(array(':nme' => trim($hobby)) );
+          // Retrieve the newly assigned hobby_id
+          $hobby_id = $pdo->lastInsertId() + 0;
+          // $_SESSION['message'] = $_SESSION['message']
+          //                        .' Hobby-'.$i.' was added to the Hobby Table'
+          //                        .': '.$_POST[$hobbyNum].'; ';
+      }
+      if (is_numeric($hobby_id) && $hobby_id > 0 ) {
+          // $_SESSION['message'] = $_SESSION['message']
+          //  .' For Hobby-'.$i.', '
+          //  .$hobby.' is being added to the HobbyList Table'
+          //  .' for '.$hobby_id;
+          $sql = 'INSERT INTO HobbyList (profile_id, hobby_id, `rank`)
+                    VALUES ( :pid, :sid, :rnk)';
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute(array(
+                  ':pid' => $profile_id, ':sid' => $hobby_id,
+                  ':rnk' => $rank ) );
+          $rank++;
+      }
+   }
+   return true;
 }
 // InsertEducation is always an INSERT MYSQL COMMAND
 // because the old set is always erased first
@@ -932,14 +1082,15 @@ function insertPositions($profile_id,$pdo) {
       if
       ( !(
               isset($_POST[$yr1_field_name])          &&
-              ( strlen($_POST[$yr1_field_name]) > 0 ) &&
-              isset($_POST[$yr2_field_name])          &&
-              ( strlen($_POST[$yr2_field_name]) > 0 )
-            )
+              ( strlen($_POST[$yr1_field_name]) > 0 )
+          )
       )
       {
+        // &&
+        //isset($_POST[$yr2_field_name])          &&
+        //( strlen($_POST[$yr2_field_name]) > 0 )
          $_SESSION['message'] = $_SESSION['message']
-                .' A year entry box for '
+                .' The starting year entry box for '
                 .' Work History-'.$i.' was empty. ';
         store_error_messages();
         continue;
@@ -953,27 +1104,31 @@ function insertPositions($profile_id,$pdo) {
           continue;
       }
       $year_final_string = trim($_POST[$yr2_field_name]);
-      if ( ! (strlen($year_final_string) > 0)){
-        $_SESSION['message'] = $_SESSION['message']
-                  .' The final year entry box for '
-                  .' Work History-'.$i.' was not completed. ';
-        store_error_messages();
-        continue;
-      }
+      //if ( ! (strlen($year_final_string) > 0)){
+        // $_SESSION['message'] = $_SESSION['message']
+        //           .' The final year entry box for '
+        //           .' Work History-'.$i.' was not completed. ';
+        // store_error_messages();
+        // continue;
+      //}
       $valid_yr1 = validate_year($year_start_string);
       $valid_yr2 = validate_year($year_final_string);
-      if ( ! ($valid_yr1 && $valid_yr2) ) {
+      if ( ! $valid_yr1 ) {
             $_SESSION['message'] = $_SESSION['message']
                .' Please enter a 4-digit year for Work History-'.$i
-               .': '.$valid_yr1.'-'.$valid_yr2;
-             $_SESSION['message'] = $_SESSION['message']
-                 .' Year data'
-                 .$year_start_string.'-'.$year_final_string;
+               .': '.$valid_yr1;
+             // $_SESSION['message'] = $_SESSION['message']
+             //     .' Year data'
+             //     .$year_start_string.'-'.$year_final_string;
             store_error_messages();
             continue;
         }
         $year_start = get_year($year_start_string,'year start issues');
-        $year_final = get_year($year_final_string,'year final issues');
+        if ( ! $valid_yr2 ) {
+             $year_final = 9999;
+        } else {
+             $year_final = get_year($year_final_string,'year final issues');
+        }
         // $_SESSION['message'] = $_SESSION['message']
         //   .' Year validation: '
         //   .$valid_yr1.'-'.$valid_yr2;
@@ -1085,6 +1240,15 @@ function loadSkill($profile_id,$pdo) {
   $stmt->execute(array(':prof' => $profile_id) );
   $skill = $stmt->fetchALL(PDO::FETCH_ASSOC);
   return $skill;
+}
+function loadHobbies($profile_id,$pdo) {
+  $sql = 'SELECT Hobby.name FROM HobbyList JOIN Hobby
+      ON Hobby.hobby_id = HobbyList.hobby_id
+      WHERE profile_id = :prof';
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(array(':prof' => $profile_id) );
+  $hobbies = $stmt->fetchALL(PDO::FETCH_ASSOC);
+  return $hobbies;
 }
 function loadActivity($profile_id,$position_id,$pdo) {
   $sql = 'SELECT position_id, description, activity_rank FROM Activity

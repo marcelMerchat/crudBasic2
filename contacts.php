@@ -13,6 +13,11 @@ if ( isset($_POST['cancel']) ) {
     header('Location: index.php');
     return;
 }
+// Only approved users may enter contact information.
+if ($_SESSION['contact_info'] == 0) {
+    header('Location: index.php');
+    return;
+}
 if ( isset($_GET['profile_id']) && strlen($_GET['profile_id'] > 0)) {
       $profileid = $_GET['profile_id'];
      // For edit screens, profile is provided with GET global variables.
@@ -50,11 +55,12 @@ if (isset($_POST['email']) ) {
            header('Location: contacts.php?profile_id='.$_POST['profile_id']);
            return;
     }
-    insertPhone($pdo,$IsUpdate=true);
+    insertPhone($pdo);
+    insertLinkedin($pdo);
     // Delete old contact entries; insert new list
     $stmt = $pdo->prepare('DELETE FROM ContactList WHERE profile_id = :pid');
     $stmt->execute(array(':pid' => $profileid));
-    insertContactList($profileid,$pdo);
+    insertContactList($pdo);
     // foreach ($_POST as $key => $value) {
     //      $_SESSION['message'] = $_SESSION['message']
     //      ."Field ".htmlspecialchars($key)." is ".htmlspecialchars($value)."<br>";
@@ -76,16 +82,25 @@ if (isset($_POST['email']) ) {
    // Get contacts from database
    $contacts = loadContactList($profileid,$pdo);
 ?>
+<style type="text/css">
+    div.box-input-label-wide {
+        width: calc(100% - 18em);
+    }
+</style>
 </head>
 <body>
     <div class="center" id="main">
     <h4 class="less-bottom-margin center">Editing Contact Information</h4>
+
     <div id="dialog-confirm" title="New Message: ">
       <p id="message_field">
         <!-- Alert message is placed in the span tag below. -->
         <script type="text" id="message_template">
             <span></span>
         </script>
+        <?php
+              flashMessages();
+        ?>
       </p>
     </div>
 <?php
@@ -100,16 +115,22 @@ if (isset($_POST['email']) ) {
           <!-- Modifiable Information -->
 
           <div class="container-form-entry more-top-margin-3x">
-            <div class="less-bottom-margin less-top-margin box-input-label">E-mail
+            <div class="less-bottom-margin less-top-margin box-input-label-wide inline-block right">E-mail &nbsp;
             </div><div class="less-top-margin less-bottom-margin profile-input-form">
               <input class="text-box" type="text" name="email" value="<?= $em ?>" id="em">
             </div></div>
 
           <div class="container-form-entry more-top-margin-3x">
-              <div class="less-bottom-margin less-top-margin box-input-label">Phone number:
-              </div><div class="less-top-margin less-bottom-margin profile-input-form">
+              <div class="less-bottom-margin less-top-margin box-input-label-wide inline-block right">Phone number &nbsp;
+              </div><div class="less-top-margin less-bottom-margin profile-input-form inline-block">
                 <input class="text-box" type="text" name="phone" value="<?= $ph ?>" id="ph">
               </div></div>
+
+          <div class="container-form-entry more-top-margin-3x">
+                  <div class="less-bottom-margin less-top-margin box-input-label-wide inline-block right">www.linkedin.com/in/ &nbsp;
+                  </div><div class="less-top-margin less-bottom-margin profile-input-form inline-block">
+                    <input class="text-box" type="text" name="linkedin" value="<?= $ph ?>" id="ph">
+                  </div></div>
 
 <!-- End of contact information -->
 <!-- Contacts -->

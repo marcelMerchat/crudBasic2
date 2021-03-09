@@ -229,6 +229,7 @@ CREATE TABLE users (
    initial_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
    timeout BOOLEAN DEFAULT 1,
    block BOOLEAN DEFAULT 0,
+   contact_info BOOLEAN DEFAULT 0,
    INDEX(email)
 ) ENGINE=InnoDB CHARSET=utf8;
 
@@ -236,6 +237,7 @@ INSERT INTO users (name,email,password, random)
     VALUES ('Elvis','epresley@musicland.edu','eaa52980acd0bcfd0937ee5110c74817','XyZzy12*_');
 // password is 'rock123'
 
+// ALTER TABLE `users` ADD `contact_info` Boolean DEFAULT 0 AFTER timeout;
 // ALTER TABLE `users` DROP `hint`;
 
 #######################################################################
@@ -258,6 +260,8 @@ CREATE TABLE Profile (
 ) ENGINE=InnoDB CHARSET=utf8;
 
 ALTER TABLE `Profile` ADD `phone` VARCHAR(128) AFTER email;
+ALTER TABLE `Profile` ADD linkedin VARCHAR(128) AFTER phone;
+ALTER TABLE `Profile` ADD resume_style VARCHAR(64) DEFAULT 'student' AFTER goal;
 
 INSERT INTO Profile (user_id, first_name, last_name, email, profession, goal)
            VALUES (1, 'Elvis', 'Presley', 'epresley@musicland.com', 'great singer', 'Changed America') ;
@@ -498,6 +502,41 @@ CREATE TABLE Activity (
 
 ALTER TABLE `ActivityList` ADD `position_id` INT NOT NULL AFTER `activity_id`;
 ALTER TABLE `ActivityList` RENAME `Activity`;
+
+#######################################################################
+
+CREATE TABLE Hobby (
+  hobby_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(128) NOT NULL DEFAULT '',
+  INDEX(name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO Hobby (name) VALUES ('Current events, Yoga');
+INSERT INTO Hobby (name) VALUES ('Journaling');
+INSERT INTO Hobby (name) VALUES ('Eating Out');
+INSERT INTO Hobby (name) VALUES ('Lifelong learning');
+
+#######################################################################
+
+Many-to-Many table:
+
+CREATE TABLE HobbyList (
+  profile_id INTEGER,
+  hobby_id INTEGER,
+  rank INTEGER,
+
+  CONSTRAINT hobbylist_ibfk_1
+  FOREIGN KEY (profile_id)
+  REFERENCES Profile (profile_id)
+  ON DELETE CASCADE ON UPDATE CASCADE,
+
+  CONSTRAINT hobbylist_ibfk_2
+  FOREIGN KEY (hobby_id)
+  REFERENCES Hobby (hobby_id)
+  ON DELETE CASCADE ON UPDATE CASCADE,
+
+  PRIMARY KEY(profile_id, hobby_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 #######################################################################
 

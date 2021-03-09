@@ -16,10 +16,10 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
     // If user Name and password fields have entries:
     if (strpos($_POST['email'], '@') === FALSE ) {
          $_SESSION['error'] = 'Invalid email address'.$_POST['email'];
-         header( 'Location: login.php' ) ;
+         header( 'Location: login.php');
          return;
     }
-    $sql = "SELECT random, timeout, block FROM users WHERE email = :em";
+    $sql = "SELECT random, timeout, contact_info, block FROM users WHERE email = :em";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array( ':em' => $_POST['email']));
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -62,7 +62,7 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
         }
      }
     //$salt = 'XyZzy12*_';
-    $sql = "SELECT user_id, password, random FROM users WHERE email = :em";
+    $sql = "SELECT user_id, password, random, contact_info FROM users WHERE email = :em";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array(
         ':em' => $_POST['email']));
@@ -85,6 +85,12 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
               $_SESSION['countPosition'] = 0;
               $_SESSION['countSkill'] = 0;
               $_SESSION['userName'] = get_name($_SESSION['user_id'],$pdo);
+              $_SESSION['contact_info'] = 0;
+              if($row['contact_info']==1){
+                  $_SESSION['contact_info'] = 1;
+                  $_SESSION['message'] = $_SESSION['message']
+                       .' The contact access permission is set ';
+              }
               error_log('Login success: '.$_POST['email']);
               $_SESSION['LAST_ACTIVITY'] = time();
               header( 'Location: index.php');

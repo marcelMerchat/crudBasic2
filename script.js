@@ -1,16 +1,27 @@
+function getcube(){
+var number=document.getElementById("number").value;
+alert(number*number*number);
+}
 function doValidate() {
-    submitted = true;
+    //submitted = true;
     var p = document.getElementById(last_text_box);
-    var eid = '#'+last_text_box;
-    //var tagId = $(this).attr(id);
-    window.console && console.log('At JSON Dictionary. Tag id is ' + last_text_box);
     var text_info = p.value;
+    //var  number=document.getElementById("number").value;
+    //var tagId = $(this).attr(id);
+    var p_id = $(p).attr("id"); // e.g.; hobby1
+    //var eid = '#'+last_text_box; // not used here; no pound sign for argument
+    //var htmlcode = p.innerHTML;
+    var text_info = p.value.trim();
+    window.console && console.log('the last text box variable is ' +
+                                                                last_text_box);
+    window.console && console.log('The retrieved tag id is ' + p_id);
     if ( text_info == null || text_info == "") {
-          triggerAlert("At least one entry box is incomplete. ",true );
+          triggerAlert("At least one entry box is incomplete. ", true );
           flagDataEntryBox(last_text_box);
           return false;
     }
-    var text_info = p.value.trim();
+    window.console && console.log('The contents of ' + p_id +
+                                             ' are ' + text_info);
     // if ( text_info == null || text_info == "") {
     //     triggerAlert("The last entry box you clicked is still empty. ",true );
     //     flagDataEntryBox(last_text_box);
@@ -19,35 +30,36 @@ function doValidate() {
     //window.console && console.log('info is '+text_info);
     var len = text_info.length;
     myresult = "blank";
-    if( Boolean(len > 2) && len > 2){
-        try
-        {
-           window.console && console.log('Ready for ajax ' + len);
-           $.ajax({
-               dataType: "json",
-               url: "jsonLanguage.php?ter"+"m="+text_info,
-               success: function(data) {
-                    myresult = data.first;
-               },
-               async: false
-           });
-           // window.console && console.log('my result is '+ myresult);
-           if (myresult == "bad") {
-              $(eid).css("borderWidth", "2px");
-              $(eid).css("background-color", "bisque");
-              $(eid).css("border-color", "#980200");
-              $(eid).val(text_info+" . . . Language filter was triggered.");
-              triggerAlert("Language filter for the last modified text box was triggered.",true);
-              return false;
-           }
-           $(eid).css("background-color", 'rgb(249, 255, 185)');
-           $(eid).css("borderWidth", "2px");
-           $(eid).css("border-color", "#886600");
-         } catch(e) {
-            triggerAlert("Something went wrong. Please try again.",true);
-            return false;
-         }
-   }
+   //  if( Boolean(len > 2) && len > 2){
+   //      try
+   //      {
+   //         window.console && console.log('Ready for ajax ' + len);
+   //         $.ajax({
+   //             dataType: "json",
+   //             url: "jsonLanguage.php?ter"+"m="+text_info,
+   //             success: function(data) {
+   //                  myresult = data.first;
+   //             },
+   //             async: false
+   //         });
+   //         // window.console && console.log('my result is '+ myresult);
+   //         if (myresult == "bad") {
+   //            $(eid).css("borderWidth", "2px");
+   //            $(eid).css("background-color", "bisque");
+   //            $(eid).css("border-color", "#980200");
+   //            $(eid).val(text_info+" . . . Language filter was triggered.");
+   //            triggerAlert("Language filter for the last modified text box was triggered.",true);
+   //            return false;
+   //         }
+   //         $(eid).css("background-color", 'rgb(249, 255, 185)');
+   //         $(eid).css("borderWidth", "2px");
+   //         $(eid).css("border-color", "#886600");
+   //       } catch(e) {
+   //          triggerAlert("Something went wrong. Please try again.",true);
+   //          return false;
+   //       }
+   // }
+   window.console && console.log('ready for profile: ');
    first_name = document.getElementById('fn').value;
    last_name = document.getElementById('ln').value;
    addr = document.getElementById('em').value;
@@ -78,6 +90,7 @@ function doValidate() {
         return false;
    }
    //     skillSet
+   window.console && console.log('ready for skills: ');
    skillnum = skill_array.length;
    //triggerAlert("The skill count is ", skillnum);
    for(i=0; i<skillnum; i++){
@@ -103,7 +116,7 @@ function doValidate() {
      }
   } // end of for loop
 //            education
-//    alert("Ready for education.");
+  window.console && console.log('ready for education: ');
   school_size = school_array.length;
   for(i=0; i < school_size; i++){
       var j = i + 1;
@@ -153,6 +166,8 @@ function doValidate() {
             return false;
         }
     } // end of for loop
+    // work history
+    window.console && console.log('ready for work history: ');
     org_len = org_array.length;
     for(i=0; i < org_len; i++){
          var j = i + 1;
@@ -225,25 +240,29 @@ function doValidate() {
                continue;
             }
             var text_info = p.value;
+            // The final year may be incomplete
             if ( text_info == null || text_info == "") {
-                triggerAlert("Final Year-" + j +
-                   " of the work history is incomplete.", true);
-                flagDataEntryBox(field);
-                return false;
+                // triggerAlert("Final Year-" + j +
+                //    " of the work history is incomplete.", true);
+                // flagDataEntryBox(field);
+                // return false;
+                continue;
             }
             var text_info = p.value.trim();
             if ( text_info == null || text_info == "") {
-                 triggerAlert("Final Year-" + j +
-                     " of the work history is still incomplete.", true);
-                 flagDataEntryBox(field);
-                 return false;
+                 // triggerAlert("Final Year-" + j +
+                 //     " of the work history is still incomplete.", true);
+                 // flagDataEntryBox(field);
+                 // return false;
+                 continue;
             }
             var num = parseInt(text_info);
             if ( isNaN(num)) {
-                 flagDaEntryBox(field);
-                 triggerAlert("Final Year-" + j +
-                     " of the work history requires a 4-digit year.", true);
-                 return false;
+                 // flagDaEntryBox(field);
+                 // triggerAlert("Final Year-" + j +
+                 //     " of the work history requires a 4-digit year.", true);
+                 // return false;
+                 continue;
             }
             if ( num < 1000 || num > 9999) {
                 flagDataEntryBox(field);
@@ -276,18 +295,17 @@ function doValidate() {
                return false;
           }
       } // end of for loop for position description
+  window.console && console.log('Javascript is complete.');
+  for(i=0; i< 1000000; i++){
+  }
   return true;
 }
 function doValidateContacts() {
     submitted = true;
-    var p = document.getElementById(last_text_box);
-    triggerAlert("The last box was ",last_text_box);
-    var eid = '#'+last_text_box;
-    triggerAlert('The contents of ' + p.name + ' are ' + p.value);
-    //var tagId = $(this).attr(id);
-    window.console && console.log('At JSON Dictionary. Tag id is ' + eid);
-    window.console && console.log('The last box was ' + p.id);
-    window.console && console.log('The contents of ' + p.name + ' are ' + p.value);
+    var p = document.getElementById(id=last_text_box);
+    //triggerAlert("The last box was " + last_text_box);
+    var p_id = $(p).attr("id");
+    window.console && console.log('The last box id attribute was ' + p_id);
     var text_info = p.value;
     if ( text_info == null || text_info == "") {
           triggerAlert("At least one entry box is incomplete. ",true );
@@ -303,35 +321,35 @@ function doValidateContacts() {
     //window.console && console.log('info is '+text_info);
     var len = text_info.length;
     myresult = "blank";
-    if( Boolean(len > 2) && len > 2){
-        try
-        {
-           window.console && console.log('Ready for ajax ' + len);
-           $.ajax({
-               dataType: "json",
-               url: "jsonLanguage.php?ter"+"m="+text_info,
-               success: function(data) {
-                    myresult = data.first;
-               },
-               async: false
-           });
-           // window.console && console.log('my result is '+ myresult);
-           if (myresult == "bad") {
-              $(eid).css("borderWidth", "2px");
-              $(eid).css("background-color", "bisque");
-              $(eid).css("border-color", "#980200");
-              $(eid).val(text_info+" . . . Language filter was triggered.");
-              triggerAlert("Language filter for the last modified text box was triggered.",true);
-              return false;
-           }
-           $(eid).css("background-color", 'rgb(249, 255, 185)');
-           $(eid).css("borderWidth", "2px");
-           $(eid).css("border-color", "#886600");
-         } catch(e) {
-            triggerAlert("Something went wrong. Please try again.",true);
-            return false;
-         }
-   }
+    //if( Boolean(len > 2) && len > 2){
+        //try
+        //{
+          // window.console && console.log('Ready for ajax ' + len);
+         //   $.ajax({
+         //       dataType: "json",
+         //       url: "jsonLanguage.php?ter"+"m="+text_info,
+         //       success: function(data) {
+         //            myresult = data.first;
+         //       },
+         //       async: false
+         //   });
+         //   // window.console && console.log('my result is '+ myresult);
+         //   if (myresult == "bad") {
+         //      $(eid).css("borderWidth", "2px");
+         //      $(eid).css("background-color", "bisque");
+         //      $(eid).css("border-color", "#980200");
+         //      $(eid).val(text_info+" . . . Language filter was triggered.");
+         //      triggerAlert("Language filter for the last modified text box was triggered.",true);
+         //      return false;
+         //   }
+         //   $(eid).css("background-color", 'rgb(249, 255, 185)');
+         //   $(eid).css("borderWidth", "2px");
+         //   $(eid).css("border-color", "#886600");
+         // } catch(e) {
+         //    triggerAlert("Something went wrong. Please try again.",true);
+         //    return false;
+         // }
+   //}
    phone = document.getElementById('ph').value;
    addr = document.getElementById('em').value;
      //profession = document.getElementById('pf').value;
@@ -688,6 +706,14 @@ function makePositionDescArray(n){
     }
     return a;
 }
+function makeHobbyArray(n){
+    var a = [];
+    for(i=0; i<n; i++){
+        j = i + 1;
+        a[i] = "hobby"+j;
+    }
+    return a;
+}
 function deleteFromAuditList(field){
   if ( field in audit_list )
     {
@@ -704,6 +730,13 @@ function deleteSkill(group,field){
     skill_removed = skill_removed + 1;
     var index = skill_array.indexOf(field);
     skill_array.splice(index, 1);
+    deleteFromAuditList(field);
+}
+function deleteHobby(group,field){
+    $(group).remove();
+    hobby_removed = hobby_removed + 1;
+    var index = hobby_array.indexOf(field);
+    hobby_array.splice(index, 1);
     deleteFromAuditList(field);
 }
 function deleteContact(group,field){

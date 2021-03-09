@@ -77,6 +77,9 @@ if(! isMobile()) {
 
       <img src="IMG_20151115_150532519PathinPark.jpg">
       <p class="more-top-margin">The path ahead leads into the trees,</p>
+
+
+
       <p>And I wished I could follow it</p>
       <p>long I looked until I dared.</p>
 
@@ -99,11 +102,8 @@ if(! isMobile()) {
     </div>';
 }
 else {
-
 }
-
 ?>
-
 <div class="center" id="main">
 <h4 class="center">Job Candidates</h4>
 <?php
@@ -145,6 +145,22 @@ if ( isset($_SESSION['user_id']) && (strlen($_SESSION['user_id']) > 0) ) {
     $tableRows = array_values($cnt)[0];
 }
 if($tableRows > 0) {
+    // If logged-in
+    // $sqlAll = "SELECT profile_id,
+    //  user_id, first_name, last_name, email,
+    //                     profession resume_type FROM Profile ORDER BY last_name";
+
+    $sqlAll = "SELECT profile_id, user_id, first_name, last_name, email,
+                    profession, resume_style FROM Profile ORDER BY last_name";
+    $stmtAll = $pdo->query($sqlAll);
+
+    $sqlUsr = "SELECT profile_id, user_id, first_name, last_name, email,
+                       profession, resume_style FROM Profile
+                        WHERE user_id = :sid ORDER BY last_name";
+
+    //$stmtUsr = $pdo->query($sqlUsr);
+    // fetch resume type
+    // logged-in: Provide edit and delete options
     // Show table with column title row only
     echo('<table class="double-space" border=2>');
     echo '<tr><th>';
@@ -154,58 +170,62 @@ if($tableRows > 0) {
     echo('</th><th>');
     echo('Action</th>');
     echo('</tr>');
-    // If logged-in
-    $sqlAll = "SELECT profile_id, user_id, first_name, last_name, email,
-                        profession FROM Profile ORDER BY last_name";
-    $stmtAll = $pdo->query($sqlAll);
     if ( isset($_SESSION['user_id']) && strlen($_SESSION['user_id']) > 0 ) {
-    // logged-in: Provide edit and delete options
-       $sqlUsr = "SELECT profile_id, user_id, first_name, last_name, email,
-                          profession FROM Profile WHERE user_id = :sid";
-       $stmtUsr = $pdo->prepare($sqlUsr);
-       $stmtUsr->execute(array(':sid' => $_SESSION['user_id']));
-       while ( $row = $stmtUsr->fetch(PDO::FETCH_ASSOC) ) {
+      $stmtUsr = $pdo->prepare($sqlUsr);
+      $stmtUsr->execute(array(':sid' => $_SESSION['user_id']));
+      $row = $stmtUsr->fetch(PDO::FETCH_ASSOC);
+      while ( $row = $stmtUsr->fetch(PDO::FETCH_ASSOC) ) {
+          $resume_style = $row['resume_style'];
+          if($resume_style == 'student') {
+              $view = 'student.';
+          } else if ($resume_style == 'employed') {
+            $view = 'employed.';
+          } else  {
+              $view = 'independent.';
+          }
           echo '<tr><td><p class="zero-bottom-margin more-line-height-1p5em">'
             .htmlentities($row['first_name']).' '
             .htmlentities($row['last_name'])
             .'</p></td><td><p class="zero-bottom-margin more-line-height-1p5em">'
             .htmlentities($row['profession'])
             .'</p></td><td><p class="zero-bottom-margin more-line-height-1p5em">
-               <a href="view.php?profile_id='.$row['profile_id'].'">Details</a>&nbsp
+               <a href="'.$view.'php?profile_id='.$row['profile_id'].'">Resume</a>&nbsp
                <a href="edit.php?profile_id='.$row['profile_id'].'">Edit</a>&nbsp
                <a href="delete.php?profile_id='.$row['profile_id'].'">Delete</a>
                </p>
             </td></tr>';
-        }
-    } else {
+          } // end while loop
+        } else {
        // not logged in, guest profile will be hidden
-      $sqlUsr = "SELECT profile_id, user_id, first_name, last_name, email,
-                        profession FROM Profile ORDER BY last_name";
-      $stmtUsr = $pdo->query($sqlUsr);
-        while ( $row = $stmtUsr->fetch(PDO::FETCH_ASSOC) ) {
            // Hide profile names for guest;
            // $row['user_id'] is a field name in the database,
            // which is not the same as $_SESSION['user_id']
-           if ( $row['user_id'] != 2 ) {
-              echo
-                '<tr><td>'
-                   .htmlentities($row['first_name']).' '
-                   .htmlentities($row['last_name'])
+           while ( $rowAll = $stmtAll->fetch(PDO::FETCH_ASSOC) ) {
+             $resume_style = $rowAll['resume_style'];
+             if($resume_style == 'student') {
+                 $view = 'student.';
+             } else if ($resume_style == 'employed') {
+               $view = 'employed.';
+             } else  {
+                 $view = 'independent.';
+             }
+             echo '<tr><td>'
+                   .htmlentities($rowAll['first_name']).' '
+                   .htmlentities($rowAll['last_name'])
                    .'</td><td>'
-                   .htmlentities($row['profession'])
+                   .htmlentities($rowAll['profession'])
                    .'</td><td>
-                       <a href="view.php?profile_id='
-                         .$row['profile_id'].'">Details</a>
+                       <a href="'.$view.'php?profile_id='
+                         .$rowAll['profile_id'].'">Details</a>
                  </td></tr>';
-            }
-        } // end while loop
-     }
-     echo("</table>");
-     //echo 'There are '.$tableRows.' profiles in the database.';
-     //print_r('There are '.$tableRows.' profiles in the database.');
+            } // end of loop over all profiles
+        } // end of logged-in or not logged-in
+        echo("</table>");
+        //echo 'There are '.$tableRows.' profiles in the database.';
+        //print_r('There are '.$tableRows.' profiles in the database.');
 } else {
     echo ('<p class="center">No profiles yet.</p>');
-}
+} // end of conditional block for all rows
 if ( isset($_SESSION['user_id']) && strlen($_SESSION['user_id']) > 0 ) {
     echo '<p class="center"> You can change your password '
              .'<a href="changePassword.php">here</a>.'

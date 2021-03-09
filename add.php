@@ -97,6 +97,8 @@ if (
       //  Positions
           insertPositions($profileid, $pdo);
           insertActivityList($profileid,$pdo);
+          insertHobbyList($profileid,$pdo);
+          changeResumeStyle($pdo);
           header("Location: index.php");
           return;
       } else {
@@ -193,6 +195,18 @@ if (
                 return false;"/></p>
             </div>
       </script>
+      <!-- Added html for hobbies and interests -->
+      <script id="hobby-template" type="text">
+          <div id="hobby_div@COUNT@">
+          <div class="less-top-margin less-bottom-margin input-form center">
+              <input class="skill ui-autocomplete-custom text-box-long center"
+                 name="hobby_name@COUNT@" id="hobby@COUNT@"/>
+          </div>
+              <p class="less-top-margin box-input-label less-bottom-margin center"> Delete preceeding hobby or interest:
+              <input type="button" class="click-plus" value="-"
+                     onclick="deleteHobby('#hobby_div@COUNT@','hobby@COUNT@'); return false;"/></p>
+          </div>
+      </script>
     </div>
         <h4 class="small-bottom-pad center">Add Job Skill: <button
             class="click-plus button-small" id="addSkill">+</button></h4>
@@ -246,7 +260,16 @@ if (
      they were completed before posting to the website server where
      they are rechecked using a PHP rountine in util.php. -->
     <div class="less-top-margin less-bottom-margin center" id="position_fields"> </div>
+    <!-- end of positions -->
     <h4 class="small-bottom-pad more-top-margin-2x center">Add Position: <button class="click-plus button-small" id="addPos" >+</button></h4>
+      <!-- Hobbies and interests -->
+    <h3 class="more-top-margin-3x center">Hobbies and Interests</h3>
+    <div class="less-top-margin less-bottom-margin center" id="hobby_fields"> </div>
+    <h4 class="more-top-margin-2x center">Add Hobby or Interest: <button class="click-plus less-bottom-margin button-small" id="addHobby">+</button></h5>
+    <!-- end of hobbies and interests -->
+    <!-- Enter No:<input type="text" id="number" name="number"/><br/>
+    <input type="button" value="cube" onclick="getcube()"/> -->
+
     <h3 class="more-top-margin-3x center">Save to database:
           <button class="button-submit" onclick="return doValidate();">Save</button>
           &nbsp;
@@ -275,11 +298,13 @@ $(document).ready(function() {
      count_edu =  0;
      count_skill = 0;
      count_activity = 0;
-     skill_removed =  0;
-     activity_removed =  0;
+     count_hobby = 0;
+     skill_removed = 0;
+     activity_removed = 0;
+     hobby_removed = 0;
      edu_removed = 0;
-     position_removed =  0;
-     last_text_box =  'fn';
+     position_removed = 0;
+     last_text_box = 'fn';
      window.console && console.log('The last text box is = ' + last_text_box);
      //nextTextBox =  'fn';
      test_box =  'fn';
@@ -293,21 +318,26 @@ $(document).ready(function() {
      org_array = [];
      position_desc_array = [];
      activity_array = [];
+     hobby_array = [];
      triggerAlert("Name and e-mail are required to save a profile.", false);
      // When a new skill is added, the immediate previous skill is checked
      // for offensive language.
      $(document).on('click', '.text-box', 'input[type="text"]', function(){
                var p = $(this);
                var tagId = p.attr("id");
-               checkLanguage(tagId);
                last_text_box = tagId;
+               window.console && console.log("Checking language for text-box. The last text box becomes : " + last_text_box);
+               checkLanguage(tagId);
+               window.console && console.log("Finished checking language. The last text box becomes : " + last_text_box);
+               //triggerAlert("The last box was updated to " + last_text_box);
      });
      $(document).on('click', '.text-box-long', 'input[type="text"]', function(){
              var p = $(this);
              var tagId = $(this).attr("id");
              last_text_box = tagId;
-             window.console && console.log("Text box was clicked: "+last_text_box);
+             window.console && console.log("Checking language for text-box-long. The last text box becomes : "+last_text_box);
              checkLanguage(tagId);
+             window.console && console.log("Finished checking language. The last text box becomes : "+last_text_box);
      });
      $(document).on('click', '.paragraph-box', 'input[type="text"]', function(){
                var tagId = $(this).attr("id");
@@ -351,6 +381,31 @@ $(document).ready(function() {
          window.console && console.log("Finishing adding skill-"+count_skill);
          var field = "jobskill"+count_skill;
          skill_array.push(field);
+        });
+        $('#addHobby').click(function(event){
+            event.preventDefault();
+            window.console && console.log("Adding hobby");
+            if(count_skill - skill_removed + 1 > 12) {
+                 triggerAlert('Maximum of twelve hobbyies exceeded', replace=true);
+                 return;
+            } else {
+                 count_hobby = count_hobby + 1;
+            }
+            window.console && console.log("Adding Hobby-"+count_hobby);
+        //  Fill out the template block within the html code
+            var source = $('#hobby-template').html();
+            $('#hobby_fields').append(source.replace(/@COUNT@/g, count_hobby));
+            $(document).on('click', '.skill', 'input[type="text"]', function(){
+                var hobby_id = $(this).attr("id");
+                var term_hobby = document.getElementById(id=hobby_id).value;
+                $.getJSON('hobby.php?ter'+'m='+term_hobby, function(data) {
+                     window.console && console.log(' Data returned: '+data);
+                     var ys = data;
+                     $('.skill').autocomplete({ source: ys });
+                });
+            });
+            var field = "hobby"+count_hobby;
+            hobby_array.push(field);
         });
         // when education is added, the immediate previous education
         // is checked for offensive language.

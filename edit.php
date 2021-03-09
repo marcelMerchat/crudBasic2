@@ -37,6 +37,7 @@ $ln = htmlentities(trim($profile['last_name']));
 $em = htmlentities(trim($profile['email']));
 $prof = htmlentities(trim($profile['profession']));
 $gl = htmlentities(trim($profile['goal']));
+$resume_style = htmlentities(trim($profile['resume_style']));
 // Check for initial GET request without (or without) post information
 // Only required entries are the first and laat names and the email.
 if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
@@ -65,6 +66,11 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
     $stmt = $pdo->prepare('DELETE FROM SkillSet WHERE profile_id = :pid');
     $stmt->execute(array(':pid' => $profileid));
     insertSkillSet($profileid,$pdo);
+//  Hobbies and Interests
+    // Delete old skill entries; insert new list
+    $stmt = $pdo->prepare('DELETE FROM HobbyList WHERE profile_id = :pid');
+    $stmt->execute(array(':pid' => $profileid));
+    insertHobbyList($profileid,$pdo);
 //  Education
     // Delete old education entries; recreate new list
     $stmt = $pdo->prepare('DELETE FROM Education WHERE profile_id = :pid');
@@ -79,27 +85,22 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
     $stmt->execute(array(':pid' => $profileid));
     // Insert new position entries; create replacement list
     insertPositions($profileid, $pdo);
-    $_SESSION['count_position'] = get_position_count($profileid,$pdo);
+    insertHobbyList($profileid, $pdo);
+    changeResumeStyle($pdo);
+    //$_SESSION['count_position'] = get_position_count($profileid,$pdo);
     // foreach ($_POST as $key => $value) {
-    //     $_SESSION['message'] = $_SESSION['message']
-    //     ."Field ".htmlspecialchars($key)." is ".htmlspecialchars($value)."<br>";
-    //     store_error_messages();
+    //    $_SESSION['message'] = $_SESSION['message']
+    //      ."Field ".htmlspecialchars($key)." is ".htmlspecialchars($value)."<br>";
+    //      store_error_messages();
     // }
-    // Check for hidden passward
-    if ( ! isset($_POST['skill_name1']) ){
-        header("Location: index.php");
-    }
-    $trimmed = trim($_POST['skill_name1']);
-    if ( ! (strlen($trimmed) > 8)  )  {
-        header("Location: index.php");
-    }
-    $substr = 'pumpkin4320';
-    if (strpos($_POST['skill_name1'], $substr) !== false) {
+    // Only approved users may enter contact information.
+    if ($_SESSION['contact_info'] == 0) {
+        header('Location: index.php');
+        return;
+    }  else {
         header("Location: contacts.php?profile_id=".$profileid);
-    } else {
-        header("Location: index.php");
+        return;
     }
-
 } else {
   //$_SESSION['message'] = ' Initial Get Request: nothing posted yet. ';
 }
@@ -117,6 +118,7 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
    $educations = loadEdu($profileid,$pdo);
    $positions = loadPos($profileid,$pdo);
    $skills = loadSkill($profileid,$pdo);
+   $hobbies= loadHobbies($profileid,$pdo);
 ?>
 </head>
 <body>
@@ -170,8 +172,18 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
           <!-- End of profile information -->
           <!-- Skills -->
 <!-- End of goals -->
+<!-- Select Resume Style -->
+<div class="more-top-margin-2x left">
+<p style="left">Please select a resume style:</p>
+  <input class="wide-2char left" type="radio" id="student" name="resume_type" value="student">
+  <label for="student">New Grad</label><br>
+  <input class="wide-2char left" type="radio" id="experienced" name="resume_type" value="employed">
+  <label for="experienced">Employed</label><br>
+  <input class="wide-2char left"type="radio" id="independent" name="resume_type" value="independent">
+  <label for="independent">Independent</label>
+</div>
 <!-- Skills -->
-<h4 class="more-top-margin-3x less-bottom-margin center">Skills</h4>
+<h4 class="more-top-margin-1x less-bottom-margin center">Skills</h4>
 <!-- the id addSkill point to a JavaScript function -->
 <div class="less-top-margin less-bottom-margin" id="skill_fields">
 <?php
@@ -442,8 +454,48 @@ foreach($positions as $position){
 // <input class="button-submit" type="submit" name="cancel" value="Cancel" size="40">
 ?>
 </div>  <!-- position fields -->
-<h4 class="more-top-margin-3x center">Add Position <button class="click-plus button-small" id="addPos" >+</button></h4>
+<h5 class="more-top-margin-3x center">Add Position <button class="click-plus button-small" id="addPos" >+</button></h4>
 <!-- End of Employment -->
+
+<!-- Hobbies and Interests -->
+<h3 class="more-top-margin-3x center">Hobbies and Interests</h3>
+<!-- the id addSkill point to a JavaScript function -->
+<div class="less-top-margin less-bottom-margin" id="hobby_fields">
+<?php
+  $count_hobby = 0;
+  foreach($hobbies as $hobby){
+           $count_hobby++;
+echo '<div id="hobby_div'.$count_hobby.'" >
+                 <div class="less-top-margin less-bottom-margin input-form center">
+                   <input class="skill ui-autocomplete-custom text-box-long"
+                        name="hobby_name'.$count_hobby.
+                   '" value="'.htmlentities(trim($hobby['name'])).'"
+                   id="hobby'.$count_hobby.'" >
+                 </div>
+                   <p class="less-top-margin box-input-label less-bottom-margin center">Delete preceeding interest or hobby:
+                   <input class="click-plus" type="button" value="-"
+                          onclick = "deleteHobby(\'#hobby_div'.$count_hobby.'\',\'hobby'.$count_hobby.'\'); return false">
+                   </p>
+      </div>';
+  }
+?>
+</div>
+<!-- Added html for hobbies and interests -->
+<script id="hobby-template" type="text">
+    <div id="hobby_div@COUNT@">
+    <div class="less-top-margin less-bottom-margin input-form center">
+        <input class="skill ui-autocomplete-custom text-box-long center"
+           name="hobby_name@COUNT@" id="hobby@COUNT@"/>
+    </div>
+        <p class="less-top-margin box-input-label less-bottom-margin center"> Delete preceeding hobby or interest:
+        <input type="button" class="click-plus" value="-"
+               onclick="deleteHobby('#hobby_div@COUNT@','hobby@COUNT@'); return false;"/></p>
+    </div>
+</script>
+<h5 class="more-top-margin-3x center">Add Hobby or Interest: <button class="click-plus less-bottom-margin button-small" id="addHobby">+</button></h5>
+
+<!-- end of hobbies and interests -->
+
 <h4 class="more-top-margin-3x headline-green center"><span class="link-info">Save changes</span>
       <button class="button-submit" onclick="return doValidate();">Save</button>
       &nbsp;
@@ -468,7 +520,9 @@ $(document).ready(function() {
         count_edu =      Number("<?php echo $count_edu ?>");
         count_skill =   Number("<?php echo $count_skill ?>");
         count_activity =   Number("<?php echo $count_task ?>");
+        count_hobby =   Number("<?php echo $count_hobby?>");
         skill_array = makeSkillArray(count_skill);
+        hobby_array = makeHobbyArray(count_hobby);
         school_array = makeSchoolArray(count_edu);
         award_array = makeAwardArray(count_edu);
         org_year_start_array = makeJobYearStartArray(count_position);
@@ -476,6 +530,7 @@ $(document).ready(function() {
         org_array = makeOrgArray(count_position);
         position_desc_array = makePositionDescArray(count_position);
         skill_removed =  0;
+        hobby_removed =  0;
         activity_removed =  0;
         edu_removed = 0;
         position_removed =  0;
@@ -510,6 +565,33 @@ $(document).ready(function() {
             });
             var field = "jobskill"+count_skill;
             skill_array.push(field);
+        });
+        // When a new skill is added, the immediate previous skill is checked
+        // for offensive language.
+        $('#addHobby').click(function(event){
+            event.preventDefault();
+            window.console && console.log("Adding hobby");
+            if(count_hobby - hobby_removed + 1 > 12) {
+                 triggerAlert('Maximum of twelve hobbyies exceeded', replace=true);
+                 return;
+            } else {
+                 count_hobby = count_hobby + 1;
+            }
+            window.console && console.log("Adding Hobby-"+count_hobby);
+        //  Fill out the template block within the html code
+            var source = $('#hobby-template').html();
+            $('#hobby_fields').append(source.replace(/@COUNT@/g, count_hobby));
+            $(document).on('click', '.skill', 'input[type="text"]', function(){
+                var hobby_id = $(this).attr("id");
+                var term_hobby = document.getElementById(id=hobby_id).value;
+                $.getJSON('hobby.php?ter'+'m='+term_hobby, function(data) {
+                     window.console && console.log(' Data returned: '+data);
+                     var ys = data;
+                     $('.skill').autocomplete({ source: ys });
+                });
+            });
+            var field = "hobby"+count_hobby;
+            hobby_array.push(field);
         });
         //  When education is added, the immediate previous education
         // is checked for offensive language.

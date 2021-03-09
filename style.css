@@ -5,7 +5,7 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #333;
     background-color: #FDF0D0;
-    font-size: 1em;
+    font-size: 0.95em;
 }
 .form-background {
   background-color: rgba(230, 230, 175);
@@ -478,6 +478,15 @@ div.left {
 button.button-small {
     font-size: 2rem;
     width: 46px;
+    padding: 2px;
+    border: 1px solid #008800;
+    background-color: #def;
+    margin-top: 4px;
+}
+input.wide-2char {
+    font-size: 1.8rem;
+    text-align: right;
+    width: 2em;
     padding: 2px;
     border: 1px solid #008800;
     background-color: #def;

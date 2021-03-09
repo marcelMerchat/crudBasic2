@@ -161,7 +161,7 @@ if ( isset($_POST['pass'])) {
       <input class="button-submit wide-15char" type="submit" onclick="return doValidatePass();" value="Assign Password"/>
       <input class="button-submit wide-10char" type="submit" name="cancel" value="Cancel"/>
 </form>
-  <p class="left"> Please enter a password at least 8 characters in length.
+  <p class="center"> Please enter a password at least 8 characters in length.
   </p>
 </div>
 <script>
