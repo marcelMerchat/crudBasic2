@@ -435,12 +435,13 @@ function insertLinkedin($pdo) {
        return false;
      } else {
         $linkedin = trim($_POST['linkedin']);
-        $valid_li = true; // validateEmail($pdo);
-        $valid = $valid_li;
+        $valid = true; // validateEmail($pdo);
         if(! $valid ) {
-            store_error_messages();
-            return false;
+           return false;
         }
+        // $_SESSION['message'] = $_SESSION['message']
+        //         .' Inserting linked-in address for '.$linkedin;
+        // store_error_messages();
         $sql = 'UPDATE Profile SET linkedin = :li
                    WHERE profile_id = :pid';
         $stmt = $pdo->prepare($sql);

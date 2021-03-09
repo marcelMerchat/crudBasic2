@@ -39,6 +39,7 @@ if($profile===false){
 }
 $em = htmlentities(trim($profile['email']));
 $ph = htmlentities(trim($profile['phone']));
+$linkedin = htmlentities(trim($profile['linkedin']));
 
 // Check for initial GET request without (or without) post information
 // Only required entries are the first and laat names and the email.
@@ -129,7 +130,7 @@ if (isset($_POST['email']) ) {
           <div class="container-form-entry more-top-margin-3x">
                   <div class="less-bottom-margin less-top-margin box-input-label-wide inline-block right">www.linkedin.com/in/ &nbsp;
                   </div><div class="less-top-margin less-bottom-margin profile-input-form inline-block">
-                    <input class="text-box" type="text" name="linkedin" value="<?= $ph ?>" id="ph">
+                    <input class="text-box" type="text" name="linkedin" value="<?= $linkedin ?>" id="ph">
                   </div></div>
 
 <!-- End of contact information -->

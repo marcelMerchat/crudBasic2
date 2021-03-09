@@ -190,7 +190,7 @@ session_start();
         echo '</p>';
     }
         //echo '<br />';
-        echo '<h4 class="more-top-margin-3x">Goals</h4>';
+        echo '<h4 class="more-top-margin-2x">Goals</h4>';
         echo '<p class="job-description-box justify more-bottom-margin-2x">'.htmlentities($row['goal']).'</p>';
 
         // Work history
