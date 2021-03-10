@@ -626,6 +626,21 @@ input.wide-20char {
     margin-bottom: 2px;
     border: 2px solid #886600;
 }
+.activity {
+    box-sizing: border-box;
+    padding: 3px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border: 2px solid #886600;
+}
+.hobby {
+    box-sizing: border-box;
+    padding: 3px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border: 2px solid #886600;
+}
+
 .small-word-button {
     font-size: 2.5vw;
     width: 80px;

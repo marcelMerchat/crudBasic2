@@ -243,7 +243,7 @@ $count_edu = 0;
                                                       short-input-label">School
                     </div><div class="less-top-margin less-bottom-margin
                                                                  input-form">
-                        <input class="school text-box-long" type="text"
+                        <input class="school ui-autocomplete-custom text-box-long" type="text"
                             name="edu_school'.$count_edu.'" value="'
                             .htmlentities(trim($education['institution']))
                             .'" id="school'.$count_edu.'">
@@ -337,6 +337,10 @@ $count_task = 0;
 foreach($positions as $position){
     $pos++;
     $positionid = $position['position_id'];
+    $finalyr =$position['yearLast'];
+    if($finalyr == 9999){
+       $finalyr = '';
+    }
     $activity = loadActivity($profileid,  $positionid, $pdo);
     echo '<div class="form-background div-form-group border-top-bottom left more-bottom-margin" id="position'.$pos.'">';
     if ($mobile) {
@@ -409,11 +413,10 @@ foreach($positions as $position){
       // <input type="text" name="activity_rank"'.$count_task.'
       //       value="'.$pos.'"
       //       id="activityrank'.$count_task.'" />
-      htmlentities($task['position_id']);
       echo '<div id="activity_div'.$count_task.'" >
               <div class="less-top-margin less-bottom-margin
                                                             input-form center">
-                <input class="skill ui-autocomplete-custom text-box-long"
+                <input class="activity ui-autocomplete-custom text-box-long"
                          name="task'.$count_task.'"
                          value="'.htmlentities(trim($task['description'])).'"
                          id="activity'.$count_task.'" >
@@ -459,7 +462,7 @@ foreach($positions as $position){
 
 <!-- Hobbies and Interests -->
 <h3 class="more-top-margin-3x center">Hobbies and Interests</h3>
-<!-- the id addSkill point to a JavaScript function -->
+<!-- the id addactivitypoint to a JavaScript function -->
 <div class="less-top-margin less-bottom-margin" id="hobby_fields">
 <?php
   $count_hobby = 0;
@@ -467,7 +470,7 @@ foreach($positions as $position){
            $count_hobby++;
 echo '<div id="hobby_div'.$count_hobby.'" >
                  <div class="less-top-margin less-bottom-margin input-form center">
-                   <input class="skill ui-autocomplete-custom text-box-long"
+                   <input class="hobby ui-autocomplete-custom text-box-long"
                         name="hobby_name'.$count_hobby.
                    '" value="'.htmlentities(trim($hobby['name'])).'"
                    id="hobby'.$count_hobby.'" >
@@ -484,7 +487,7 @@ echo '<div id="hobby_div'.$count_hobby.'" >
 <script id="hobby-template" type="text">
     <div id="hobby_div@COUNT@">
     <div class="less-top-margin less-bottom-margin input-form center">
-        <input class="skill ui-autocomplete-custom text-box-long center"
+        <input class="hobby ui-autocomplete-custom text-box-long center"
            name="hobby_name@COUNT@" id="hobby@COUNT@"/>
     </div>
         <p class="less-top-margin box-input-label less-bottom-margin center"> Delete preceeding hobby or interest:
@@ -554,14 +557,19 @@ $(document).ready(function() {
         //  Fill out the template block within the html code
             var source = $('#skill-template').html();
             $('#skill_fields').append(source.replace(/@COUNT@/g, count_skill));
+            $(function(){
+              $('.skill').click(function(e){e.preventDefault();}).click();
+            });
             $(document).on('click', '.skill', 'input[type="text"]', function(){
                 var skill_id = $(this).attr("id");
                 var term_skill = document.getElementById(id=skill_id).value;
-                $.getJSON('skill.php?ter'+'m='+term_skill, function(data) {
+                if(term_skill.length > 1) {
+                  $.getJSON('skill.php?ter'+'m='+term_skill, function(data) {
                      window.console && console.log(' Data returned: '+data);
                      var ys = data;
                      $('.skill').autocomplete({ source: ys });
-                });
+                  });
+                }
             });
             var field = "jobskill"+count_skill;
             skill_array.push(field);
@@ -581,14 +589,19 @@ $(document).ready(function() {
         //  Fill out the template block within the html code
             var source = $('#hobby-template').html();
             $('#hobby_fields').append(source.replace(/@COUNT@/g, count_hobby));
-            $(document).on('click', '.skill', 'input[type="text"]', function(){
+            $(function(){
+              $('.hobby').click(function(e){e.preventDefault();}).click();
+            });
+            $(document).on('click', '.hobby', 'input[type="text"]', function(){
                 var hobby_id = $(this).attr("id");
                 var term_hobby = document.getElementById(id=hobby_id).value;
-                $.getJSON('hobby.php?ter'+'m='+term_hobby, function(data) {
+                if(term_hobby.length > 1) {
+                  $.getJSON('hobby.php?ter'+'m='+term_hobby, function(data) {
                      window.console && console.log(' Data returned: '+data);
                      var ys = data;
-                     $('.skill').autocomplete({ source: ys });
-                });
+                     $('.hobby').autocomplete({ source: ys });
+                  });
+                }
             });
             var field = "hobby"+count_hobby;
             hobby_array.push(field);
@@ -605,26 +618,36 @@ $(document).ready(function() {
             }
             var source = $('#edu-template').html();
             $('#edu_fields').append(source.replace(/@COUNT@/g, count_edu));
+            $(function(){
+              $('.school').click(function(e){e.preventDefault();}).click();
+            });
             $(document).on('click', '.school', 'input[type="text"]', function(){
                var school_id = $(this).attr("id");
                var term = document.getElementById(id=school_id).value;
                window.console && console.log('preparing json for '+term);
-               $.getJSON('school.php?ter'+'m='+term, function(data) {
-                   window.console && console.log('data returned'+data);
-                   var y = data;
-                   $('.school').autocomplete({ source: y });
+               if(term.length > 1) {
+                 $.getJSON('school.php?ter'+'m='+term, function(data) {
+                    window.console && console.log('data returned'+data);
+                    var y = data;
+                    $('.school').autocomplete({ source: y });
+                  });
+               }
                });
-            });
-            $(document).on('click', '.award', 'input[type="text"]', function(){
-                var award_id = $(this).attr("id");
-                var term = document.getElementById(id=award_id).value;
-                window.console && console.log('preparing award json for '+term);
-                $.getJSON('edu_award.php?ter'+'m='+term, function(data) {
+               $(function(){
+                  $('.award').click(function(e){e.preventDefault();}).click();
+               });
+               $(document).on('click', '.award', 'input[type="text"]', function(){
+                 var award_id = $(this).attr("id");
+                 var term = document.getElementById(id=award_id).value;
+                 window.console && console.log('preparing award json for '+term);
+                 if(term.length > 1) {
+                   $.getJSON('edu_award.php?ter'+'m='+term, function(data) {
                         window.console && console.log('data returned'+data);
                         var y = data;
                         $('.award').autocomplete({ source: y });
-                });
-            });
+                   });
+                 }
+               });
             var field = "school"+count_edu;
             school_array.push(field);
             var award_field = "award"+count_edu;

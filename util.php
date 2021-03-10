@@ -439,9 +439,7 @@ function insertLinkedin($pdo) {
         if(! $valid ) {
            return false;
         }
-        // $_SESSION['message'] = $_SESSION['message']
-        //         .' Inserting linked-in address for '.$linkedin;
-        // store_error_messages();
+
         $sql = 'UPDATE Profile SET linkedin = :li
                    WHERE profile_id = :pid';
         $stmt = $pdo->prepare($sql);
@@ -955,7 +953,7 @@ function insertEducations($profile_id,$pdo) {
 }
 // InsertActivitySet is always an INSERT MYSQL COMMAND
 // because the old set is always erased first
-function insertActivityList($profile_id,$activity_position_tag,$position_id,$pdo) {
+function insertActivityList($profile_id,$loop_id,$position_id,$pdo) {
     //$_SESSION['message'] = $_SESSION['message']
       //                      .' The task position-tag is Number '.$activity_position_tag.'.';
     store_error_messages();
@@ -984,7 +982,7 @@ function insertActivityList($profile_id,$activity_position_tag,$position_id,$pdo
 
        //}
        // The position tag will only match for the particular position ID.
-       if ( $_POST[$tag] != $activity_position_tag ){
+       if ( $_POST[$tag] != $loop_id ){
        // $_SESSION['message'] = $_SESSION['message']         //                       .' In activity loop: '
        //                        .'Positions do not match for '.
        //                        ' Task-'.$i.'. The activity tag of '.$_POST[$tag]
@@ -994,7 +992,7 @@ function insertActivityList($profile_id,$activity_position_tag,$position_id,$pdo
           continue;
        }
        if ( isset($_POST[$tag])) {
-          $positionid = $_POST[$tag];
+          //$positionid = $_POST[$tag];
           $activity = trim($_POST[$field_name]);
          //$_SESSION['message'] = $_SESSION['message']
           //.$tag.' is '.$positionid.'.';
@@ -1210,12 +1208,11 @@ function insertPositions($profile_id,$pdo) {
         // $_SESSION['message'] = $_SESSION['message']
         //           .' Ready to insert activities for '
         //           .' Work History-'.$i.'.';
-        store_error_messages();
+        //store_error_messages();
         insertActivityList($profile_id,$i,$position_id,$pdo);
         // $_SESSION['message'] = $_SESSION['message']
         //     .' Activities were inserted.';
         // store_error_messages();
-
       } // end of 'for' loop
       $_SESSION['count_position'] = $rank;
       if($rank < 1){

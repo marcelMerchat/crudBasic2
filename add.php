@@ -96,7 +96,7 @@ if (
           insertEducations($profileid,$pdo);
       //  Positions
           insertPositions($profileid, $pdo);
-          insertActivityList($profileid,$pdo);
+          //insertActivityList($profileid,$pdo);
           insertHobbyList($profileid,$pdo);
           changeResumeStyle($pdo);
           header("Location: index.php");
@@ -160,6 +160,19 @@ if (
     <div class="goal-box-layout less-top-margin">
           <textarea class="paragraph-box" rows="12" name="goal" id="gl"><?= htmlentities($goal) ?></textarea>
     </div></div>
+
+    <!-- Select Resume Style -->
+    <div class="more-top-margin-2x left">
+    <p style="left">Please select a resume style:</p>
+      <input class="wide-2char left" type="radio" id="student" name="resume_type" value="student">
+      <label for="student">New Grad</label><br>
+      <input class="wide-2char left" type="radio" id="experienced" name="resume_type" value="employed">
+      <label for="experienced">Employed</label><br>
+      <input class="wide-2char left"type="radio" id="independent" name="resume_type" value="independent">
+      <label for="independent">Independent</label>
+    </div>
+
+
     <!-- End of profile information -->
     <!-- Skills -->
     <h3 class="more-top-margin-3x center">Skills</h3>
@@ -199,7 +212,7 @@ if (
       <script id="hobby-template" type="text">
           <div id="hobby_div@COUNT@">
           <div class="less-top-margin less-bottom-margin input-form center">
-              <input class="skill ui-autocomplete-custom text-box-long center"
+              <input class="hobby ui-autocomplete-custom text-box-long center"
                  name="hobby_name@COUNT@" id="hobby@COUNT@"/>
           </div>
               <p class="less-top-margin box-input-label less-bottom-margin center"> Delete preceeding hobby or interest:
@@ -226,7 +239,7 @@ if (
             <div class="container-form-entry less-bottom-margin">
                 <div class="less-bottom-margin box less-top-margin short-input-label center"> School </div>
                 <div class="less-bottom-margin input-form zero-top-margin">
-                  <input class="school text-box-long less-bottom-margin zero-top-margin" type="text" size="80" name="edu_school@COUNT@" id="school@COUNT@" />
+                  <input class="school ui-autocomplete-custom text-box-long less-bottom-margin zero-top-margin" type="text" size="80" name="edu_school@COUNT@" id="school@COUNT@" />
                 </div>
             </div>
             <div class="container-form-entry less-bottom-margin">
@@ -367,26 +380,31 @@ $(document).ready(function() {
          // Fill out the template block within the html code
          var source = $('#skill-template').html();
          $('#skill_fields').append(source.replace(/@COUNT@/g, count_skill));
+         window.console && console.log("Finishing adding skill-"+count_skill);
+         var field = "jobskill"+count_skill;
+         skill_array.push(field);
+         $(function(){
+           $('.skill').click(function(e){e.preventDefault();}).click();
+         });
          $(document).on('click', '.skill', 'input[type="text"]', function(){
               window.console && console.log('preparing json ');
               var skill_id = $(this).attr("id");
               var termskill = document.getElementById(id=skill_id).value;
               window.console && console.log('preparing json '+termskill);
-              $.getJSON('skill.php?ter'+'m='+termskill, function(data) {
+              if(term_skill.length > 1) {
+                $.getJSON('skill.php?ter'+'m='+termskill, function(data) {
                   var ys = data;
                   window.console && console.log('Received json info is '+data);
                   $('.skill').autocomplete({ source: ys });
-              });
+                });
+              }
          });
-         window.console && console.log("Finishing adding skill-"+count_skill);
-         var field = "jobskill"+count_skill;
-         skill_array.push(field);
         });
         $('#addHobby').click(function(event){
             event.preventDefault();
             window.console && console.log("Adding hobby");
-            if(count_skill - skill_removed + 1 > 12) {
-                 triggerAlert('Maximum of twelve hobbyies exceeded', replace=true);
+            if(count_hobby - hobby_removed + 1 > 12) {
+                 triggerAlert('Maximum of twelve hobbies exceeded', replace=true);
                  return;
             } else {
                  count_hobby = count_hobby + 1;
@@ -395,17 +413,22 @@ $(document).ready(function() {
         //  Fill out the template block within the html code
             var source = $('#hobby-template').html();
             $('#hobby_fields').append(source.replace(/@COUNT@/g, count_hobby));
-            $(document).on('click', '.skill', 'input[type="text"]', function(){
-                var hobby_id = $(this).attr("id");
-                var term_hobby = document.getElementById(id=hobby_id).value;
-                $.getJSON('hobby.php?ter'+'m='+term_hobby, function(data) {
-                     window.console && console.log(' Data returned: '+data);
-                     var ys = data;
-                     $('.skill').autocomplete({ source: ys });
-                });
-            });
             var field = "hobby"+count_hobby;
             hobby_array.push(field);
+            $(function(){
+              $('.hobby').click(function(e){e.preventDefault();}).click();
+            });
+            $(document).on('click', '.hobby', 'input[type="text"]', function(){
+                var hobby_id = $(this).attr("id");
+                var term_hobby = document.getElementById(id=hobby_id).value;
+                if(term_hobby.length > 1) {
+                  $.getJSON('hobby.php?ter'+'m='+term_hobby, function(data) {
+                     window.console && console.log(' Data returned: '+data);
+                     var ys = data;
+                     $('.hobby').autocomplete({ source: ys });
+                  });
+                }
+            });
         });
         // when education is added, the immediate previous education
         // is checked for offensive language.
@@ -421,6 +444,10 @@ $(document).ready(function() {
                  // Creates Div with id of edu1, edu2, ...
                  // These divs inherit class from edu-fields div
              $('#edu_fields').append(source.replace(/@COUNT@/g, count_edu));
+             var field = "school"+count_edu;
+             school_array.push(field);
+             var award_field = "award"+count_edu;
+             award_array.push(award_field);
              $(function(){
                $('.school').click(function(e){e.preventDefault();}).click();
              });
@@ -428,24 +455,28 @@ $(document).ready(function() {
                  var school_id = $(this).attr("id");
                  term = document.getElementById(id=school_id).value;
                  window.console && console.log('preparing json for '+term);
-                 $.getJSON('school.php?ter'+'m='+term, function(data) {
+                 if(term.length > 1) {
+                    $.getJSON('school.php?ter'+'m='+term, function(data) {
                          var y = data;
                          $('.school').autocomplete({ source: y });
-                 });
+                    });
+                  }
+             });
+             $(function(){
+               $('.award').click(function(e){e.preventDefault();}).click();
              });
              $(document).on('click', '.award', 'input[type="text"]', function(){
                  var award_id = $(this).attr("id");
                  term = document.getElementById(id=award_id).value;
                  window.console && console.log('preparing json for '+term);
-                 $.getJSON('edu_award.php?ter'+'m='+term, function(data) {
+                 if(term.length > 1) {
+                   $.getJSON('edu_award.php?ter'+'m='+term, function(data) {
+                         window.console && console.log('data returned'+data);
                          var y = data;
                          $('.award').autocomplete({ source: y });
-                 });
+                   });
+                 }
              });
-             var field = "school"+count_edu;
-             school_array.push(field);
-             var award_field = "award"+count_edu;
-             award_array.push(award_field);
          });  //end of addedu
          $('#addPos').click(function(event){
              event.preventDefault();
@@ -598,73 +629,11 @@ $(document).ready(function() {
               }
               window.console && console.log("Adding position "+count_position);
          });
-         // $(document).on('click', '.click-plus-activities','button', function(){
-         //          event.preventDefault();
-         //          var p = $(this);
-         //          var tagId = $(this).attr("id");
-         //          window.console && console.log("At start of click-plus-activities: Button was clicked: " + tagId);
-         //          var base = "add_activity"; // 14
-         //          var start = base.length;
-         //          //var str = tagId;
-         //          var len = tagId.length;
-         //          // Job number is the button number
-         //          var job_num = tagId.substr(start, len);
-         //          window.console && console.log('Preparing to add activity for Job-' + job_num);
-         //          if(count_activity - activity_removed + 1 > 930) {
-         //               // triggerAlert('Maximum of nine hundred and thirty activities exceeded',
-         //               //     replace=true);
-         //              return;
-         //            } else {
-         //                count_activity = count_activity + 1;
-         //           }
-         //           window.console && console.log("Adding activity-" +
-         //                                                           count_activity);
-         //           // Fill out the template block within the html code
-         //           activity_num = count_activity;
-         //           //var source1 = $('#activity-template1').html();
-         //           var location =  "#" + "activity_fields_a" + job_num;
-         //           // $(location1).append(source1.replace(/@COUNT@/g, activity_num));
-         //           // $(location1).append('<input \
-         //           //     type="hidden" name="activity_position_tag' + activity_num +
-         //           //     '" value=' + job_num +
-         //           //     '    id="activity_parent'+ activity_num + '" />'
-         //           // );
-         //           // var source2 = $('#activity-template2').html();
-         //           //var location2 =  "#" + "activity_fields_b" + job_num;
-         //           //$(location1).append(source2.replace(/@COUNT@/g, activity_num));
-         //
-         //           $(location).append('<div \
-         //                class="less-top-margin less-bottom-margin \
-         //                       input-form center" \
-         //                   id="activity_div' + activity_num + '"> \
-         //             <input class="activity ui-autocomplete-custom \
-         //                     text-box-long max-entry-box-width" \
-         //                     name="task' + activity_num + '" \
-         //                     id="activity' + activity_num + '"/> \
-         //            <input type="hidden" \
-         //                    name="activity_position_tag' + activity_num + '" \
-         //                    value=' + job_num +
-         //                    ' id="activity_parent' + activity_num + '" /> \
-         //            <p class="less-top-margin box-input-label \
-         //                      less-bottom-margin"> \
-         //               Delete preceeding activity: <input \
-         //               type="button" class="click-plus" value="-" \
-         //               onclick="deleteActivity( \
-         //                 \'#activity_div' + activity_num + '\', \
-         //                 \'activity' + activity_num + '\'); return false;"/></p> \
-         //             </div>'
-         //           );
-         //           window.console && console.log(
-         //              "Added Activity-"+ activity_num + " for Job-" + location);
-         //           var field = "activity"+activity_num;
-         //           activity_array.push(field);
-         //   });
-           $(document).on('click', '.click-plus-activities-input-button','input[type="button"]', function(){
+         $(document).on('click', '.click-plus-activities-input-button','input[type="button"]', function(){
                     event.preventDefault();
                     var p = $(this);
                     var tagId = $(this).attr("id");
                     window.console && console.log("Button for click-plus-activities-input-button: " + tagId);
-                    //checkLanguage(tagId);
                     var base = "add_activity"; // 14
                     var start = base.length;
                     var len = tagId.length;
@@ -682,7 +651,6 @@ $(document).ready(function() {
                      window.console && console.log("Adding activity-" +
                          count_activity);
                      // Fill out the template block within the html code
-
                      activity_num = count_activity;
                      //var source1 = $('#activity-template1').html();
                      var location =  "#" + "activity_fields_a" + job_num;

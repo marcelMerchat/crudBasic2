@@ -26,7 +26,7 @@ session_start();
         display: inline-block;
         vertical-align: top;
         text-align: left;
-        width: 1.4rem;
+        width: 20px;
         height: 1.1em;
         border: 0px solid #008800;
         padding: 0px;
@@ -280,7 +280,7 @@ session_start();
                                       .htmlentities($rows[$i]['year'])
                                   .'</div>';
                               } else {
-                echo              '<div class="edu-label" style="font-size: 26px;"> &#9642</div>';
+                echo              '<div class="edu-label" style="font-size: 21px;"> &#9642</div>';
                                               // &#8226 for round bullet
                               }
                 echo          '<div class="edu-info">'
