@@ -379,8 +379,10 @@ CREATE TABLE Education (
   REFERENCES Award (award_id)
   ON DELETE CASCADE ON UPDATE CASCADE,
 
-  PRIMARY KEY(profile_id, institution_id)
+  PRIMARY KEY(profile_id, institution_id, award_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE Education DROP PRIMARY KEY, ADD PRIMARY KEY(profile_id, institution_id, award_id)
 
 #############################################################
 
@@ -507,7 +509,7 @@ ALTER TABLE `ActivityList` RENAME `Activity`;
 
 CREATE TABLE Hobby (
   hobby_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(128) NOT NULL DEFAULT '',
+  name VARCHAR(256) NOT NULL DEFAULT '',
   INDEX(name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

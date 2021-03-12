@@ -113,16 +113,16 @@ function get_censored_input($field_name,$long_name,$pdo) {
   //  $offn is the offensive boolean variable
       $offn = false;
       if ( ! isset($_POST[$field_name]) ){
-        $_SESSION['message'] = $_SESSION['message']
-          .' A '.$long_name.' was not posted. ';
-          store_error_messages();
+        //$_SESSION['message'] = $_SESSION['message']
+          //.' A '.$long_name.' was not posted. ';
+          //store_error_messages();
           return array(false,"");
       }
       $trimmed = trim($_POST[$field_name]);
       if ( ! (strlen($trimmed) > 0)  )  {
-            $_SESSION['message'] = $_SESSION['message']
-              .' A '.$long_name.' was not provided. ';
-              store_error_messages();
+            //$_SESSION['message'] = $_SESSION['message']
+              //.' A '.$long_name.' was not provided. ';
+              //store_error_messages();
               return array(false,"");
       }
       if ( ! $valid) {return array(false,"");}
@@ -589,6 +589,14 @@ function insertSkillSet($profile_id,$pdo) {
         store_error_messages();
         continue;
       }
+      $len = strlen($skill);
+      if ($len > 125){
+              $_SESSION['message'] = $_SESSION['message'].'Skill '
+                  .' of length '.$len.' exceeds maximum length of 125 '
+                  .' characters for '.$skill.'". ';
+              store_error_messages();
+              continue;
+      }
       $text_insert = 'Skill-'.$i;
       $valid = get_text_input_validation($field_name,$text_insert,$pdo);
       if ( ! $valid) {
@@ -704,9 +712,9 @@ function insertHobbyList($profile_id,$pdo) {
       $stmt->execute(array(':nme' => $hobby) );
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
       $cnt = (int) array_values($row)[0];
-       // $_SESSION['message'] = $_SESSION['message']
-       //     .' For Hobby-'.$i.', the count in the database is '
-       //     .': '.$cnt.'; ';
+       $_SESSION['message'] = $_SESSION['message']
+          .' For Hobby-'.$i.', the count in the database is '
+           .': '.$cnt.'; ';
       //print_r($row);
       //var_dump($row);
   //  If the hobby already exists, retrieve it using the Hobby ID number.
@@ -717,9 +725,9 @@ function insertHobbyList($profile_id,$pdo) {
           $stmt->execute(array(':nme' => $hobby) );
           $row = $stmt->fetch(PDO::FETCH_ASSOC);
           $hobby_id = $row['hobby_id'] + 0;
-          // $_SESSION['message'] = $_SESSION['message']
-          //                          .$_POST[$field_name].'at Hobby-'.$i
-          //                          .' already exists. ';
+          $_SESSION['message'] = $_SESSION['message']
+                                    .$_POST[$field_name].'at Hobby-'.$i
+                                    .' already exists. ';
       }
   //  Look for duplicate hobbies
       $sqldup = 'SELECT COUNT(*) FROM HobbyList WHERE profile_id = :pid AND hobby_id = :sid';
@@ -734,18 +742,26 @@ function insertHobbyList($profile_id,$pdo) {
         continue;
       }
   //  if hobby does not exist in Hobby table, insert it
-      if($cnt === 0) {
+      if($cnt === 0 && strlen($hobby) > 0) {
+          $len = strlen($hobby);
+          if ($len > 250){
+              $_SESSION['message'] = $_SESSION['message'].'Hobby or interest '
+                  .' of length '.$len.' exceeds maximum length of 250 '
+                  .' characters for '.$hobby.'". ';
+              store_error_messages();
+              continue;
+          }
           // $_SESSION['message'] = $_SESSION['message']
           //    .' For Hobby-'.$i.', the zero count condition is true '
           //    .' and the hobby is being added to the Hobby table. ';
-          $sql = 'INSERT INTO Hobby (`name`) VALUES (TRIM(:nme))';
+          $sql = 'INSERT INTO Hobby (`name`) VALUES (:hob)';
           $stmt = $pdo->prepare($sql);
-          $stmt->execute(array(':nme' => trim($hobby)) );
+          $stmt->execute(array(':hob' => $hobby) );
           // Retrieve the newly assigned hobby_id
           $hobby_id = $pdo->lastInsertId() + 0;
-          // $_SESSION['message'] = $_SESSION['message']
-          //                        .' Hobby-'.$i.' was added to the Hobby Table'
-          //                        .': '.$_POST[$hobbyNum].'; ';
+          $_SESSION['message'] = $_SESSION['message']
+                                  .' Hobby-'.$i.' was added to the Hobby Table'
+                                  .': '.' with ID '.$hobby_id;
       }
       if (is_numeric($hobby_id) && $hobby_id > 0 ) {
           // $_SESSION['message'] = $_SESSION['message']
@@ -789,6 +805,14 @@ function insertEducations($profile_id,$pdo) {
         .' Education-'.$i.' was not completed. ';
       store_error_messages();
       continue;
+    }
+    $len = strlen($school);
+    if ($len > 125){
+            $_SESSION['message'] = $_SESSION['message'].'School '
+                .' of length '.$len.' exceeds maximum length of 125 '
+                .' characters for '.$school.'". ';
+            store_error_messages();
+            continue;
     }
     $text_insert = 'School-'.$i;
     $valid = get_text_input_validation($school_field_name,$text_insert,$pdo);
@@ -872,10 +896,18 @@ function insertEducations($profile_id,$pdo) {
     }
         //if award not found, insert it
     if($cntaward === 0) {
-            $sqlinsert_awd = 'INSERT INTO Award (`name`) VALUES (TRIM(:nme))';
-            $stmtinsert_awd = $pdo->prepare($sqlinsert_awd);
-            $stmtinsert_awd->execute(array(':nme' => $award) );
-            $awardid = $pdo->lastInsertId() + 0;
+        $len = strlen($award);
+        if ($len > 125){
+              $_SESSION['message'] = $_SESSION['message'].'Award '
+                  .' of length '.$len.' exceeds maximum length of 125 '
+                  .' characters for '.$award.'". ';
+              store_error_messages();
+              continue;
+        }
+        $sqlinsert_awd = 'INSERT INTO Award (`name`) VALUES (TRIM(:nme))';
+        $stmtinsert_awd = $pdo->prepare($sqlinsert_awd);
+        $stmtinsert_awd->execute(array(':nme' => $award) );
+        $awardid = $pdo->lastInsertId() + 0;
             //$_SESSION['message'] = $_SESSION['message'].$award
             //         .' is being added to the Award Table: '
             //         .$award.'. ';
@@ -1032,6 +1064,14 @@ function insertActivityList($profile_id,$loop_id,$position_id,$pdo) {
         //                      .' Ready to add to database for '
           //                    .' Task-'.$i.': '.$activity;
       //store_error_messages();
+      $len = strlen($activity);
+      if ($len > 500){
+              $_SESSION['message'] = $_SESSION['message'].'Activity '
+                  .' of length '.$len.' exceeds maximum length of 500 '
+                  .' characters for '.$activity.'". ';
+              store_error_messages();
+              continue;
+      }
       $sql = 'INSERT INTO Activity (profile_id,position_id,description, activity_rank)
                            VALUES ( :pid, :pos ,TRIM(:dscrp), :rnk)';
       $stmt = $pdo->prepare($sql);
@@ -1169,22 +1209,26 @@ function insertPositions($profile_id,$pdo) {
                ':title' => $title
              ));
         $position_id = $pdo->lastInsertId() + 0;
+        // $_SESSION['message'] = $_SESSION['message']
+        //             .' The new position number '
+        //             .' Work History-'.$i.' is '.$position_id;
+        // store_error_messages();
         $rank++;
         //  job description
         if ( ! (isset($_POST[$job_description_field_name]))) {
-          $_SESSION['message'] = $_SESSION['message']
-                    .' The job summary for '
-                    .' Work History-'.$i.' was not posted. ';
-          store_error_messages();
-            continue;
+          // $_SESSION['message'] = $_SESSION['message']
+          //           .' The job summary for '
+          //           .' Work History-'.$i.' was not posted. ';
+          // store_error_messages();
+          //continue;
         }
         $summary = trim($_POST[$job_description_field_name]);
         if ( ! strlen($summary) > 0){
-          $_SESSION['message'] = $_SESSION['message']
-                    .' The job summary for '
-                    .' Work History-'.$i.' was empty. ';
-          store_error_messages();
-          continue;
+          // $_SESSION['message'] = $_SESSION['message']
+          //           .' The job summary for '
+          //           .' Work History-'.$i.' was empty. ';
+          // store_error_messages();
+          //continue;
         }
         $text_insert = 'job description for Work History-'.$i;
         $valid = get_text_input_validation($job_description_field_name ,$text_insert,$pdo);
@@ -1194,11 +1238,11 @@ function insertPositions($profile_id,$pdo) {
                //.' After any deletions, it becomes "'.$desc.'." ';
         }
         if ( ! (strlen($summary) > 0)) {
-            $_SESSION['message'] = $_SESSION['message']
-                 .' The job description for '
-                   .' Work History-'.$i.' was removed entirely. ';
-            store_error_messages();
-            continue;
+            // $_SESSION['message'] = $_SESSION['message']
+            //      .' The job description for '
+            //        .' Work History-'.$i.' was removed entirely. ';
+            // store_error_messages();
+            //continue;
         }
         $sql = 'UPDATE Position SET summary = :jobsumm
                       WHERE position_id = :posid';

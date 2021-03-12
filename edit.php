@@ -135,6 +135,18 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
 
 <?php
           flashMessages();
+          $gradchecked = false;
+          $independentchecked = false;
+          $employedchecked = false;
+          if ($resume_style=='student'){
+              $gradchecked = 'checked';
+          }
+          if ($resume_style=='independent'){
+              $independentchecked = 'checked';
+          }
+          if ($resume_style=='employed'){
+              $employedchecked = 'checked';
+          }
 ?>
 <h5 class="less-bottom-margin center">When finished, click the 'Save'
     button at the bottom to save your work.</h5>
@@ -143,6 +155,26 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
           <input type="hidden" name="profile_id" value ="<?= $profileid ?>" />
           <p><input type="hidden" name="user_id" value ="<?= $uid ?>" id="userid"/></p>
           <!-- Modifiable Information -->
+          <!-- Select Resume Style -->
+          <!-- Skills -->
+          <h4 class="more-top-margin-1x less-bottom-margin center">Resume Style</h4>
+          <p style="left">Please select a resume style:</p>
+          <div class="radio more-top-margin-2x">
+
+          <label class="container-radio more-top-margin-2x"  for="student">New Grad
+             <input type="radio" <?= $gradchecked ?> id="student" name="resume_type" value="student">
+             <span class="checkmark"></span>
+          </label><br>
+          <label class="container-radio more-top-margin-2x" for="experienced">Employed
+             <input class="" type="radio"  <?= $employedchecked ?>  id="experienced" name="resume_type" value="employed">
+             <span class="checkmark"></span></label><br>
+          <label class="container-radio more-top-margin-2x" for="independent">Independent
+             <input class="" type="radio" <?= $independentchecked ?> id="independent" name="resume_type" value="independent">
+             <span class="checkmark"></span>
+          </label>
+          </div>
+          <!-- Basic Information -->
+          <h4 class="more-top-margin-1x less-bottom-margin center">Basic Information</h4>
           <div class="container-form-entry">
             <div class="less-bottom-margin less-top-margin box-input-label">First Name
             </div><div class="less-top-margin less-bottom-margin profile-input-form">
@@ -172,16 +204,7 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
           <!-- End of profile information -->
           <!-- Skills -->
 <!-- End of goals -->
-<!-- Select Resume Style -->
-<div class="more-top-margin-2x left">
-<p style="left">Please select a resume style:</p>
-  <input class="wide-2char left" type="radio" id="student" name="resume_type" value="student">
-  <label for="student">New Grad</label><br>
-  <input class="wide-2char left" type="radio" id="experienced" name="resume_type" value="employed">
-  <label for="experienced">Employed</label><br>
-  <input class="wide-2char left"type="radio" id="independent" name="resume_type" value="independent">
-  <label for="independent">Independent</label>
-</div>
+
 <!-- Skills -->
 <h4 class="more-top-margin-1x less-bottom-margin center">Skills</h4>
 <!-- the id addSkill point to a JavaScript function -->

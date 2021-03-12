@@ -77,12 +77,8 @@ if(! isMobile()) {
 
       <img src="IMG_20151115_150532519PathinPark.jpg">
       <p class="more-top-margin">The path ahead leads into the trees,</p>
-
-
-
       <p>And I wished I could follow it</p>
       <p>long I looked until I dared.</p>
-
       <br />
       <div>
       <p class="more-top-margin justify">This is an example of a simple website and database
@@ -177,11 +173,11 @@ if($tableRows > 0) {
       while ( $row = $stmtUsr->fetch(PDO::FETCH_ASSOC) ) {
           $resume_style = $row['resume_style'];
           if($resume_style == 'student') {
-              $view = 'student.';
+              $view = 'resume.';
           } else if ($resume_style == 'employed') {
-            $view = 'employed.';
+            $view = 'profile.';
           } else  {
-              $view = 'independent.';
+              $view = 'portfolio.';
           }
           echo '<tr><td><p class="zero-bottom-margin more-line-height-1p5em">'
             .htmlentities($row['first_name']).' '
@@ -203,11 +199,11 @@ if($tableRows > 0) {
            while ( $rowAll = $stmtAll->fetch(PDO::FETCH_ASSOC) ) {
              $resume_style = $rowAll['resume_style'];
              if($resume_style == 'student') {
-                 $view = 'student.';
+                 $view = 'resume.';
              } else if ($resume_style == 'employed') {
-               $view = 'employed.';
+               $view = 'profile.';
              } else  {
-                 $view = 'independent.';
+                 $view = 'portfolio.';
              }
              echo '<tr><td>'
                    .htmlentities($rowAll['first_name']).' '

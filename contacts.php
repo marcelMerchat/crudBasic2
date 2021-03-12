@@ -107,8 +107,9 @@ if (isset($_POST['email']) ) {
 <?php
           flashMessages();
 ?>
-<h5 class="less-bottom-margin center">When finished, click the 'Save'
-    button at the bottom to save your work.</h5>
+<h5 class="less-bottom-margin left">This final editing screen is for contact
+       information that is displayed at the top of the resume.
+       When finished, click the 'Save' button at the bottom.</h5>
 <form method="post" name="form1">
           <!-- hidden unchangeable information -->
           <input type="hidden" name="profile_id" value ="<?= $profileid ?>" />

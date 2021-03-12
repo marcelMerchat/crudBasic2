@@ -78,6 +78,16 @@ div.goal-box-layout {
     padding-top: 1px;
     padding-bottom: 1px;
     width: 98%;
+    margin-top: 0.1em;
+    margin-bottom: 0.2em;
+}
+.edu-award {
+    box-sizing: border-box;
+    text-align: left;
+    word-wrap: break-word;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    width: 98%;
 }
 div.container-section {
     font-size: 1em;
@@ -483,14 +493,89 @@ button.button-small {
     background-color: #def;
     margin-top: 4px;
 }
-input.wide-2char {
+input.wide-2char-right {
     font-size: 1.8rem;
     text-align: right;
-    width: 2em;
+    width: 1em;
     padding: 2px;
     border: 1px solid #008800;
     background-color: #def;
     margin-top: 4px;
+}
+div.radio {
+    font-size: 1.3rem;
+    box-sizing: border-box;
+    text-align: right;
+    width: 16em;
+    padding: 20px;
+    padding-right: 20px;
+    border: 0px solid #008800;
+    margin: auto; !important;
+    margin-top: 0.7em;
+    margin-bottom: 3px;
+}
+.container-radio {
+  display: block;
+  position: relative;
+  padding-left: 195px;
+  text-align: left;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 20px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container-radio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 7em;
+  height: 25px;
+  width: 25px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container-radio:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container-radio input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container-radio input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container-radio .checkmark:after {
+ 	top: 9px;
+	left: 9px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: white;
 }
 input.wide-10char {
     font-size: 1.4rem;
@@ -672,6 +757,9 @@ div.more-top-margin {
 .more-bottom-margin {
     margin-bottom: 1.5em;
 }
+.more-bottom-margin-0p3x {
+    margin-bottom: 0.3em;
+}
 .more-bottom-margin-1x {
     margin-bottom: 0.5em;
 }
@@ -788,11 +876,12 @@ ul {
 }
 li {
     padding-left: 1px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    margin-top: 3px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    margin-top: 2px;
     list-style-type: square;
-    color: #222;
+    font-size: 0.95em;
+    color: #333;
 }
 #main {
     position: absolute;
@@ -836,4 +925,7 @@ div.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-dialog-butto
 .row {
   display: flex;
   flex-direction: row;
+}
+p.small-bottom-margin {
+    margin-bottom: 0px;
 }

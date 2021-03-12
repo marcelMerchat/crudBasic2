@@ -390,8 +390,8 @@ $(document).ready(function() {
               window.console && console.log('preparing json ');
               var skill_id = $(this).attr("id");
               var termskill = document.getElementById(id=skill_id).value;
-              window.console && console.log('preparing json '+termskill);
-              if(term_skill.length > 1) {
+              window.console && console.log('preparing json '+ termskill);
+              if(termskill.length > 1) {
                 $.getJSON('skill.php?ter'+'m='+termskill, function(data) {
                   var ys = data;
                   window.console && console.log('Received json info is '+data);

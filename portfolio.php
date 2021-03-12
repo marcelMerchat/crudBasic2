@@ -59,23 +59,42 @@ session_start();
     .org-title-color {
         color: #008888;
         font-size: 17px;
-        margin-bottom: 0.35em;
+        margin-bottom: 0.3em;
     }
     .job-title-color {
         color: #008888;
         font-size: 17px;
-        margin-bottom: 0.2em;
+        margin-bottom: 0.05em;
     }
     div.job-desc {
       display: inline-block;
       box-sizing: border-box;
       text-align: left;
       width: 99%;
-      height: 1.1em;
+      /*height: 1.1em;*/
       border: 0px solid #008800;
       padding: 0px;
       margin-top: 2px;
       margin-bottom: 0px;
+    }
+    .job-activity {
+        box-sizing: border-box;
+        text-align: left;
+        word-wrap: break-word;
+        padding-top: 1px;
+        padding-bottom: 1px;
+        width: 98%;
+    }
+    .hobby {
+        box-sizing: border-box;
+        text-align: left;
+        word-wrap: break-word;
+        padding-top: 1px;
+        padding-bottom: 1px;
+        width: 98%;
+        margin-top: 0.5em;
+        margin-bottom: 0.3em;
+        border: 0px solid #008800;
     }
     div.container-edu-info {
       width: 30em;
@@ -83,12 +102,9 @@ session_start();
       box-sizing: border-box;
       width: 100%;
       border: 0px solid black;
-      padding-left: 1px;
-      padding-right: 1px;
-      padding-top: 0px;
-      padding-bottom: 0px;
-      margin-top: 4px;
-      margin-bottom: 15px;
+      padding: 1px;
+      margin-top: 2px;
+      margin-bottom: 4px;
     }
     div.edu-info {
         display: inline-block;
@@ -114,7 +130,7 @@ session_start();
     }
     .edu-row1 {
        border: 0px solid #008800;
-       margin: 0px;
+       margin: 1px;
        text-align: left;
     }
     .edu-row2 {
@@ -188,85 +204,8 @@ session_start();
         echo '</p>';
     }
         //echo '<br />';
-        echo '<h4 class="more-top-margin-3x">Goals</h4>';
-        echo '<p class="job-description-box justify more-bottom-margin-2x">'.htmlentities($row['goal']).'</p>';
-
-        // Education  ----------------------------------------------------------
-           // get the school name
-           $sqlid = 'SELECT year, institution_id, award_id FROM Education WHERE profile_id = :pid';
-           $stmt_schoolid = $pdo->prepare($sqlid);
-           $stmt_schoolid->execute(array(':pid' => $_GET['profile_id']));
-           $school_ids = $stmt_schoolid->fetchALL(PDO::FETCH_ASSOC);
-
-           // The profile_id was provided as a 'get' parameter.
-           // There are two other foreign keys in the Education Table.
-
-           // school id list
-           $rows = $school_ids;
-           $length = count($rows);
-           if( $length !== 0) {
-               echo '<h4 class="">Education</h4>';
-
-               // If any of the entires are missing the year, the year will be
-               // deleted.
-               $year_block = false;
-               for ($i = 0; $i < $length; $i++){
-                   $year_string = $rows[$i]['year'];
-                   if ( ! strlen($year_string) > 0 ) {
-                         $year_block = true;
-                   }
-               }
-
-               for ($i = 0; $i < $length; $i++){
-                   // get the year
-                   $year_string = $rows[$i]['year'];
-                   if ( strlen($year_string) > 0 ) {
-                         $year = (int) $year_string;
-                   } else {
-                         $year = -99999;
-                   }
-                   // get the school name
-                   //print_r($rows[$i]);
-                   $institution_id = $rows[$i]['institution_id'];
-                   $sqlinst = 'SELECT name FROM Institution WHERE institution_id = :iid';
-                   $stmt_schoolname = $pdo->prepare($sqlinst);
-                   $stmt_schoolname->execute(array(':iid' => $institution_id));
-                   $school_name = $stmt_schoolname->fetch(PDO::FETCH_ASSOC);
-                   $school = array_values($school_name)[0];
-
-                   // get the degree award
-                   $degree_id = $rows[$i]['award_id'];
-                   $sqlaward = 'SELECT name FROM Award WHERE award_id = :aid';
-                   $stmt_award = $pdo->prepare($sqlaward);
-                   $stmt_award->execute(array(':aid' => $degree_id));
-                   $award_name = $stmt_award->fetch(PDO::FETCH_ASSOC);
-                   $award = array_values($award_name)[0];
-
-                   echo '<div class="container-edu-info">
-                           <div class="edu-row1">';
-                                 if($year_block === false){
-                   echo               '<div class="edu-year-label">'
-                                         .htmlentities($rows[$i]['year'])
-                                     .'</div>';
-                                 } else {
-                   echo              '<div class="edu-label" style="font-size: 21px;"> &#9642</div>';
-                                                 // &#8226 for round bullet
-                                 }
-                   echo          '<div class="edu-info">'
-                                      .'<div><p class="margin-bottom-small">'.htmlentities($school).'</p></div>'
-                                      .'<div class="job-desc">'
-                                       .'<p class="job-description-box">'
-                                           .htmlentities($award)
-                                       .'</p>'
-                                      .'</div>'
-                                 .'</div>'
-                            .'</div>'
-                       .'</div>';
-                       //.htmlentities($rows[$i]['major']).'&nbsp;'
-               }
-           } else {
-                 //echo '<p style="color:orange">No education found</p>';
-           }
+        echo '<h4 class="more-top-margin-2x more-bottom-margin-0p3x">Goals</h4>';
+        echo '<p class="job-description-box justify more-bottom-margin-1x">'.htmlentities($row['goal']).'</p>';
 
         // Skills
         $sqlSkillCount = 'SELECT COUNT(*) FROM SkillSet WHERE profile_id = :pid';
@@ -284,7 +223,7 @@ session_start();
             $rows = $skillSet;
             $length = count($rows);
 
-            echo '<h4 class="less-bottom-margin">Job Skills</h4>';
+            echo '<h4 class="more-top-margin-1x less-bottom-margin">Job Skills</h4>';
             echo '<ul class="less-top-margin">';
             for ($i = 0; $i < $length; $i++){
                $skill_id = $rows[$i]['skill_id'];
@@ -299,45 +238,46 @@ session_start();
         } else {
               //echo '<p style="color:orange">No skills found</p>';
         }
-
 // Positions
-  $sql = 'SELECT position_id, yearStart, yearLast, organization, title, summary FROM Position WHERE profile_id = :pid';
-  $stmt_positions = $pdo->prepare($sql);
-  $stmt_positions->execute(array(':pid' => $_GET['profile_id']));
-  $row = $stmt_positions->fetchALL(PDO::FETCH_ASSOC);
-  $rows = array_values($row);
+   $sql = 'SELECT position_id, yearStart, yearLast, organization, title, summary FROM Position WHERE profile_id = :pid';
+   $stmt_positions = $pdo->prepare($sql);
+   $stmt_positions->execute(array(':pid' => $_GET['profile_id']));
+   $row = $stmt_positions->fetchALL(PDO::FETCH_ASSOC);
+   $rows = array_values($row);
   //$position_array = array_values($position_id);
   // $rows is a key-value pair array
-  $worklength = count($rows);
-  echo '<h4 class="more-top-margin-2x more-bottom-margin-1p5x">Employment History</h4>';
-  if($worklength > 0) {
+   $worklength = count($rows);
+   echo '<h4 class="more-top-margin-1x more-bottom-margin-0p3x">Employment History</h4>';
+   if($worklength > 0) {
         foreach($rows as $job){
           //$task_id = $activity_rows[$i]['activity_id'];
           $position_id = $job['position_id'];
           if($job['yearLast']==9999){
               $job['yearLast'] = 'Present';
           }
+          $jobsummary = htmlentities($job['summary']);
           echo '<div class="container-edu-info more-top-margin">
-                       <div class="edu-row1">';
-                             //if($year > 0){
-          echo          '<div class="job-label"><p class="job-title-color">'
+                   <div class="job-label"><p class="job-title-color">'
                                      .htmlentities($job['yearStart'])
                                      .'-'
                                      .htmlentities($job['yearLast'])
-                             .'</p></div>';
-          echo          '<div class="job-info">'  // &#8226 for round bullet
+                             .'</p>'
+                  .'</div>';
+          echo      '<div class="job-info">'  // &#8226 for round bullet
                            .'<div>'  // &#9642
-                               .'<p class="org-title-color">'
+                               .'<p class="org-title-color small-bottom-margin">'
                                    .htmlentities($job['organization'])
-                               .'</p>'.'<p class="job-title-color">'
+                               .'</p>'.'<p class="job-title-color small-bottom-margin">'
                                    .htmlentities($job['title'])
                                .'</p>'
-                           .'</div><div class="job-desc">'
-                               .'<p class="job-description-box justify">'
-                                           .htmlentities($job['summary'])
-                               .'</p>';
-                                  //echo '<h4 class="less-bottom-margin">Job Skills</h4>';
-          echo '<ul class="less-top-margin">';
+                           .'</div>'
+                           .'<div class="job-desc">';
+          if(strlen($jobsummary) > 1){
+                  echo  '<p class="job-description-box justify">'
+                             .htmlentities($job['summary'])
+                       .'</p>';
+          }
+          echo          '<ul class="less-top-margin">';
           $sqlActivitySet = 'SELECT activity_id FROM Activity
                        WHERE profile_id = :pid AND position_id = :posid';
           $stmt_activitySet = $pdo->prepare($sqlActivitySet);
@@ -360,14 +300,89 @@ session_start();
            echo '<li class="job-description-box justify">'.htmlentities($taskrow['description']).'</li>';
         }
         echo '</ul>'
-                            .'</div>'
-                        .'</div>'
-                    .'</div>'
-               .'</div>';
+                  .'</div>'
+                .'</div>'
+             .'</div>';
         }
   } else {
         //<p style="color:orange">No positions found</p>
   }
+  // Education  ----------------------------------------------------------
+     // get the school name
+     $sqlid = 'SELECT year, institution_id, award_id FROM Education WHERE profile_id = :pid';
+     $stmt_schoolid = $pdo->prepare($sqlid);
+     $stmt_schoolid->execute(array(':pid' => $_GET['profile_id']));
+     $school_ids = $stmt_schoolid->fetchALL(PDO::FETCH_ASSOC);
+
+     // The profile_id was provided as a 'get' parameter.
+     // There are two other foreign keys in the Education Table.
+
+     // school id list
+     $rows = $school_ids;
+     $length = count($rows);
+     if( $length !== 0) {
+         echo '<h4 class="more-top-margin-1x less-bottom-margin">Education</h4>';
+
+         // If any of the entires are missing the year, the year will be
+         // deleted.
+         $year_block = false;
+         for ($i = 0; $i < $length; $i++){
+             $year_string = $rows[$i]['year'];
+             if ( ! strlen($year_string) > 0 ) {
+                   $year_block = true;
+             }
+         }
+
+         for ($i = 0; $i < $length; $i++){
+             // get the year
+             $year_string = $rows[$i]['year'];
+             if ( strlen($year_string) > 0 ) {
+                   $year = (int) $year_string;
+             } else {
+                   $year = -99999;
+             }
+             // get the school name
+             //print_r($rows[$i]);
+             $institution_id = $rows[$i]['institution_id'];
+             $sqlinst = 'SELECT name FROM Institution WHERE institution_id = :iid';
+             $stmt_schoolname = $pdo->prepare($sqlinst);
+             $stmt_schoolname->execute(array(':iid' => $institution_id));
+             $school_name = $stmt_schoolname->fetch(PDO::FETCH_ASSOC);
+             $school = array_values($school_name)[0];
+
+             // get the degree award
+             $degree_id = $rows[$i]['award_id'];
+             $sqlaward = 'SELECT name FROM Award WHERE award_id = :aid';
+             $stmt_award = $pdo->prepare($sqlaward);
+             $stmt_award->execute(array(':aid' => $degree_id));
+             $award_name = $stmt_award->fetch(PDO::FETCH_ASSOC);
+             $award = array_values($award_name)[0];
+
+             echo '<div class="container-edu-info">
+                     <div class="edu-row1">';
+                           if($year_block === false){
+             echo               '<div class="edu-year-label">'
+                                   .htmlentities($rows[$i]['year'])
+                               .'</div>';
+                           } else {
+             echo              '<div class="edu-label" style="font-size: 21px;"> &#9642</div>';
+                                           // &#8226 for round bullet
+                           }
+             echo          '<div class="edu-info">'
+                                .'<div><p class="margin-bottom-small">'.htmlentities($school).'</p></div>'
+                                .'<div class="edu-award">'
+                                 .'<p class="small-bottom-margin">'
+                                     .htmlentities($award)
+                                 .'</p>'
+                                .'</div>'
+                           .'</div>'
+                      .'</div>'
+                 .'</div>';
+                 //.htmlentities($rows[$i]['major']).'&nbsp;'
+         }
+     } else {
+           //echo '<p style="color:orange">No education found</p>';
+     }
 
   // Hobbies and Interests
   // Skills
@@ -384,7 +399,7 @@ session_start();
       $rows = $stmt_HobbyList->fetchALL(PDO::FETCH_ASSOC);
     // school id list
       $length = count($rows);
-      echo '<h4 class="less-bottom-margin">Hobbies and Interests</h4>';
+      echo '<h4 class="more-top-margin-1x more-bottom-margin-0p3x">Hobbies and Interests</h4>';
       echo '<ul class="less-top-margin">';
       for ($i = 0; $i < $length; $i++){
          $hobby_id = $rows[$i]['hobby_id'];
@@ -393,7 +408,7 @@ session_start();
          $stmt_hobbyname->execute(array(':iid' =>   $hobby_id));
          $hobbyrow = $stmt_hobbyname->fetch(PDO::FETCH_ASSOC);
          //$hobby = array_values($hobbyrow)[0];
-         echo '<li class="job-description-box left">'.htmlentities($hobbyrow['name']).' &nbsp;&nbsp;&nbsp; </li>';
+         echo '<li class="hobby left">'.htmlentities($hobbyrow['name']).' &nbsp;&nbsp;&nbsp; </li>';
       }
       echo '</ul>';
   } else {
