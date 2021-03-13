@@ -514,7 +514,7 @@ div.radio {
     margin-top: 0.7em;
     margin-bottom: 3px;
 }
-.container-radio {
+label.container-radio {
   display: block;
   position: relative;
   padding-left: 195px;

@@ -120,6 +120,83 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
    $skills = loadSkill($profileid,$pdo);
    $hobbies= loadHobbies($profileid,$pdo);
 ?>
+<style>
+div.radio {
+    font-size: 1.3rem;
+    box-sizing: border-box;
+    text-align: right;
+    width: 16em;
+    padding: 20px;
+    padding-right: 20px;
+    border: 0px solid #008800;
+    margin: auto; !important;
+    margin-top: 0.7em;
+    margin-bottom: 3px;
+}
+label.container-radio {
+  display: block;
+  position: relative;
+  padding-left: 195px;
+  text-align: left;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 20px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container-radio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 7em;
+  height: 25px;
+  width: 25px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container-radio:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container-radio input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container-radio input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container-radio .checkmark:after {
+ 	top: 9px;
+	left: 9px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: white;
+}
+</style>
 </head>
 <body>
     <div class="center" id="main">
@@ -169,7 +246,7 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
              <input class="" type="radio"  <?= $employedchecked ?>  id="experienced" name="resume_type" value="employed">
              <span class="checkmark"></span></label><br>
           <label class="container-radio more-top-margin-2x" for="independent">Independent
-             <input class="" type="radio" <?= $independentchecked ?> id="independent" name="resume_type" value="independent">
+             <input type="radio" <?= $independentchecked ?> id="independent" name="resume_type" value="independent">
              <span class="checkmark"></span>
           </label>
           </div>
