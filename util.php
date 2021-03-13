@@ -12,7 +12,7 @@ function loadMobilityStyles() {
 }
 function flashMessages(){
     if ( isset($_SESSION['error']) ) {
-          echo '<p class="message" style="color: #dd3300">'.$_SESSION['error'].'</p>';
+          echo '<p class="message" style="color: #aa4400">'.$_SESSION['error'].'</p>';
           $_SESSION['error'] = '';
           unset($_SESSION['error']);
     }
@@ -712,9 +712,9 @@ function insertHobbyList($profile_id,$pdo) {
       $stmt->execute(array(':nme' => $hobby) );
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
       $cnt = (int) array_values($row)[0];
-       $_SESSION['message'] = $_SESSION['message']
-          .' For Hobby-'.$i.', the count in the database is '
-           .': '.$cnt.'; ';
+       // $_SESSION['message'] = $_SESSION['message']
+       //    .' For Hobby-'.$i.', the count in the database is '
+       //     .': '.$cnt.'; ';
       //print_r($row);
       //var_dump($row);
   //  If the hobby already exists, retrieve it using the Hobby ID number.
@@ -725,9 +725,9 @@ function insertHobbyList($profile_id,$pdo) {
           $stmt->execute(array(':nme' => $hobby) );
           $row = $stmt->fetch(PDO::FETCH_ASSOC);
           $hobby_id = $row['hobby_id'] + 0;
-          $_SESSION['message'] = $_SESSION['message']
-                                    .$_POST[$field_name].'at Hobby-'.$i
-                                    .' already exists. ';
+          // $_SESSION['message'] = $_SESSION['message']
+          //                           .$_POST[$field_name].'at Hobby-'.$i
+          //                           .' already exists. ';
       }
   //  Look for duplicate hobbies
       $sqldup = 'SELECT COUNT(*) FROM HobbyList WHERE profile_id = :pid AND hobby_id = :sid';
@@ -759,9 +759,9 @@ function insertHobbyList($profile_id,$pdo) {
           $stmt->execute(array(':hob' => $hobby) );
           // Retrieve the newly assigned hobby_id
           $hobby_id = $pdo->lastInsertId() + 0;
-          $_SESSION['message'] = $_SESSION['message']
-                                  .' Hobby-'.$i.' was added to the Hobby Table'
-                                  .': '.' with ID '.$hobby_id;
+          // $_SESSION['message'] = $_SESSION['message']
+          //                         .' Hobby-'.$i.' was added to the Hobby Table'
+          //                         .': '.' with ID '.$hobby_id;
       }
       if (is_numeric($hobby_id) && $hobby_id > 0 ) {
           // $_SESSION['message'] = $_SESSION['message']

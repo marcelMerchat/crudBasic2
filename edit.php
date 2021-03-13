@@ -122,25 +122,23 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
 ?>
 <style>
 div.radio {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     box-sizing: border-box;
     text-align: right;
     width: 16em;
     padding: 20px;
     padding-right: 20px;
     border: 0px solid #008800;
-    margin: auto; !important;
-    margin-top: 0.7em;
-    margin-bottom: 3px;
+    margin: auto;
 }
 label.container-radio {
   display: block;
   position: relative;
-  padding-left: 195px;
   text-align: left;
-  margin-bottom: 12px;
+  padding-left: 9em;
+  margin: 2px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 18px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -152,6 +150,8 @@ label.container-radio {
   position: absolute;
   opacity: 0;
   cursor: pointer;
+  height: 0;
+  width: 0;
 }
 
 /* Create a custom radio button */
@@ -161,18 +161,13 @@ label.container-radio {
   left: 7em;
   height: 25px;
   width: 25px;
-  background-color: #ccc;
+  background-color: #bbc;
   border-radius: 50%;
 }
 
 /* On mouse-over, add a grey background color */
 .container-radio:hover input ~ .checkmark {
   background-color: #ccc;
-}
-
-/* When the radio button is checked, add a blue background */
-.container-radio input:checked ~ .checkmark {
-  background-color: #2196F3;
 }
 
 /* Create the indicator (the dot/circle - hidden when not checked) */
@@ -193,8 +188,14 @@ label.container-radio {
 	left: 9px;
 	width: 8px;
 	height: 8px;
-	border-radius: 50%;
+	border-radius: 30%;
 	background: white;
+  border: 0px solid #ff8800;
+}
+
+/* When the radio button is checked, add a green background */
+.container-radio input:checked ~ .checkmark {
+  background-color: #AA8800;
 }
 </style>
 </head>
@@ -225,8 +226,8 @@ label.container-radio {
               $employedchecked = 'checked';
           }
 ?>
-<h5 class="less-bottom-margin center">When finished, click the 'Save'
-    button at the bottom to save your work.</h5>
+<p class="more-top-margin-1x less-bottom-margin center">When finished, click the 'Save'
+    button at the bottom to save your work.</p>
 <form method="post" name="form1">
           <!-- hidden unchangeable information -->
           <input type="hidden" name="profile_id" value ="<?= $profileid ?>" />
@@ -235,7 +236,7 @@ label.container-radio {
           <!-- Select Resume Style -->
           <!-- Skills -->
           <h4 class="more-top-margin-1x less-bottom-margin center">Resume Style</h4>
-          <p style="left">Please select a resume style:</p>
+          <p class="more-top-margin-1x less-bottom-margin center">Please select a resume style:</p>
           <div class="radio more-top-margin-2x">
 
           <label class="container-radio more-top-margin-2x"  for="student">New Grad
@@ -243,13 +244,14 @@ label.container-radio {
              <span class="checkmark"></span>
           </label><br>
           <label class="container-radio more-top-margin-2x" for="experienced">Employed
-             <input class="" type="radio"  <?= $employedchecked ?>  id="experienced" name="resume_type" value="employed">
+             <input type="radio"  <?= $employedchecked ?>  id="experienced" name="resume_type" value="employed">
              <span class="checkmark"></span></label><br>
           <label class="container-radio more-top-margin-2x" for="independent">Independent
              <input type="radio" <?= $independentchecked ?> id="independent" name="resume_type" value="independent">
              <span class="checkmark"></span>
           </label>
           </div>
+          <p class="more-top-margin-1x less-bottom-margin left" style="padding-left : 7rem;">For the new grad style, education is listed first. For the experienced style, the work history comes first. For independent, skills are first.</p>
           <!-- Basic Information -->
           <h4 class="more-top-margin-1x less-bottom-margin center">Basic Information</h4>
           <div class="container-form-entry">

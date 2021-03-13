@@ -223,7 +223,7 @@ if($tableRows > 0) {
     echo ('<p class="center">No profiles yet.</p>');
 } // end of conditional block for all rows
 if ( isset($_SESSION['user_id']) && strlen($_SESSION['user_id']) > 0 ) {
-    echo '<p class="center"> You can change your password '
+    echo '<p class="more-top-margin-2x center"> You can change your password '
              .'<a href="changePassword.php">here</a>.'
           .'</p>';
 }
