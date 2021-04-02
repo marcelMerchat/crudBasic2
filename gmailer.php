@@ -15,9 +15,6 @@ $mail->SMTPDebug = SMTP::DEBUG_SERVER;
 $mail->SMTPDebug = 2;
 $mail->isHTML(true);
 // The following three fields are required:
-//$mail->Username = 'merchatDataTools@gmail.com';
-//$mail->Password = 'jpS%sis$1973R7';
-//$mail->SetFrom('merchatDataTools@gmail.com','Support Team');
 $mail->Subject = $_SESSION['emailSubject'];
 $mail->Body = $_SESSION['emailMessage'];
 $address =  $_SESSION['email'];
