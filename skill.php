@@ -4,17 +4,19 @@ session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 $t = $_GET['term'];
+$var = '%'.$t.'%';
 
 error_log('Looking for type-ahead term '.$t);
 
 $stmt = $pdo->prepare('SELECT name FROM Skill
-                      WHERE name LIKE :prefix');
-$stmt->execute(array( ':prefix' => $t.'%'));
+                      WHERE name LIKE :patt');
+$stmt->execute(array( ':patt' => $var));
+
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$retval[] = array();
+$wordList = array();
 while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-    $retval[] = $row['name'];
+    $wordList[] = $row['name'];
+    //var_dump($row2['name']);
 }
 
-//echo(json_encode($retval, JSON_PRETTY_PRINT));
-echo(json_encode($retval));
+echo(json_encode($wordList, JSON_PRETTY_PRINT));

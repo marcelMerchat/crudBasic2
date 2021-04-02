@@ -43,19 +43,22 @@ $linkedin = htmlentities(trim($profile['linkedin']));
 
 // Check for initial GET request without (or without) post information
 // Only required entries are the first and laat names and the email.
-if (isset($_POST['email']) ) {
+if (isset($_POST['profile_id']) ) {
     unset($_SESSION['error']);
     unset($_SESSION['success']);
-    unset($_SESSION['message']);
-    $_SESSION['message'] = ' ';
+    //unset($_SESSION['message']);
+    //$_SESSION['message'] = ' ';
     $profileid = $_SESSION['profile_id'];
-    $profileInserted = insertEmail($pdo,$IsUpdate=true);
-    if($profileInserted===false){
+    if (isset($_POST['email']) ) {
+        $profileInserted = insertEmail($pdo,$IsUpdate=true);
+        if($profileInserted===false){
            $_SESSION['error'] = $_SESSION['error']
               . ' Could not change contact or email. Please try again.';
            header('Location: contacts.php?profile_id='.$_POST['profile_id']);
            return;
+        }
     }
+    //$_SESSION['error'] = ' Ready to insert phone. ';
     insertPhone($pdo);
     insertLinkedin($pdo);
     // Delete old contact entries; insert new list
@@ -123,7 +126,7 @@ if (isset($_POST['email']) ) {
             </div></div>
 
           <div class="container-form-entry more-top-margin-3x">
-              <div class="less-bottom-margin less-top-margin box-input-label-wide inline-block right">Phone number &nbsp;
+              <div class="less-bottom-margin less-top-margin box-input-label-wide inline-block right">Phone &nbsp;
               </div><div class="less-top-margin less-bottom-margin profile-input-form inline-block">
                 <input class="text-box" type="text" name="phone" value="<?= $ph ?>" id="ph">
               </div></div>
@@ -146,7 +149,7 @@ if (isset($_POST['email']) ) {
 echo '<div id="contact'.$count_contact.'" >
                  <div class="less-top-margin less-bottom-margin input-form center">
                    <input class="skill ui-autocomplete-custom text-box-long"
-                        name="contact'.$count_contact.
+                           type="text" name="contact'.$count_contact.
                    '" value="'.htmlentities(trim($contact['info'])).'"
                    id="contact_id'.$count_contact.'" >
                  </div>
@@ -163,7 +166,8 @@ echo '<div id="contact'.$count_contact.'" >
     <div id="contact@COUNT@">
     <div class="less-top-margin less-bottom-margin input-form center">
         <input class="skill ui-autocomplete-custom text-box-long center"
-           name="contact@COUNT@" value='<?= htmlentities("") ?>' id="contact_id@COUNT@"/>
+                type="text" name="contact@COUNT@"
+               value='<?= htmlentities("") ?>' id="contact_id@COUNT@"/>
     </div>
         <p class="less-top-margin box-input-label less-bottom-margin center"> Delete preceeding contact:
         <input type="button" class="click-plus" value="-"
@@ -199,10 +203,10 @@ $(document).ready(function() {
         count_contact =   Number("<?php echo $count_contact ?>");
         contact_array = makeContactArray(count_contact);
         contact_removed =  0;
-        last_text_box =  'em';
-        test_box =  'em';
-        audit_array = ["em","ph"];
-        audit_list = {"em": -1,"ph": -1 };
+        last_text_box =  '';
+        test_box =  '';
+        audit_array = [];
+        audit_list = {};
         // When a new contact is added, the immediate previous contact is checked
         // for offensive language.
         $('#addContact').click(function(event){

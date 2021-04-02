@@ -339,10 +339,26 @@ CREATE TABLE SkillSet (
 CREATE TABLE Institution (
   institution_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255),
+  provider VARCHAR(255),
+  PRIMARY KEY(institution_id provider)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+UPDATE Institution SET provider="Coursera" WHERE institution_id = 7 OR institution_id = 8
+ALTER TABLE Institution CHANGE provider provider VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'NA';
+ALTER TABLE Institution DROP PRIMARY KEY, ADD PRIMARY KEY(institution_id, provider)
+ALTER TABLE Institution ADD provider VARCHAR(128) DEFAULT 'NA' AFTER activity_id;
+
+#######################################################################
+
+CREATE TABLE Edu_Provider (
+  provider_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255),
   UNIQUE(name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-######################################################################
+INSERT INTO Edu_Provider (name) VALUES ('Coursera');
+
+#######################################################################
 
 CREATE TABLE Award (
   award_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -383,6 +399,7 @@ CREATE TABLE Education (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE Education DROP PRIMARY KEY, ADD PRIMARY KEY(profile_id, institution_id, award_id)
+
 
 #############################################################
 
@@ -455,7 +472,93 @@ FOREIGN KEY (`award_id`)
 REFERENCES `Award`(`award_id`)
 ON DELETE CASCADE ON UPDATE CASCADE;
 ​
-#####################################################################
+#############################################################
+
+## Certificates
+
+CREATE TABLE Certificates (
+profile_id INTEGER,
+institution_id INTEGER,
+edu_provider_id INTEGER,
+award_id INTEGER,
+award_link VARCHAR(256),
+rank INTEGER,
+year INTEGER,
+
+CONSTRAINT certificate_ibfk_1
+FOREIGN KEY (profile_id)
+REFERENCES Profile (profile_id)
+ON DELETE CASCADE ON UPDATE CASCADE,
+
+CONSTRAINT certificate_ibfk_2
+FOREIGN KEY (institution_id)
+REFERENCES Institution (institution_id)
+ON DELETE CASCADE ON UPDATE CASCADE,
+
+CONSTRAINT certificate_ibfk_3
+FOREIGN KEY (edu_provider_id)
+REFERENCES Edu_Provider (provider_id)
+ON DELETE CASCADE ON UPDATE CASCADE,
+
+CONSTRAINT certificate_ibfk_4
+FOREIGN KEY (award_id)
+REFERENCES Award (award_id)
+ON DELETE CASCADE ON UPDATE CASCADE,
+
+PRIMARY KEY(profile_id, institution_id, edu_provider_id, award_id) )
+ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+SET FOREIGN_KEY_CHECKS=0;
+
+ALTER TABLE Certificates ADD edu_provider_id
+(INT, FOREIGN KEY certificate_ibfk_3 (edu_provider_id)
+REFERENCES Edu_Provider (provider_id))
+ON DELETE CASCADE ON UPDATE CASCADE
+DEFAULT 'NA' AFTER institution_id
+
+ALTER TABLE Certificates ADD provider (VARCHAR(128), providerparent_ID INT, FOREIGN KEY my_fk (parent_id) REFERENCES parent(ID))DEFAULT 'NA' AFTER institution_id
+
+#############################################################
+
+## Project
+
+CREATE TABLE Project (
+  project_id INT AUTO_INCREMENT,
+  profile_id INTEGER,
+  name VARCHAR(512),
+  year INTEGER,
+  report_link VARCHAR(128),
+  github_link VARCHAR(128),
+  rank INTEGER,
+
+  PRIMARY KEY(project_id, profile_id),
+
+  CONSTRAINT project_ibfk_1
+  FOREIGN KEY (profile_id)
+  REFERENCES Profile (profile_id)
+  ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+SET FOREIGN_KEY_CHECKS=0;
+ALTER TABLE Project DROP PRIMARY KEY
+ALTER TABLE Project ADD PRIMARY KEY (project_id, profile_id)
+ALTER TABLE Project MODIFY project_id INT AUTO_INCREMENT;
+
+
+ALTER TABLE Project ADD PRIMARY KEY (project_id, profile_id )
+ALTER TABLE companies DROP PRIMARY KEY, CHANGE id id int(11);
+ALTER TABLE Project DROP PRIMARY KEY, CHANGE id id int(11);
+
+
+
+
+ALTER TABLE users ADD CONSTRAINT fk_grade_id FOREIGN KEY (grade_id) REFERENCES grades(id);
+ALTER TABLE Project ADD CONSTRAINT project_ibfk_1
+FOREIGN KEY (profile_id)
+REFERENCES Profile (profile_id)
+ON DELETE CASCADE ON UPDATE CASCADE
+
+#############################################################
 
 CREATE TABLE Position (
   position_id INTEGER NOT NULL AUTO_INCREMENT,
@@ -509,11 +612,34 @@ ALTER TABLE `ActivityList` RENAME `Activity`;
 
 CREATE TABLE Hobby (
   hobby_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(256) NOT NULL DEFAULT '',
+  name VARCHAR(128) NOT NULL DEFAULT '',
   INDEX(name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO Hobby (name) VALUES ('Current events, Yoga');
+INSERT INTO Hobby (name, details) VALUES ('Hobbies and Interests', 'Current events, Yoga');
+INSERT INTO Hobby (name) VALUES ('Journaling');
+INSERT INTO Hobby (name) VALUES ('Eating Out');
+INSERT INTO Hobby (name) VALUES ('Lifelong learning');
+
+CREATE TABLE Personal (
+  profile_id INT NOT NULL,
+  interest VARCHAR(512) DEFAULT 'NA',
+  languages VARCHAR(128) DEFAULT 'NA',
+  computer_skill VARCHAR(512) DEFAULT 'NA',
+  publication VARCHAR(512) DEFAULT 'NA',
+  licenses VARCHAR(256) DEFAULT 'NA',
+
+  CONSTRAINT personal_ibfk_1
+  FOREIGN KEY (profile_id)
+  REFERENCES Profile (profile_id)
+  ON DELETE CASCADE ON UPDATE CASCADE,
+
+  PRIMARY KEY(profile_id),
+  INDEX(interest)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO Personal (profile_id, interest, languages, computer_skill, publication, licenses)
+ VALUES (80,'Yoga and eating out', 'Spanish, Mandarin', 'Word, Excel', 'Better Management Magazine', 'RN');
 INSERT INTO Hobby (name) VALUES ('Journaling');
 INSERT INTO Hobby (name) VALUES ('Eating Out');
 INSERT INTO Hobby (name) VALUES ('Lifelong learning');
@@ -704,22 +830,3 @@ the folder to the Ubuntu server folder.
 #########################################################################
 
 THE END
-
-junk
-<script id="activity-template" type="text">
-  <div id="activity_div@COUNT@">
-    <input
-     class="activity ui-autocomplete-custom
-            text-box max-entry-box-width"
-     name="job_task@COUNT@"
-     id="activity@COUNT@"/>
-   <p class="less-top-margin box-input-label
-             less-bottom-margin">
-      Delete preceeding activity: <input
-      type="button" class="click-plus" value="-"
-      onclick="deleteActivity(
-        '#activity_div@COUNT@',
-        'activity@COUNT@');
-        return false;"/></p>
-  </div>
-</script>

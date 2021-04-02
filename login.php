@@ -7,7 +7,6 @@ if ( isset($_POST['cancel'] ) ) {
     header('Location: index.php');
     return;
 }
-
 // 'if' statement fails for GET requests; there is no POST data.
 if (   isset($_POST['email']) && isset($_POST['pass']) ) {
   $email = trim($_POST['email']);
@@ -120,31 +119,43 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
   ?>
  <style type="text/css">
     input {
-        width: 12em;
+        width: 18em;
     }
+    /*input:-internal-autofill-selected {
+        background-color: rgb(255, 255, 254);
+        background-image: none !important;
+        color: rgb(250, 250, 0) !important;
+    }*/
  </style>
  <title>Login</title>
 </head>
 <body>
-<div class="form center" id="main">
+<div class="center" id="main">
+  <!--onchange="this.className=(this.value=='')?'':'visited';" -->
 <form method="POST" action="login.php">
     <h1>Please Log In</h1>
     <p>
       <?php
         flashMessages();
       ?>
-
       <div class="container-form-entry more-top-margin-3x">
         <div class="more-input-margin less-bottom-margin less-top-margin box-input-label">
                 <label class="less-bottom-margin less-top-margin center" for="email">Email</label>
-        </div><div class="less-top-margin less-bottom-margin box-profile-input">
-          <input class="text-box" type="text" name="email" value='<?= htmlentities("") ?>' id="email">
+        </div><div class="less-top-margin less-bottom-margin">
+          <p class="center zero-top-margin">
+          <input class="text-box" style="font-size: 0.85em;" type="text"
+                 name="email" value='<?= htmlentities("") ?>'
+                 id="email" />
+          </p>
         </div></div>
      <div class="container-form-entry more-top-margin-3x">
        <div class="more-input-margin less-bottom-margin less-top-margin box-input-label center">
                <label class="center" for="id_1723">Password</label>
        </div><div class="less-top-margin less-bottom-margin box-profile-input">
-          <input class="text-box" type="password" name="pass" value='<?= htmlentities("") ?>' id="id_1723" />
+          <p class="center zero-top-margin">
+          <input class="text-box" type="password" style="font-size: 0.85em;"
+                 name="pass" value='<?= htmlentities("") ?>' id="id_1723" />
+          </p>
        </div>
      </div>
      <h3 class="more-top-margin-3x center">
@@ -167,14 +178,15 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
   </form>
 </div>
 <script>
+/* onchange="this.className=(this.value=='')?'':'visited';" */
 $(document).ready(function() {
   window.console && console.log('Document ready called ');
+  adjustWindow();
   isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
   isLargeDevice = !isMobileDevice;
   window.console && console.log('Mobile device = ' + isMobileDevice);
   var w = $( window ).width();
   window.console && console.log('The window width is = ' + w);
-  adjustWindow();
 });
 function doValidate() {
     //console.log('Validating...');
@@ -183,11 +195,13 @@ function doValidate() {
         pw = document.getElementById('id_1723').value;
         //console.log("Validating addr="+addr+" pw="+pw);
         if (addr == null || addr == "" || pw == null || pw == "") {
-            alert("Both fields must be filled out");
+            //alert("Both fields must be filled out");
+            triggerAlert("Both fields must be filled out. Please try again.", true);
             return false;
         }
         if ( addr.indexOf('@') == -1 ) {
-            alert("Invalid email address");
+            //alert("Invalid email address");
+            triggerAlert("Invalid email address. Please try again.", true);
             return false;
         }
         return true;

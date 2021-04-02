@@ -11,7 +11,12 @@ $_SESSION['success'] = false;
 $myname = "";
 $mymail = "";
 // 'if' statement fails for GET requests; there is no POST data.
-if ( isset($_POST['name'])  || isset($_POST['email'])  ) {
+if( (
+       (isset($_POST['name'])  && (strlen($_POST['name']) > 0  ) )
+                               ||
+       (isset($_POST['email']) && (strlen($_POST['email']) > 0 ) )
+     )
+) {
   $myname = trim(htmlentities($_POST['name']));
   $mymail = trim(htmlentities($_POST['email']));
   if ( strlen($_POST['name']) >= 1 && strlen($_POST['email']) >= 1 ) {
@@ -124,6 +129,10 @@ if ( isset($_POST['name'])  || isset($_POST['email'])  ) {
     } else {
       $_SESSION['error'] = 'Name and e-mail are required.';
     } // non-zero length for email and password
+} else {
+    $_SESSION['success'] = 'Please enter name and e-mail and select enter.';
+    $myname = '';
+    $mymail = '';
 }
 ?>
 <!DOCTYPE html>
@@ -134,29 +143,41 @@ if ( isset($_POST['name'])  || isset($_POST['email'])  ) {
     require_once 'header.php';
 ?>
 <title>New Account</title>
+<style type="text/css">
+   input {
+       width: 18em;
+       background-color: #eff;
+       font-size: 0.85em;
+   }
+   input:-internal-autofill-selected {
+       background-color: rgb(255, 255, 100);
+       /*background-image: none !important;*/
+       color: rgb(225, 150, 50) !important;
+   }
+</style>
 </head>
 <body>
 <div class="center" id="main">
-<?php
-    flashMessages();
-?>
 <form method="POST" name="apply.php">
     <h2 class="center">Get New User Login</h2>
     <p class="justify">You should receive an email containing
            a temporary password to login within a few minutes.
     </p>
+<?php
+  flashMessages();
+?>
     <div class="big center">
       <p class="center zero-bottom-margin padding-zero">
              <label for="username">Name</label>
       </p><p class="center zero-top-margin">
              <input class="text-box" type="text" name="name"
-                    value='<?= $myname ?>' id="username">
-      </p>
+                    value='<?= $myname ?>' id="username"/>
+          </p>
     </div><div class="center-entry">
       <p class="center zero-bottom-margin"><label for="email">Email</label>
       </p><p class="center zero-top-margin">
            <input class="text-box" type="text" name="email"
-                  value='<?= $mymail ?>' id="email"></p>
+                  value='<?= $mymail ?>' id="email"/></p>
     </div>
     <p class="center double-space">
             <input class="button-submit wide-15char" type="submit"

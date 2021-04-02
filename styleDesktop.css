@@ -24,19 +24,19 @@ h2 {
     margin-bottom: 10px;
 }
 h3 {
-    font-size: 2rem;
+    font-size: 1.7rem;
 }
 h3 a {
     color: #0088ff;
-    font-size: 2rem;
+    font-size: 1.7rem;
     margin-top: 20px;
 }
 h4 {
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-top: 12px;
 }
 h5 {
-    font-size: 1.05rem;
+    font-size: 0.9rem;
     color: #008800;
     margin-top: 10px;
 }
@@ -90,9 +90,6 @@ img {
     width: 98.5%;
     box-sizing: border-box;
 }
-.max-entry-box-width {
-    max-width: 40em;
-}
 .input-org {
     width: 70%;
 }
@@ -141,10 +138,11 @@ td {
     padding-left: 6px;
     padding-right: 6px;
 }
-#main {
+div.center {
     left: 25%;
     right: 25%;
     width: 50%;
+    position: absolute;
 }
 .content {
     margin-top: 15px;

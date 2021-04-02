@@ -21,10 +21,11 @@ function flashMessages(){
           $_SESSION['success'] = '';
           unset($_SESSION['success']);
     }
-    if ( isset($_SESSION['message']) ) {
-           $_SESSION['message'] = '';
-           unset($_SESSION['message']);
-    }
+    //if ( isset($_SESSION['message']) ) {
+    $_SESSION['message'] = '';
+    $_SESSION['success'] = '';
+    //unset($_SESSION['message']);
+    //}
 }
 function get_mysql_time_stamp($mailaddress='marcosmoothy@gmail.com',
                               $mysql_field='password_time',$pdo){
@@ -99,9 +100,9 @@ function get_text_input_validation($field_name,$long_name,$pdo) {
             $offn = ofnsvCheck( $trimmed, $pdo);
       }
       if ( $offn ) {
-         $_SESSION['message'] = $_SESSION['message']
-           .' The '.$long_name.' was rejected. ';
-         store_error_messages();
+         //$_SESSION['message'] = $_SESSION['message']
+        //   .' The '.$long_name.' was rejected. ';
+         //store_error_messages();
          return false;
       }
       return $valid;
@@ -143,7 +144,7 @@ function get_censored_input($field_name,$long_name,$pdo) {
                   .' The '.$long_name.' was removed. ';
             } else {
                 $_SESSION['message'] = $_SESSION['message']
-                  .' After any deletions, it becomes "'.$censored.'". ';
+                   .' After any deletions, it becomes "'.$censored.'". ';
             }
       }
       return array($valid,$trimmed);
@@ -372,6 +373,8 @@ function insertEmail($pdo,$isUpdate) {
         $stmt->execute(array(
              ':em' => $e_m,
              ':pid' => $_POST['profile_id']));
+        $_SESSION['message'] = $_SESSION['message']
+                      .' E-mail changed executed. ';
         return true;
     }
 }
@@ -380,7 +383,7 @@ function changeResumeStyle($pdo) {
   {
     $style = trim($_POST['resume_type']);
     $_SESSION['message'] = $_SESSION['message']
-             .' Changing resume style to '.$_POST['resume_type'];
+             .' Resume style is '.$_POST['resume_type'];
     store_error_messages();
     $sql = 'UPDATE Profile SET resume_style = :rs
               WHERE profile_id = :pid';
@@ -408,10 +411,9 @@ function insertPhone($pdo) {
        return false;
      } else {
         $phone = trim($_POST['phone']);
-        $valid_phone = true; // validateEmail($pdo);
+        $valid_phone = true;
         $valid = $valid_phone;
         if(! $valid ) {
-            store_error_messages();
             return false;
         }
         $sql = 'UPDATE Profile SET phone = :ph
@@ -429,9 +431,9 @@ function insertLinkedin($pdo) {
        ! strlen($_POST['linkedin']) > 0
      )
      {
-       $_SESSION['message'] = $_SESSION['message']
-                .' No linked-in address was provided. ';
-       store_error_messages();
+       //$_SESSION['message'] = $_SESSION['message']
+        //        .' No linked-in address was provided. ';
+       //store_error_messages();
        return false;
      } else {
         $linkedin = trim($_POST['linkedin']);
@@ -439,7 +441,8 @@ function insertLinkedin($pdo) {
         if(! $valid ) {
            return false;
         }
-
+        //$_SESSION['message'] = $_SESSION['message']
+              //   .' Profile id is '.$_POST['profile_id'];
         $sql = 'UPDATE Profile SET linkedin = :li
                    WHERE profile_id = :pid';
         $stmt = $pdo->prepare($sql);
@@ -489,8 +492,8 @@ function insertContactList($pdo) {
 
       $info = trim($_POST[$field_name]);
       if ( ! strlen($info) > 0){
-        $_SESSION['message'] = $_SESSION['message']
-                             .' trimmed too short: '.$field_name;
+        $_SESSION['message'] = $_SESSION['message'].' The field '
+                             .$field_name.' is still missing. ';
           store_error_messages();
           continue;
       }
@@ -554,11 +557,13 @@ function insertContactList($pdo) {
       //store_error_messages();
       if (is_numeric($contact_id) && $contact_id > 0 ) {
           $sql = 'INSERT INTO ContactList(profile_id, contact_id, `rank`)
-                    VALUES ( :pid, :cid, :rnk)';
+                     VALUES ( :pid, :cid, :rnk)';
           $stmt = $pdo->prepare($sql);
           $stmt->execute(array(
-                  ':pid' => $_POST['profile_id'], ':cid' => $contact_id,
-                  ':rnk' => $rank ) );
+                   ':pid' => $_POST['profile_id'], ':cid' => $contact_id,
+                   ':rnk' => $rank ) );
+          // $_SESSION['message'] = $_SESSION['message'].' Checking profile '
+          //    .' for '.$_POST['profile_id'].' ';
           $rank++;
       }
       }
@@ -683,11 +688,7 @@ function insertHobbyList($profile_id,$pdo) {
        //                        .' Hobby-'.$i.' is now evaluated. ';
       store_error_messages();
       if ( ! isset($_POST[$field_name]) ){
-        //  $_SESSION['message'] = $_SESSION['message']
-        //                         .' The entry box for '
-        //                         .' Hobby-'.$i.' was empty. ';
-        // store_error_messages();
-        continue;
+          continue;
       }
       $hobby = trim($_POST[$field_name]);
       if ( ! strlen($hobby) > 0){
@@ -699,12 +700,25 @@ function insertHobbyList($profile_id,$pdo) {
       }
       $text_insert = 'Hobby-'.$i;
       $valid = get_text_input_validation($field_name,$text_insert,$pdo);
+      //$_SESSION['message'] = $_SESSION['message']
+        //                 .' validation received:  . . . ';
+      //store_error_messages();
       if ( ! $valid) {
+          //$_SESSION['message'] = $_SESSION['message']
+            //                   .' Hobby-'.$i.' was rejected for '
+              //                 .': '.$_POST[$field_name].'; ';
+          //store_error_messages();
+          $censored = get_censored_input($field_name,$text_insert,$pdo)[1];
           $_SESSION['message'] = $_SESSION['message']
-                               .' Hobby-'.$i.' was rejected for '
-                               .': '.$_POST[$field_name].'; ';
+                               .$field_name.' was censored. ';
           store_error_messages();
-          continue;
+          $hobby = $censored;
+          if ( ! strlen($hobby) > 0){
+             $_SESSION['message'] = $_SESSION['message']
+                                    .'Hobby-'.$i.' was censored and is not complete. ';
+            store_error_messages();
+            continue;
+          }
       }
   //  lookup the hobby in the Hobby Table
       $sql = 'SELECT COUNT(*) FROM Hobby WHERE name = :nme';
@@ -777,8 +791,104 @@ function insertHobbyList($profile_id,$pdo) {
           $rank++;
       }
    }
+   $count = $rank - 1;
+   // $_SESSION['message'] = $_SESSION['message']
+   //   .' There are '.$count.' hobbies.';
    return true;
 }
+// InsertHobyList is always an INSERT MYSQL COMMAND
+// because the old set is always erased first
+function insertPersonal($profile_id,$pdo) {
+    $fields = array('languages', 'computer_skill',
+          'publication','licenses');
+    $data = array('NA', 'NA', 'NA','NA','NA');
+    $i = 0;
+    for( $i=1 ; $i <= 4 ; $i++) {
+      $j = $i - 1;
+      if ( ! isset($_POST[$fields[$j]]) ) {
+          continue;
+      }
+      $dat = trim($_POST[$fields[$j]]);
+      if ( ! strlen($dat) > 0){
+         //$_SESSION['message'] = $_SESSION['message']
+          //                      .' The entry box for '
+            //                    .$fields[$j].' was not completed. ';
+        continue;
+      }
+      $len = strlen($dat);
+      if ($len > 125 && $j == 0){
+              $_SESSION['message'] = $_SESSION['message'].'Languages list '
+                  .' of length '.$len.' exceeds maximum length of 125 '
+                  .' characters for '.$dat.'". ';
+              store_error_messages();
+              continue;
+      } else if ($len > 250 ) {
+        $_SESSION['message'] = $_SESSION['message'].$fields[$j]
+            .' of length '.$len.' exceeds maximum length of 250 '
+            .' characters for '.$dat.'". ';
+        store_error_messages();
+        continue;
+      }
+      $text_insert = $fields[$j];
+      //$_SESSION['message'] = $_SESSION['message']
+        //                 .' Ready to validate . . . ';
+      //store_error_messages();
+      $valid = get_text_input_validation($fields[$j],$text_insert,$pdo);
+      if ( ! $valid) {
+          $censored = get_censored_input($fields[$j],$text_insert,$pdo)[1];
+          $_SESSION['message'] = $_SESSION['message']
+                               .ucfirst($fields[$j]).' was censored and modified. ';
+                               //': '.$dat.' '.' Censored to '.$censored;
+          store_error_messages();
+          $data[$j] = $censored;
+      } else {
+          $data[$j] = $dat;
+      }
+  } // end of for loop
+  //  On the first edit attempt, the profile id does not exist yet
+  //  Check if profile_id exists in table
+      $sqldup = 'SELECT COUNT(*) FROM Personal WHERE profile_id = :pid';
+      $stmtdup = $pdo->prepare($sqldup);
+      $stmtdup->execute(array(':pid' => $profile_id));
+      $rowcountdup = $stmtdup->fetch(PDO::FETCH_ASSOC);
+      $cntduplicate = (int) array_values($rowcountdup)[0];
+      if ($cntduplicate > 0){
+          // $_SESSION['message'] = $_SESSION['message'].' Profile already exists'
+          //   .' for "'.$profile_id.'". ';
+          // store_error_messages();
+          // $_SESSION['message'] = $_SESSION['message']
+          //                      .$data[0].' is ready to insert for languages. '
+          //                      .$data[1].' is ready to insert for computer skill. '
+          //                      .$data[2].' is ready to insert for publication. '
+          //                      .$data[3].' is ready to insert for license. ';
+          // store_error_messages();
+          $sql = 'UPDATE Personal
+                  SET languages = :lang, computer_skill = :cs,
+                      publication = :pub, licenses = :lic
+                  WHERE profile_id = :pid';
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute(array(
+          ':lang' =>  $data[0],
+          ':cs' =>  $data[1], ':pub'  =>  $data[2],
+          ':lic' =>  $data[3],':pid' => $profile_id
+         ) );
+      } else {
+        $sql = 'INSERT INTO Personal
+        (
+         profile_id, languages,computer_skill, publication,licenses
+        )
+         VALUES (:pid, :lang, :cs, :pub, :lic)';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array(
+              ':pid' =>   $profile_id, ':lang' =>   $data[0],
+              ':cs' =>   $data[1], ':pub' =>   $data[2],
+              ':lic' =>   $data[3]) );
+        $_SESSION['message'] = $_SESSION['message']
+                .' The profile was updated.';
+      }
+  return $valid;
+}
+
 // InsertEducation is always an INSERT MYSQL COMMAND
 // because the old set is always erased first
 function insertEducations($profile_id,$pdo) {
@@ -946,8 +1056,8 @@ function insertEducations($profile_id,$pdo) {
       // The year not required
          $year_int = " ";
          if ( ! isset($_POST[$year_field]) ) {
-              $_SESSION['message'] = $_SESSION['message']
-              .' The year field was not set: '.$_POST[$year_field].'; ';
+              //$_SESSION['message'] = $_SESSION['message']
+              //.' The year field was not set: '.$_POST[$year_field].'; ';
          } else {
               $year_string = trim($_POST['edu_year'.$i]);
               $valid_yr = validate_year($year_string);
@@ -979,10 +1089,405 @@ function insertEducations($profile_id,$pdo) {
      return false;
   }
   //$_SESSION['success'] = "There are ".$rank." education entries.";
-  store_error_messages();
+  //store_error_messages();
   $_SESSION['countSchools'] = $rank;
   return true;
 }
+
+function insertCertificates($profile_id,$pdo) {
+  $rank = 0;
+  //print_r('Inserting certificates');
+  for( $i=1 ; $i <= 9 ; $i++) {
+    $year_field = 'certif_year'.$i;
+    $school_field_name = 'certif_school'.$i;
+    $internet_provider_field_name = 'internet_edu'.$i;
+    $award_field_name = 'certif_award'.$i;
+    $award_link_field_name = 'certif_link'.$i;
+    // The year not required
+    $year_int = " ";
+    $valid_yr = false;
+    if ( ! isset($_POST[$year_field]) ) {
+            //$_SESSION['message'] = $_SESSION['message']
+            //.' The year field was not set: '.$year_field.'; ';
+    } else {
+            $year_string = trim($_POST['certif_year'.$i]);
+            $valid_yr = validate_year($year_string);
+            if ( $valid_yr ) {
+                $year_int = get_year($year_string,' ');
+            } else {
+              // $_SESSION['message'] = $_SESSION['message']
+              //     .' Please check the year for Education-'.$i
+              //     .' for '.$school.'.'
+              //     .' When a year is not provided for an education,'
+              //     .' it is removed for all education in the resume'
+              //     .' view. The year for any other education is still'
+              //     .' saved in the database if it was submitted. ';
+            }
+    }
+    $valid_yr = false;
+
+    //print_r('The posted award is '.$_POST[$award_field_name]);
+    if ( ! (
+             isset($_POST[$school_field_name]) &&
+             isset($_POST[$award_field_name])
+           )
+       )
+    {
+        //print_r('Nothing posted '.$i);
+        continue;
+    }
+    $school = trim($_POST[$school_field_name]);
+    $provider = trim($_POST[$internet_provider_field_name]);
+    if ( ! strlen($school) > 0){
+      $_SESSION['message'] = $_SESSION['message']
+        .' The school name entry box for '
+        .' Certificate-'.$i.' was not completed. ';
+      store_error_messages();
+      continue;
+    }
+    $len = strlen($school);
+    if ($len > 125){
+            $_SESSION['message'] = $_SESSION['message'].'School '
+                .' of length '.$len.' exceeds maximum length of 125 '
+                .' characters for '.$school.'". ';
+            store_error_messages();
+            continue;
+    }
+    $len2 = strlen($provider);
+    if ($len2 > 125){
+            $_SESSION['message'] = $_SESSION['message']
+                .'Internet education provider '
+                .' of length '.$len2.' exceeds maximum length of 125 '
+                .' characters.';
+            store_error_messages();
+            continue;
+    }
+    $text_insert = 'School-'.$i;
+    $valid = get_text_input_validation($school_field_name,$text_insert,$pdo);
+    if ( ! $valid) {
+        $_SESSION['message'] = $_SESSION['message']
+            .' The school name was rejected for Certificate-'.$i
+            .': '.$_POST[$school_field_name].'; ';
+        store_error_messages();
+        continue;
+    }
+    $text_insert = 'Provider-'.$i;
+    $valid = get_text_input_validation($internet_provider_field_name,$text_insert,$pdo);
+    if ( ! $valid) {
+        $_SESSION['message'] = $_SESSION['message']
+            .' The internet provider name was rejected for Certificate-'.$i
+            .': '.$_POST[$internet_provider_field_name].'; ';
+        store_error_messages();
+        continue;
+    }
+//  Educational Degree
+    $award = trim($_POST[$award_field_name]);
+    $award_link = trim($_POST[$award_link_field_name]);
+    if ( ! strlen($award) > 0){
+      $_SESSION['message'] = $_SESSION['message']
+        .' The award for Certificate-'.$i.' was not completed. ';
+      store_error_messages();
+      continue;
+    }
+    $text_insert = 'award for Certification-'.$i;
+    $valid_award = get_text_input_validation($award_field_name ,$text_insert,$pdo);
+    if( ! ($valid_award===true)){
+          $award = get_censored_input($award_field_name ,$text_insert,$pdo)[1];
+    }
+    if ( ! (strlen($award) > 0)) {
+        $_SESSION['message'] = $_SESSION['message']
+          .' The award for '
+          .' Certification-'.$i.' was removed entirely. ';
+          store_error_messages();
+          return;
+    }
+    //  Look up the educational internet provider
+    $provider_id = false;
+    $sqlinst = 'SELECT COUNT(*) FROM Edu_Provider
+          WHERE name = :nme';
+    $stmtinst = $pdo->prepare($sqlinst);
+    $stmtinst->execute(array(':nme' => $provider) );
+    $rowinst = $stmtinst->fetch(PDO::FETCH_ASSOC);
+    $cntinst = (int) array_values($rowinst)[0];
+       // If the institution already exists, fetch the name of the school
+    //$_SESSION['message'] = $_SESSION['message'].' The internet provider '.$provider.' count is '.$cntinst;
+    if($cntinst > 0){
+            $sqlinst_if = 'SELECT provider_id FROM Edu_Provider
+               WHERE name = :nme';
+            $stmtinst_if = $pdo->prepare($sqlinst_if);
+            $stmtinst_if->execute(array(':nme' => $provider) );
+            $rowinst_if = $stmtinst_if->fetch(PDO::FETCH_ASSOC);
+            //$_SESSION['message'] = $_SESSION['message'].' The existing provider ID is '.$rowinst_if['provider_id'];
+            if($rowinst_if !== false) {
+                $provider_id = $rowinst_if['provider_id'] + 0;
+            }
+    }
+    // if provider was not found in the Edu_Provider Table, insert it.
+    if(! $cntinst > 0) {
+              $sqlinsert_sch = 'INSERT INTO Edu_Provider (`name`)
+                   VALUES (TRIM(:nme))';
+              $stmtinsert_sch = $pdo->prepare($sqlinsert_sch);
+              $stmtinsert_sch->execute(array(':nme' => $provider) );
+              $provider_id = $pdo->lastInsertId() + 0;
+              $_SESSION['message'] = $_SESSION['message'].' A new provider'
+                    .' is being added to the Edu_Provider Table: '.$provider.'. ';
+              store_error_messages();
+    }
+    //$_SESSION['message'] = $_SESSION['message'].' The existing provider ID is '.$rowinst_if['provider_id'];
+
+    // Check if the school already exists in the Institution Table
+    $institution_id = false;
+    $sqlinst = 'SELECT COUNT(*) FROM Institution
+          WHERE name = :nme';
+    $stmtinst = $pdo->prepare($sqlinst);
+    $stmtinst->execute(array(':nme' => $school) );
+    $rowinst = $stmtinst->fetch(PDO::FETCH_ASSOC);
+    $cntinst = (int) array_values($rowinst)[0];
+       // If the institution already exists, fetch the name of the school
+    //$_SESSION['message'] = $_SESSION['message'].' The institution count is '.$cntinst;
+    if($cntinst > 0){
+            $sqlinst_if = 'SELECT institution_id FROM Institution
+               WHERE name = :nme';
+            $stmtinst_if = $pdo->prepare($sqlinst_if);
+            $stmtinst_if->execute(array(':nme' => $school) );
+            $rowinst_if = $stmtinst_if->fetch(PDO::FETCH_ASSOC);
+            //$_SESSION['message'] = $_SESSION['message'].' The existing institution ID is '.$rowinst_if['institution_id'];
+            if($rowinst_if !== false) {
+                $institution_id = $rowinst_if['institution_id'] + 0;
+            }
+    }
+    //if school was not found in the Institution Table, insert it.
+    if($cntinst === 0) {
+              $sqlinsert_sch = 'INSERT INTO Institution (`name`)
+                   VALUES (TRIM(:nme))';
+              $stmtinsert_sch = $pdo->prepare($sqlinsert_sch);
+              $stmtinsert_sch->execute(array(':nme' => $school) );
+              $institution_id = $pdo->lastInsertId() + 0;
+              // $_SESSION['message'] = $_SESSION['message'].$school
+              //      .' is being added to the Institution Table: '
+              //      .$school.'. ';
+              //store_error_messages();
+    }
+
+// lookup the educational award
+        // Check if the degree award already exists in the Award Table
+    $awardid = false;
+    $sqlaward = 'SELECT COUNT(*) FROM Award WHERE name = :nme';
+    $stmtaward = $pdo->prepare($sqlaward);
+    $stmtaward->execute(array(':nme' => $award) );
+    $rowaward = $stmtaward->fetch(PDO::FETCH_ASSOC);
+    $cntaward = (int) array_values($rowaward)[0];
+    //  If the Educational award already exists, get it from the Award Table.
+    //$_SESSION['message'] = $_SESSION['message'].' The award count is '.$cntaward;
+    if($cntaward > 0){
+            $sql = 'SELECT award_id FROM Award WHERE name = :nme';
+            $stmtaward_if = $pdo->prepare($sql);
+            $stmtaward_if->execute(array(':nme' => $award) );
+            $rowaward_if = $stmtaward_if->fetch(PDO::FETCH_ASSOC);
+                //$_SESSION['message'] = $_SESSION['message'].' The existing Award ID is '.$rowaward_if['award_id'];
+            if($rowaward_if !== false) {
+                $awardid = $rowaward_if['award_id'] + 0;
+            }
+    }
+        //if award not found, insert it
+    if($cntaward === 0) {
+        $len = strlen($award);
+        if ($len > 125){
+              $_SESSION['message'] = $_SESSION['message'].'Award '
+                  .' of length '.$len.' exceeds maximum length of 125 '
+                  .' characters for '.$award.'". ';
+              store_error_messages();
+              continue;
+        }
+        $sqlinsert_awd = 'INSERT INTO Award (`name`) VALUES (TRIM(:nme))';
+        $stmtinsert_awd = $pdo->prepare($sqlinsert_awd);
+        $stmtinsert_awd->execute(array(':nme' => $award) );
+        $awardid = $pdo->lastInsertId() + 0;
+            //$_SESSION['message'] = $_SESSION['message'].$award
+            //         .' is being added to the Award Table: '
+            //         .$award.'. ';
+            //store_error_messages();
+    }
+   // look for duplicate certification
+   //$_SESSION['message'] = $_SESSION['message'].' Looking for duplicate certification. '.$institution_id.'-'.$awardid;
+   $sqldup = 'SELECT COUNT(*) FROM Certificates
+       WHERE profile_id = :pid AND institution_id = :iid AND
+       edu_provider_id = :eduid AND award_id = :aid';
+   $stmtdup = $pdo->prepare($sqldup);
+   $stmtdup->execute(array(':pid' => $profile_id, ':iid' => $institution_id,
+                           ':eduid' => $provider_id, ':aid' => $awardid) );
+   $rowdup = $stmtdup->fetch(PDO::FETCH_ASSOC);
+   $cntdup = (int) array_values($rowdup)[0];
+   //$_SESSION['message'] = $_SESSION['message'].' Found'
+    //  .$cntdup.' duplicate certifications. ';
+   if ($cntdup > 0){
+     //$_SESSION['message'] = $_SESSION['message'].' Duplicate certification found'
+      //  .' for '.$school.' and '.$award.'. ';
+     //store_error_messages();
+     continue;
+   }
+   //$_SESSION['message'] = $_SESSION['message'].' Institution ID: '.$institution_id.' Certificate Award ID: '.$awardid.
+   //' Internet Provider Id '.$provider_id.' ';
+   //store_error_messages();
+   if(
+        is_numeric($institution_id) && $institution_id > 0 &&
+        is_numeric($awardid)       &&       $awardid > 0 &&
+        is_numeric($provider_id) &&       $provider_id > 0
+      )
+      {
+        //$_SESSION['message'] = $_SESSION['message'].' Parameters were valid. ';
+        //store_error_messages();
+        if($valid_yr){
+              $sql = 'UPDATE Certificates SET year = :yr WHERE
+                profile_id = :pid  AND edu_provider_id = :pr AND
+                institution_id = :iid AND award_id = :aid ';
+              $stmt = $pdo->prepare($sql);
+              $stmt->execute(array( ':yr'  => $year_int,
+                ':pid' => $profile_id,':pr' => $provider_id,
+                ':iid' => $institution_id,
+                ':aid' => $awardid ) );
+        } else {
+        //$_SESSION['message'] = $_SESSION['message'].' Valid year not provided for provider id-'.$provider_id;
+          $sql = 'INSERT INTO Certificates
+                 (profile_id, institution_id, edu_provider_id, award_id, award_link, `rank`)
+                    VALUES ( :pid, :iid, :eduid, :awd, :lnk,  :rnk)';
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute(array(
+                  ':pid' => $profile_id, ':iid' => $institution_id,
+                  ':eduid' => $provider_id,
+                  ':awd' => $awardid, ':lnk' => $award_link,
+                  ':rnk' => $rank ));
+          //$_SESSION['message'] = $_SESSION['message']
+          //        .' The edu provider is '.$provider_id.'; ';
+      }
+      $rank++;
+      }
+  } // end 'for' loop
+  if($rank == 0){
+     return false;
+  }
+  $_SESSION['countCertif'] = $rank;
+  return true;
+}
+
+function insertProjects($profile_id,$pdo) {
+  $rank = 0;
+  //print_r('Inserting projects');
+  for( $i=1 ; $i <= 9 ; $i++) {
+    $year_field = 'proj_year'.$i;
+    $project_field_name = 'proj'.$i;
+    $report_link_field_name = 'proj_report_lnk'.$i;
+    $git_field_name = 'git'.$i;
+    if ( ! (
+             isset($_POST[$project_field_name])
+           )
+       )
+    {
+        //print_r('Nothing posted '.$i);
+        continue;
+    }
+    $projname = trim($_POST[$project_field_name]);
+    if ( ! strlen($projname) > 0){
+      $_SESSION['message'] = $_SESSION['message']
+        .' The school name entry box for '
+        .' Project-'.$i.' was not completed. ';
+      store_error_messages();
+      continue;
+    }
+    $len = strlen($projname);
+    // $_SESSION['message'] = $_SESSION['message'].'The length of the description '
+    //     .' for '.$project_field_name.' is '.$len;
+    // store_error_messages();
+    if ($len > 125){
+            $_SESSION['message'] = $_SESSION['message'].'Project description '
+                .' of length '.$len.' exceeds maximum length of 125 '
+                .' characters for '.$projname.'". ';
+            store_error_messages();
+            continue;
+    }
+    $text_insert = 'Description for Project-'.$i;
+    $valid = get_text_input_validation($project_field_name ,$text_insert,$pdo);
+    // $_SESSION['message'] = $_SESSION['message']
+    //   .'If valid, '.$valid.' Ready for text validation: '.$project_field_name
+    //   .' Project-'.$i.' : '.$_POST[$project_field_name];
+    // store_error_messages();
+    if( ! ($valid===true)){
+          $projname = get_censored_input($project_field_name ,$text_insert,$pdo)[1];
+    }
+    if ( ! (strlen($projname) > 0)) {
+        $_SESSION['message'] = $_SESSION['message']
+          .' The desription for '
+          .' Project-'.$i.' was removed entirely. ';
+          store_error_messages();
+          return;
+    }
+    // $_SESSION['message'] = $_SESSION['message']
+    //   .' Almost ready to insert: '.$projname;
+    // store_error_messages();
+    // $project_field_name = 'proj'.$i;
+    // $report_link_field_name = 'proj_report_lnk'.$i;
+    // $git_field_name = 'github_lnk'.$i;
+    // $desc = $_POST[$project_field_name];
+    $git_lnk = $_POST[$git_field_name];
+    $report_lnk = $_POST[$report_link_field_name];
+    // look for duplicate project
+   //$_SESSION['message'] = $_SESSION['message'].' Looking for duplicate project. '.$project_id.'-'.$projid;
+   $sqldup = 'SELECT COUNT(*) FROM Project WHERE name = :nme AND profile_id = :profid';
+   $stmtdup = $pdo->prepare($sqldup);
+   $stmtdup->execute(array(':nme' => $projname, ':profid' => $profile_id));
+   $rowdup = $stmtdup->fetch(PDO::FETCH_ASSOC);
+   $cntdup = (int) array_values($rowdup)[0];
+   if ($cntdup > 0){
+     // $_SESSION['message'] = $_SESSION['message'].' Duplicate project found for Project-'
+     //    .$project_id;
+     // store_error_messages();
+     continue;
+   }
+   if(true)
+      {
+          $sql = 'INSERT INTO Project
+                 (profile_id, name, report_link, github_link, `rank`)
+                    VALUES ( :pid, :nm, :rlnk, :glnk,  :rnk)';
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute(array(
+                  ':pid' => $profile_id, ':nm' => $projname,
+                  ':rlnk' => $report_lnk,    ':glnk' => $git_lnk,
+                  ':rnk' => $rank ));
+      // The year not required
+        //  $year_int = " ";
+        //  if ( ! isset($_POST[$year_field]) ) {
+        //       $_SESSION['message'] = $_SESSION['message']
+        //       .' The year field was not set: '.$_POST[$year_field].'; ';
+        //  } else {
+        //       $year_string = trim($_POST['proj_year'.$i]);
+        //       $valid_yr = validate_year($year_string);
+        //       if ( ! $valid_yr ) {
+        //       } else {
+        //          $year_int = get_year($year_string,' ');
+        //       }
+        // }
+        // if($valid_yr){
+        //       $sql = 'UPDATE Project SET year = :yr WHERE
+        //         profile_id = :pid AND project_id = :projid';
+        //       $stmt = $pdo->prepare($sql);
+        //       $stmt->execute(array(
+        //         ':pid' => $profile_id,':projid' => $project_id,
+        //         ':yr'  => $year_int ) );
+        // }
+        $rank++;
+        // $_SESSION['message'] = $_SESSION['message'].'Loop complete for '
+        //     .$projname.'". ';
+        // store_error_messages();
+      }
+  } // end 'for' loop
+  if($rank == 0){
+     return false;
+  }
+  $_SESSION['countProj'] = $rank;
+  return true;
+}
+
+
 // InsertActivitySet is always an INSERT MYSQL COMMAND
 // because the old set is always erased first
 function insertActivityList($profile_id,$loop_id,$position_id,$pdo) {
@@ -1089,16 +1594,15 @@ function insertActivityList($profile_id,$loop_id,$position_id,$pdo) {
 function insertPositions($profile_id,$pdo) {
     $rank = 0;
     $count = 0;
-
     for($i=1; $i<=9; $i++) {
       $org_field_name = 'org'.$i;
+      if ( ! (isset($_POST[$org_field_name]))) {
+          continue;
+      }
       $job_title_field_name = 'title'.$i;
       $job_description_field_name = 'job_summary'.$i;
       $yr1_field_name = 'wrk_start_yr'.$i;
       $yr2_field_name = 'wrk_final_yr'.$i;
-      if ( ! (isset($_POST[$org_field_name]))) {
-          continue;
-      }
       $org = trim($_POST[$org_field_name]);
       if ( ! strlen($org) > 0){
         $_SESSION['message'] = $_SESSION['message']
@@ -1125,7 +1629,6 @@ function insertPositions($profile_id,$pdo) {
           )
       )
       {
-        // &&
         //isset($_POST[$yr2_field_name])          &&
         //( strlen($_POST[$yr2_field_name]) > 0 )
          $_SESSION['message'] = $_SESSION['message']
@@ -1143,13 +1646,6 @@ function insertPositions($profile_id,$pdo) {
           continue;
       }
       $year_final_string = trim($_POST[$yr2_field_name]);
-      //if ( ! (strlen($year_final_string) > 0)){
-        // $_SESSION['message'] = $_SESSION['message']
-        //           .' The final year entry box for '
-        //           .' Work History-'.$i.' was not completed. ';
-        // store_error_messages();
-        // continue;
-      //}
       $valid_yr1 = validate_year($year_start_string);
       $valid_yr2 = validate_year($year_final_string);
       if ( ! $valid_yr1 ) {
@@ -1164,20 +1660,10 @@ function insertPositions($profile_id,$pdo) {
         }
         $year_start = get_year($year_start_string,'year start issues');
         if ( ! $valid_yr2 ) {
-             $year_final = 9999;
+             //$year_final = 9999;
         } else {
              $year_final = get_year($year_final_string,'year final issues');
         }
-        // $_SESSION['message'] = $_SESSION['message']
-        //   .' Year validation: '
-        //   .$valid_yr1.'-'.$valid_yr2;
-        // $_SESSION['message'] = $_SESSION['message']
-        //     .' Year string data: '
-        //     .$year_start_string.'-'.$year_final_string;
-        // $_SESSION['message'] = $_SESSION['message']
-        //    .' We are processing the position years for Work History-'.$i
-        //    .' : '.$org_field_name.'; '.$year_start.'-'.$year_final;
-        //store_error_messages();
         $text_insert = 'organization name for Work History-'.$i;
         $valid = get_text_input_validation($org_field_name,$text_insert,$pdo);
         if ( ! $valid) {
@@ -1197,17 +1683,30 @@ function insertPositions($profile_id,$pdo) {
             continue;
         }
         $rank++;
-        $stmt = $pdo->prepare('INSERT INTO Position (
+        if ( strlen($year_final_string) > 0 ){
+           $stmt = $pdo->prepare('INSERT INTO Position (
                 profile_id, job_rank, yearStart, yearLast, organization,
                      title)
                 VALUES ( :pid, :rnk, :yrStart, :yrLast, :org, :title) ');
-        $stmt->execute(array(
+           $stmt->execute(array(
                ':pid' => $profile_id,  ':rnk' => $rank,
                ':yrStart' => $year_start,
                ':yrLast' => $year_final,
                ':org' => $org,
                ':title' => $title
              ));
+        } else {
+           $stmt = $pdo->prepare('INSERT INTO Position (
+               profile_id, job_rank, yearStart, organization,
+                    title)
+               VALUES ( :pid, :rnk, :yrStart, :org, :title) ');
+           $stmt->execute(array(
+              ':pid' => $profile_id,  ':rnk' => $rank,
+              ':yrStart' => $year_start,
+              ':org' => $org,
+              ':title' => $title
+            ));
+        }
         $position_id = $pdo->lastInsertId() + 0;
         // $_SESSION['message'] = $_SESSION['message']
         //             .' The new position number '
@@ -1292,6 +1791,15 @@ function loadHobbies($profile_id,$pdo) {
   $hobbies = $stmt->fetchALL(PDO::FETCH_ASSOC);
   return $hobbies;
 }
+function loadPersonal($profile_id,$pdo) {
+  $sql_personal = 'SELECT
+  interest, languages, computer_skill, publication, licenses
+       FROM Personal WHERE profile_id = :pid';
+  $stmt_personal = $pdo->prepare($sql_personal);
+  $stmt_personal->execute(array(':pid' => $_GET['profile_id']));
+  $row = $stmt_personal->fetch(PDO::FETCH_ASSOC);
+  return $row;
+}
 function loadActivity($profile_id,$position_id,$pdo) {
   $sql = 'SELECT position_id, description, activity_rank FROM Activity
           WHERE profile_id = :prof AND position_id = :posid';
@@ -1323,6 +1831,35 @@ function loadEdu($profile_id,$pdo) {
   $education = $stmt->fetchALL(PDO::FETCH_ASSOC);
   return $education;
 }
+function loadCertif($profile_id,$pdo) {
+  $sql = 'SELECT Certificates.year, Certificates.award_link as award_link, Award.name As degree,
+       Institution.name As institution, Edu_Provider.name As provider
+       FROM Institution LEFT JOIN Certificates
+          ON Certificates.institution_id = Institution.institution_id
+       LEFT JOIN Award
+          ON Certificates.award_id = Award.award_id
+       LEFT JOIN Edu_Provider
+          ON Certificates.edu_provider_id = Edu_Provider.provider_id
+          WHERE Certificates.profile_id = :pid';
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(array(':pid' => $profile_id) );
+  $fetched = $stmt->fetchALL(PDO::FETCH_ASSOC);
+  $r  = array_values($fetched);
+  return $r;
+}
+function loadProjects($profile_id,$pdo) {
+  $sql = 'SELECT year, name, report_link, github_link
+       FROM Project WHERE Project.profile_id = :pid';
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(array(':pid' => $profile_id) );
+  $fetched = $stmt->fetchALL(PDO::FETCH_ASSOC);
+  //  $_SESSION['message'] =   $_SESSION['message'].'Loading certifications '
+  //    .' Profile-'.$profile_id;
+  // store_error_messages();
+  $v  = array_values($fetched);
+  return $v;
+}
+
 function get_name($user_id,$pdo) {
     $stmt = $pdo->prepare('SELECT name FROM users WHERE user_id= :id');
     $stmt->execute(array(':id' => $user_id) );
@@ -1337,7 +1874,7 @@ function get_profile_information($profile_id, $user_id,$pdo) {
   $stmt->execute(array(':pid' => $profile_id, ':uid' => $user_id));
   $profile = $stmt->fetch(PDO::FETCH_ASSOC);
   if($profile==false){
-      $_SESSION['message'] = 'Could not load profile';
+      $_SESSION['message'] = $_SESSION['message'].'Could not load profile';
   }
   store_error_messages();
   return $profile;

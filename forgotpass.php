@@ -12,7 +12,7 @@ $_SESSION['success'] = false;
 
 if ( isset($_POST['emale'])) {
   $mymail = trim(htmlentities($_POST['emale']));
-  if ( strlen($_POST['emale']) >= 1) {
+  if ( strlen($_POST['email']) >= 1) {
      unset($_SESSION['user_id']);
      $numErrors = 0;
      $_SESSION['error'] = "";
@@ -79,10 +79,11 @@ if ( isset($_POST['emale'])) {
      error_log('Password change was made for '.$mymail.' at '.$current_time.'.');
      $_SESSION['email'] = $mymail;
      $_SESSION['emailSubject'] = 'Temporary Password';
+     // background-color: #FDF0D0; 
      $_SESSION['emailMessage'] =
          '<html><body style="'
         .'font-size:1.2em;color:#886600;'
-        .'background-color: #FDF0D0; border: solid 3px ;padding: 20px;">'
+        .' border: solid 3px ;padding: 20px;">'
         .'<p style="font-size:1.3em;color:#008800;margin-bottom:30px">'
         .' Attention: '.$userName
         .'</p><p>'
