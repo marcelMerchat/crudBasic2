@@ -62,18 +62,18 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
     $goalsAdded = insertProfessionalGoals($profileid, $pdo, $IsUpdate=true);
 //  Skills
     // Delete old skill entries; insert new list
-    $stmt = $pdo->prepare('DELETE FROM SkillSet WHERE profile_id = :pid');
-    $stmt->execute(array(':pid' => $profileid));
-    insertSkillSet($profileid,$pdo);
+    //$stmt = $pdo->prepare('DELETE FROM SkillSet WHERE profile_id = :pid');
+    //$stmt->execute(array(':pid' => $profileid));
+    //insertSkillSet($profileid,$pdo);
 //  Hobbies and Interests
     // Delete old hobbies; insert new list
-    $stmt = $pdo->prepare('DELETE FROM HobbyList WHERE profile_id = :pid');
-    $stmt->execute(array(':pid' => $profileid));
-    insertHobbyList($profileid,$pdo);
+    //$stmt = $pdo->prepare('DELETE FROM HobbyList WHERE profile_id = :pid');
+    //$stmt->execute(array(':pid' => $profileid));
+    //insertHobbyList($profileid,$pdo);
 
-    $stmt = $pdo->prepare('DELETE FROM Personal WHERE profile_id = :pid');
-    $stmt->execute(array(':pid' => $profileid));
-    insertPersonal($profileid,$pdo);
+    //$stmt = $pdo->prepare('DELETE FROM Personal WHERE profile_id = :pid');
+    //$stmt->execute(array(':pid' => $profileid));
+    //insertPersonal($profileid,$pdo);
 
 //  Education
     // Delete old education entries; recreate new list

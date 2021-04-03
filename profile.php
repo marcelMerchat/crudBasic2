@@ -548,14 +548,14 @@ session_start();
                             echo htmlentities($proj_desc);
                         }
                         echo    '</p>';
-                        if(strlen($git_lnk) > 16){
-                            echo    '<p class="small-bottom-margin">
-                                       There are details and code at this
-                                       <a href="'.$git_lnk.'" target="_blank">'
-                                    .' Github link'
-                                .'</a>.';
-                        }
-                        echo    '</p>';
+                        //if(strlen($git_lnk) > 16){
+                        //    echo    '<p class="small-bottom-margin">
+                        //               There are details and code at this
+                        //               <a href="'.$git_lnk.'" target="_blank">'
+                        //            .' Github link'
+                        //        .'</a>.';
+                        //}
+                        //echo    '</p>';
                         echo '</div>'
                              .'</div>'
                             .'</div>';

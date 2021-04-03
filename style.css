@@ -139,11 +139,27 @@ a {
     padding: 2px;
 }
 p a {
-    color: #0055FF;
+    color: #0044ee;
     text-decoration: underline;
     text-align: center;
     padding: 2px;
     font-size: inherit;
+}
+/* unvisited link */
+a:link {
+   color: #0044ee;
+}
+p a:link {
+   color: #0044ee;
+}
+/* visited link */
+a:visited {
+   color: #17d;
+}
+/* mouse over link */
+a:hover {
+   color: hotpink;
+   text-decoration: none;
 }
 input, textarea, select, button {
     font-size: 0.9em;
@@ -221,22 +237,6 @@ img {
     display: block;
     width: 98%;
     top: 12px;
-}
-/* unvisited link */
-a:link {
-   color: blue;
-}
-p a:link {
-   color: blue;
-}
-/* visited link */
-a:visited {
-   color: #17d;
-}
-/* mouse over link */
-a:hover {
-   color: hotpink;
-   text-decoration: none;
 }
 .paragraph_link {
     color: #0055FF;

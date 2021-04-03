@@ -1,7 +1,7 @@
 <?php
 // util.php utilities
 function isMobile() {
-    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+    return preg_match('/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i', $_SERVER['HTTP_USER_AGENT']);
 }
 function loadMobilityStyles() {
     if(isMobile()==1) {
@@ -796,13 +796,14 @@ function insertHobbyList($profile_id,$pdo) {
    //   .' There are '.$count.' hobbies.';
    return true;
 }
-// InsertHobyList is always an INSERT MYSQL COMMAND
+// InsertHobbyList is always an INSERT MYSQL COMMAND
 // because the old set is always erased first
 function insertPersonal($profile_id,$pdo) {
     $fields = array('languages', 'computer_skill',
           'publication','licenses');
     $data = array('NA', 'NA', 'NA','NA','NA');
     $i = 0;
+    $valid = true;
     for( $i=1 ; $i <= 4 ; $i++) {
       $j = $i - 1;
       if ( ! isset($_POST[$fields[$j]]) ) {

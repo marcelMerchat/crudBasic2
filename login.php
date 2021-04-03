@@ -2,7 +2,6 @@
 session_start();
 require_once 'pdo.php';
 require_once "util.php";
-
 if ( isset($_POST['cancel'] ) ) {
     header('Location: index.php');
     return;
