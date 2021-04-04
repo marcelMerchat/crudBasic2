@@ -44,27 +44,13 @@ session_start();
         margin-top: 0px;
         margin-bottom: 0px;
     }
-    div.job-label {
-      display: inline-block;
-      vertical-align: top;
-      text-align: left;
-      width: 6.5rem;
-      height: 1.1em;
-      border: 0px solid #008800;
-      margin-top: 0px;
-      margin-bottom: 0px;
-      padding-top: 0px;
-      color: #008888;
-    }
     .org-title-color {
         color: #008888;
         font-size: 17px;
-        margin-bottom: 0.3em;
     }
     .job-title-color {
         color: #008888;
         font-size: 17px;
-        margin-bottom: 0.05em;
     }
     div.job-desc {
       display: inline-block;
@@ -115,6 +101,18 @@ session_start();
         margin-bottom: 0px;
         width: 75%;
     }
+    div.job-label {
+      display: inline-block;
+      vertical-align: top;
+      text-align: left;
+      width: 7.5rem;
+      height: 1.1em;
+      border: 0px solid #008800;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-top: 0px;
+      color: #008888;
+    }
     div.job-info {
         display: inline-block;
         text-align: left;
@@ -123,7 +121,7 @@ session_start();
         margin-top: 0px;
         margin-bottom: 0px;
         word-break: break-word;
-        width: calc(100% - 6.5rem);
+        width: calc(100% - 7.5rem);
         min-width: 180px;
         padding-top: 0px;
         border: 0px solid #888800;
@@ -203,7 +201,7 @@ session_start();
         }
         echo '</p>';
     }
-        echo '<h4 class="more-top-margin-2x more-bottom-margin-1x">Goals</h4>';
+        echo '<h4 class="more-top-margin-3x more-bottom-margin-1x">Goals</h4>';
         echo '<p class="resume-paragraph justify more-bottom-margin-1x">'.htmlentities($row['goal']).'</p>';
 
         // Positions
@@ -232,20 +230,23 @@ session_start();
                                      .'</p>'
                           .'</div>';
                   echo      '<div class="job-info">'  // &#8226 for round bullet
-                                   .'<div>'  // &#9642
-                                       .'<p class="org-title-color small-bottom-margin">'
-                                           .htmlentities($job['organization'])
-                                       .'</p>'.'<p class="job-title-color small-bottom-margin">'
-                                           .htmlentities($job['title'])
-                                       .'</p>'
-                                   .'</div>'
-                                   .'<div class="job-desc">';
+                               .'<div>'  // &#9642
+                                 .'<p class="org-title-color
+                                             small-bottom-margin">'
+                                       .htmlentities($job['organization'])
+                                 .'</p>'.'<p class="job-title-color
+                                                    more-top-margin-0x3
+                                                    small-bottom-margin">'
+                                        .htmlentities($job['title'])
+                                 .'</p>'
+                               .'</div>'
+                           .'<div class="job-desc">';
                   if(strlen($jobsummary) > 1){
-                          echo  '<p class="resume-paragraph more-top-margin-0p6 justify">'
-                                     .htmlentities($job['summary'])
-                               .'</p>';
+                      echo  '<p class="resume-paragraph
+                                       more-top-margin-0x3 justify">'
+                               .htmlentities($job['summary'])
+                           .'</p>';
                   }
-
                   $sqlActivitySet = 'SELECT activity_id FROM Activity
                                WHERE profile_id = :pid AND position_id = :posid';
                   $stmt_activitySet = $pdo->prepare($sqlActivitySet);
@@ -471,7 +472,7 @@ session_start();
             $rows = $skillSet;
             $length = count($rows);
 
-            echo '<h4 class="more-top-margin-2x more-bottom-margin-1x">Job Skills</h4>';
+            echo '<h4 class="more-top-margin-2x more-bottom-margin-0p3x">Job Skills</h4>';
             echo '<ul class="less-top-margin">';
             for ($i = 0; $i < $length; $i++){
                $skill_id = $rows[$i]['skill_id'];

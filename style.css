@@ -700,13 +700,6 @@ button:hover{
 .more-right-margin {
     margin-right: 2em;
 }
-.more-top-margin {
-    margin-top: 4vw;
-}
-.less-top-margin {
-    margin-top: 0.2vw;
-    margin-block-start: 0.1vw;
-}
 .more-bottom-margin {
     margin-bottom: 1.5em;
 }
@@ -758,6 +751,13 @@ button:hover{
 }
 .more-top-margin-3x {
     margin-top: 1.5em;
+}
+.more-top-margin {
+    margin-top: 4vw;
+}
+.less-top-margin {
+    margin-top: 0.2vw;
+    margin-block-start: 0.1vw;
 }
 .zero-bottom-margin {
     margin-bottom: 0px;
@@ -1053,8 +1053,26 @@ div.more-top-margin-2x {
 div.more-top-margin-1x {
     margin-top: 1vw;
 }
+div.more-top-margin-0x8 {
+    margin-top: 0.8vw;
+}
+p.more-top-margin-0x8 {
+    margin-top: 0.8vw;
+}
+div.more-top-margin-0x7 {
+    margin-top: 0.7vw;
+}
 div.more-top-margin-0x5 {
     margin-top: 0.5vw;
+}
+p.more-top-margin-0x5 {
+    margin-top: 0.5vw;
+}
+div.more-top-margin-0x3 {
+    margin-top: 0.3vw;
+}
+p.more-top-margin-0x3 {
+    margin-top: 0.3vw;
 }
 div.inline-block-layout {
     /*display: inline-block;

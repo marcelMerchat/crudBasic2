@@ -815,7 +815,7 @@ localhost:
 sudo cp /mnt/c/Users/merch/Documents/edu/web_developer/mmdotcom/crudbasic/* /var/www/html/crudBasic
 
 Copy droplet repo to crudBasic folder
-sudo cp /home/gramps/repos/crudBasic/* /var/www/marcel-merchat.com/html/crudBasic
+sudo cp /home/gramps/repos/crudBasic/*  /var/www/marcel-merchat.com/html/crudBasic
 
 At this time, the Ubuntu linux side of Windows 10, is only a command-line
 environment. This is the main reason for working on the Windows side and copying
