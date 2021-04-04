@@ -31,10 +31,23 @@ Links are provided for adding new resumes, editing existing ones,
 or deleting resumes. Filters protect the browser from cross-site
 injection (XXS) whenever user data is presented.
 
+Add and Edit Profile:
+
+The add page is similar to the original class assignment. Perhaps it is more
+suitable to get the resume started as only basic information such as name
+email address are required. This helps to avoid loosing a large amount of
+entered information if something is rejected when the profile is saved.
+
+The original edit page is divided into editProfile, editSkills,
+editCertificates, editProjects, editInterestsActivities, and contacts.
+The original edit page provides buttons to the user to select one of these.
+
 Profile:
 
 Compared to the original project where the View page was a report on a
 person's profile, the View page has been changed to look more like a resume.
+The user can select a student styles named 'resume.php' or an experienced
+resume style named 'profile.php' or an independent style named 'portfolio.php.'
 Saving a profile on the "Add" page requires at a minimum, an acceptable
 first and last name as well as an email. The other possible entries are options
 and can always be updated on the "Edit" page.
@@ -61,10 +74,28 @@ degree or certificate provides a unique triplet of foreign key references.
 The original Education Table was a many-to-many table that provided a unique
 combination of profile ID and an institution ID.
 
+Educational Certificates:
+
+The Certificate table has a quad many-to-one relationship based on
+four foreign keys that includes an internet provider column.  There is a new
+internet provider table. This allows more than one educational entry for the
+same school as long as the profile ID, school, certificate award,
+and internet provider provides a unique set of four foreign key references.
+Perhaps a future improvement would handle certificate names
+in the same manner as educational institution names.
+
+Projects and Demos:
+
+The Project table includes a link for the report and an optional Github link.
+As the Github link can be included in the linked report it is suggested to
+leave it blank in the data base but if included, the Github project link is
+added to the resume.
+
 Work experience:
 
-The work experience has been expanded into separate company name and
-job-summary blocks. A future improvement would be to handle company names
+The work experience has been expanded into separate company name, job title,
+and job-summary blocks plus a bullet list of activities for each position.
+Perhaps a future improvement would handle company names
 in the same manner as education institutions.
 
 ###########################################################################
@@ -101,6 +132,11 @@ Capstone project for text prediction was loaded into the Offensive Table.
 I compiled for the English Dictionary for the Coursera text prediction project
 using the raw Twitter data by filtering the uncommon words.
 
+Until a more complicated algorithm is implemented, a small number of words
+were dropped from the offensive words table to avoid blocking words like
+'analyze, assumptions, parsed, scrapped.' These words appear not to
+offend particular groups of people compared to other offensive words.
+
 ###########################################################################
 
 Login Password Assignment by Email:
@@ -109,6 +145,12 @@ The email confirmations after obtaining new passwords are handled by means of
 the 'PHPMailer' package installed using the Compose Package. These are
 available without cost. The code also works in the test environment on
 localhost.
+
+###########################################################################
+
+Control and Data Input Box Feedback for User
+
+CSS style for hovering over data input boxes and hot buttons was added.
 
 ###########################################################################
 
@@ -210,8 +252,12 @@ To get started run the following SQL commands:
 
 CREATE DATABASE team; (Human Resources)
 
-// GRANT ALL PRIVILEGES ON team.* TO 'username'@'localhost' IDENTIFIED BY 'password';
-// GRANT ALL PRIVILEGES ON team.* TO 'umsi'@'localhost' IDENTIFIED BY 'php123';
+// GRANT ALL PRIVILEGES
+             ON team.*
+             TO 'username'@'localhost' IDENTIFIED BY 'password';
+// GRANT ALL PRIVILEGES
+             ON team.*
+             TO 'umsi'@'localhost' IDENTIFIED BY 'php123';
 
 ############################################################################
 
@@ -264,11 +310,14 @@ ALTER TABLE `Profile` ADD linkedin VARCHAR(128) AFTER phone;
 ALTER TABLE `Profile` ADD resume_style VARCHAR(64) DEFAULT 'student' AFTER goal;
 
 INSERT INTO Profile (user_id, first_name, last_name, email, profession, goal)
-           VALUES (1, 'Elvis', 'Presley', 'epresley@musicland.com', 'great singer', 'Changed America') ;
+           VALUES (1, 'Elvis', 'Presley', 'epresley@musicland.com',
+                               'great singer', 'Changed America') ;
 INSERT INTO Profile (user_id, first_name, last_name, email, profession, goal)
-            VALUES (1, 'Marilyn', 'Monroe', 'mmonroe@hollyland.com', 'great actress', 'America Icon, Changed the world.') ;
+            VALUES (1, 'Marilyn', 'Monroe', 'mmonroe@hollyland.com',
+                      'great actress', 'America Icon, Changed the world.') ;
 INSERT INTO Profile (user_id, first_name, last_name, email, profession, goal)
-                            VALUES (1, 'U', 'MSI', 'umsi@umich.edu', 'great coach', 'Inspiration to students') ;
+            VALUES (1, 'U', 'MSI', 'umsi@umich.edu',
+                            'great coach', 'Inspiration to students') ;
 
 #######################################################################
 
@@ -343,10 +392,9 @@ CREATE TABLE Institution (
   PRIMARY KEY(institution_id provider)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-UPDATE Institution SET provider="Coursera" WHERE institution_id = 7 OR institution_id = 8
-ALTER TABLE Institution CHANGE provider provider VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'NA';
-ALTER TABLE Institution DROP PRIMARY KEY, ADD PRIMARY KEY(institution_id, provider)
-ALTER TABLE Institution ADD provider VARCHAR(128) DEFAULT 'NA' AFTER activity_id;
+The provider column is not being used. An extra foreign key for
+the provider in the Certificates Table is a better solution and avoids other
+problems.
 
 #######################################################################
 
@@ -398,33 +446,7 @@ CREATE TABLE Education (
   PRIMARY KEY(profile_id, institution_id, award_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE Education DROP PRIMARY KEY, ADD PRIMARY KEY(profile_id, institution_id, award_id)
-
-
 #############################################################
-
-Updating the original table:
-
-UPDATE `Education` SET `award_id` = '1'
-WHERE `Education`.`profile_id` = 277 AND
- `Education`.`institution_id` = 21 AND
-  `Education`.`award_id` = 0;
-
-  UPDATE `Education` SET `award_id` = '1'
-  WHERE `Education`.`profile_id` = 5 AND
-     `Education`.`institution_id` = 2 AND
-     `Education`.`award_id` = 0;
-
-UPDATE `Education` SET `award_id` = '1'
-WHERE `Education`.`profile_id` = 5 AND `Education`.`institution_id` = 8 AND
-      `Education`.`award_id` = 0
-
-##############################################################
- Change major column to award_id
-
-ALTER TABLE `Education` ADD `award_id` INT NOT NULL AFTER `institution_id`;
-
-###############################################################
 
 Change two-to-one table to three-to-one table
 
@@ -508,16 +530,6 @@ ON DELETE CASCADE ON UPDATE CASCADE,
 PRIMARY KEY(profile_id, institution_id, edu_provider_id, award_id) )
 ENGINE=InnoDB DEFAULT CHARSET=utf8
 
-SET FOREIGN_KEY_CHECKS=0;
-
-ALTER TABLE Certificates ADD edu_provider_id
-(INT, FOREIGN KEY certificate_ibfk_3 (edu_provider_id)
-REFERENCES Edu_Provider (provider_id))
-ON DELETE CASCADE ON UPDATE CASCADE
-DEFAULT 'NA' AFTER institution_id
-
-ALTER TABLE Certificates ADD provider (VARCHAR(128), providerparent_ID INT, FOREIGN KEY my_fk (parent_id) REFERENCES parent(ID))DEFAULT 'NA' AFTER institution_id
-
 #############################################################
 
 ## Project
@@ -538,25 +550,6 @@ CREATE TABLE Project (
   REFERENCES Profile (profile_id)
   ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-SET FOREIGN_KEY_CHECKS=0;
-ALTER TABLE Project DROP PRIMARY KEY
-ALTER TABLE Project ADD PRIMARY KEY (project_id, profile_id)
-ALTER TABLE Project MODIFY project_id INT AUTO_INCREMENT;
-
-
-ALTER TABLE Project ADD PRIMARY KEY (project_id, profile_id )
-ALTER TABLE companies DROP PRIMARY KEY, CHANGE id id int(11);
-ALTER TABLE Project DROP PRIMARY KEY, CHANGE id id int(11);
-
-
-
-
-ALTER TABLE users ADD CONSTRAINT fk_grade_id FOREIGN KEY (grade_id) REFERENCES grades(id);
-ALTER TABLE Project ADD CONSTRAINT project_ibfk_1
-FOREIGN KEY (profile_id)
-REFERENCES Profile (profile_id)
-ON DELETE CASCADE ON UPDATE CASCADE
 
 #############################################################
 
@@ -605,9 +598,6 @@ CREATE TABLE Activity (
   PRIMARY KEY(activity_id, profile_id, position_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `ActivityList` ADD `position_id` INT NOT NULL AFTER `activity_id`;
-ALTER TABLE `ActivityList` RENAME `Activity`;
-
 #######################################################################
 
 CREATE TABLE Hobby (
@@ -620,6 +610,8 @@ INSERT INTO Hobby (name, details) VALUES ('Hobbies and Interests', 'Current even
 INSERT INTO Hobby (name) VALUES ('Journaling');
 INSERT INTO Hobby (name) VALUES ('Eating Out');
 INSERT INTO Hobby (name) VALUES ('Lifelong learning');
+
+#######################################################################
 
 CREATE TABLE Personal (
   profile_id INT NOT NULL,
@@ -728,10 +720,7 @@ CREATE TABLE Offensive (
 
 ) ENGINE=InnoDB CHARSET=utf8;
 
-INSERT INTO Offensive (word) VALUES ('anal');
 INSERT INTO Offensive (word) VALUES ('anus');
-INSERT INTO Offensive (word) VALUES ('arse');
-INSERT INTO Offensive (word) VALUES ('ass');
 INSERT INTO Offensive (word) VALUES ('ballsack');
 INSERT INTO Offensive (word) VALUES ('balls');
 INSERT INTO Offensive (word) VALUES ('bastard');
@@ -751,7 +740,6 @@ INSERT INTO Offensive (word) VALUES ('buttplug');
 INSERT INTO Offensive (word) VALUES ('clitoris');
 INSERT INTO Offensive (word) VALUES ('cock');
 INSERT INTO Offensive (word) VALUES ('coon');
-INSERT INTO Offensive (word) VALUES ('crap');
 INSERT INTO Offensive (word) VALUES ('cunt');
 INSERT INTO Offensive (word) VALUES ('damn');
 INSERT INTO Offensive (word) VALUES ('dick');
@@ -806,6 +794,12 @@ INSERT INTO Offensive (word) VALUES ('wank');
 INSERT INTO Offensive (word) VALUES ('whore');
 INSERT INTO Offensive (word) VALUES ('wtf');
 
+Deleted from offensive words table:
+// INSERT INTO Offensive (word) VALUES ('anal');
+// INSERT INTO Offensive (word) VALUES ('arse');
+// INSERT INTO Offensive (word) VALUES ('ass');
+// INSERT INTO Offensive (word) VALUES ('crap');
+
 #########################################################################
 
 REFERENCE
@@ -826,6 +820,21 @@ sudo cp /home/gramps/repos/crudBasic/* /var/www/marcel-merchat.com/html/crudBasi
 At this time, the Ubuntu linux side of Windows 10, is only a command-line
 environment. This is the main reason for working on the Windows side and copying
 the folder to the Ubuntu server folder.
+
+#########################################################################
+
+Github commands:
+
+Push to Github:
+
+git add -A [automatic if using the Github app]
+git commit -m "These item are revised ... "
+git push
+
+Import to cloned project branch in Cloud:
+
+git fetch -all
+git reset --hard origin/master
 
 #########################################################################
 

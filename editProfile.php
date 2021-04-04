@@ -413,6 +413,7 @@ foreach($positions as $position){
     $positionid = $position['position_id'];
     $finalyr =$position['yearLast'];
     if($finalyr == 9999){
+       print_r('Found missing final year');
        $finalyr = '';
     }
     $activity = loadActivity($profileid,  $positionid, $pdo);
@@ -431,7 +432,7 @@ foreach($positions as $position){
                   <div class="less-bottom-margin year-input-label">Final Year</div>
                       <div class="less-top-margin less-bottom-margin short-input-form">
                            <div><input class="year-entry-box" type="number" min=1940 max=2100 name="wrk_final_yr'.$pos.'"
-                                       value="'.$position['yearLast'].'" id="wrk_final_yr'.$pos.'">
+                                       value="'.$finalyr.'" id="wrk_final_yr'.$pos.'">
                            </div>
                       </div>
                   </div>
@@ -450,7 +451,7 @@ foreach($positions as $position){
                      <div class="less-bottom-margin year-input-label"> Final Year</div>
                      <div class=""><input class="year-entry-box short-input-form" type="number"
                               min=1940 max=2100 name="wrk_final_yr'.$pos.'"
-                        value="'.$position['yearLast'].'" id="wrk_final_yr'.$pos.'">
+                        value="'.$finalyr.'" id="wrk_final_yr'.$pos.'">
                      </div>
                  </div>
               </div>

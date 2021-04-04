@@ -162,9 +162,8 @@ function validate_year($year_string){
           return false;
        }
   } else {
-     // $_SESSION['message'] = $_SESSION['message']
-     //   .' A 4-digit year is required. ';
-     // store_error_messages();
+     //$_SESSION['message'] = $_SESSION['message']
+     //    .' A 4-digit year was not provided. ';
      return false;
   }
   return false;
@@ -177,8 +176,8 @@ function get_year($year_string,$message){
        $year_string = trim($year_string);
        $year_int = (int) $year_string;
   } else {
-       $_SESSION['message'] = $_SESSION['message'].$message;
-       store_error_messages();
+       //$_SESSION['message'] = $_SESSION['message'].$message;
+       //store_error_messages();
        return false; //false
   }
   return $year_int;
@@ -1661,7 +1660,7 @@ function insertPositions($profile_id,$pdo) {
         }
         $year_start = get_year($year_start_string,'year start issues');
         if ( ! $valid_yr2 ) {
-             //$year_final = 9999;
+             $year_final = 9999;
         } else {
              $year_final = get_year($year_final_string,'year final issues');
         }
@@ -1698,12 +1697,12 @@ function insertPositions($profile_id,$pdo) {
              ));
         } else {
            $stmt = $pdo->prepare('INSERT INTO Position (
-               profile_id, job_rank, yearStart, organization,
+               profile_id, job_rank, yearStart, yearLast, organization,
                     title)
-               VALUES ( :pid, :rnk, :yrStart, :org, :title) ');
+               VALUES ( :pid, :rnk, :yrStart, :yrLast, :org, :title)');
            $stmt->execute(array(
               ':pid' => $profile_id,  ':rnk' => $rank,
-              ':yrStart' => $year_start,
+              ':yrStart' => $year_start, ':yrLast' => 9999,
               ':org' => $org,
               ':title' => $title
             ));
