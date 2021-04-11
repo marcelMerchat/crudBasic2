@@ -238,8 +238,8 @@ $(document).ready(function() {
         $('#addSkill').click(function(event){
             event.preventDefault();
             window.console && console.log("Adding skill");
-            if(count_skill - skill_removed + 1 > 12) {
-                 triggerAlert('Maximum of twelve skills exceeded', replace=true);
+            if(count_skill - skill_removed + 1 > 15) {
+                 triggerAlert('Maximum of fifteen skills exceeded', replace=true);
                  return;
             } else {
                  count_skill = count_skill + 1;

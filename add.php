@@ -94,8 +94,6 @@ if (
                 store_error_messages();
             }
           }
-      //  Skills
-          //insertSkillSet($profileid,$pdo);
       //  Education
           insertEducations($profileid,$pdo);
       //  Positions
@@ -510,7 +508,7 @@ $(document).ready(function() {
              var position_yrs = 'position_years'+count_position;
                  // position_yrs is the target for direct JavaScript DOM insertion
                  // onchange=\"this.className=(this.value==\'\')?\'\':\'visited-long\';\"
-                 // onchange="this.className=(this.value==\'\')?\'\':\'paragraph-box visited\';" \ 
+                 // onchange="this.className=(this.value==\'\')?\'\':\'paragraph-box visited\';" \
              $('#position_fields').append(
                 '<div class= "form-background div-form-group border-top-bottom more-top-margin-3x more-bottom-margin" \
                       id="position' + count_position + '"> \

@@ -572,7 +572,7 @@ function insertContactList($pdo) {
 // because the old set is always erased first
 function insertSkillSet($profile_id,$pdo) {
     $rank = 1;
-    for($i=1; $i<=12; $i++) {
+    for($i=1; $i<=15; $i++) {
       $field_name = 'skill_name'.$i;
       store_error_messages();
       if ( ! isset($_POST[$field_name]) ){

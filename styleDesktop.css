@@ -83,7 +83,7 @@ img {
 }
 .quad-space {
     margin-top: 32px;
-    margin-bottom: 32px;
+    margin-bottom: 8px;
 }
 .text-box {
     display: inline-block;

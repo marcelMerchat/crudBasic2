@@ -32,92 +32,92 @@ if($profile===false){
     header('Location: index.php');
     return;
 }
-$fn = htmlentities(trim($profile['first_name']));
-$ln = htmlentities(trim($profile['last_name']));
-$em = htmlentities(trim($profile['email']));
-$prof = htmlentities(trim($profile['profession']));
-$gl = htmlentities(trim($profile['goal']));
-$resume_style = htmlentities(trim($profile['resume_style']));
+// $fn = htmlentities(trim($profile['first_name']));
+// $ln = htmlentities(trim($profile['last_name']));
+// $em = htmlentities(trim($profile['email']));
+// $prof = htmlentities(trim($profile['profession']));
+// $gl = htmlentities(trim($profile['goal']));
+// $resume_style = htmlentities(trim($profile['resume_style']));
 // Check for initial GET request without (or without) post information
 // Only required entries are the first and laat names and the email.
-if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
-    isset($_POST['email']) ) {
-
-    unset($_SESSION['error']);
-    unset($_SESSION['success']);
-    unset($_SESSION['message']);
-    $_SESSION['message'] = ' ';
-    $profileid = $_SESSION['profile_id'];
-    $profileInserted = insertProfile($pdo,$IsUpdate=true);
-    if($profileInserted===false){
-           $_SESSION['error'] = $_SESSION['error']
-              . ' Could not change name or email. Please try again.';
-           header('Location: edit.php?profile_id='.$_POST['profile_id']);
-           return;
-    }
-//  Check Professional Goals
-    // Profession might be vaild but have a deleted word.
-    // This will always be an UPDATE procedure because profession and goals
-    // are fields in the Profile table.
-    $professionAdded = insertProfession($profileid, $pdo, $IsUpdate=true);
-    $goalsAdded = insertProfessionalGoals($profileid, $pdo, $IsUpdate=true);
-//  Skills
-    // Delete old skill entries; insert new list
-    $stmt = $pdo->prepare('DELETE FROM SkillSet WHERE profile_id = :pid');
-    $stmt->execute(array(':pid' => $profileid));
-    insertSkillSet($profileid,$pdo);
-//  Hobbies and Interests
-    // Delete old hobbies; insert new list
-    $stmt = $pdo->prepare('DELETE FROM HobbyList WHERE profile_id = :pid');
-    $stmt->execute(array(':pid' => $profileid));
-    insertHobbyList($profileid,$pdo);
-
-    $stmt = $pdo->prepare('DELETE FROM Personal WHERE profile_id = :pid');
-    $stmt->execute(array(':pid' => $profileid));
-    insertPersonal($profileid,$pdo);
-//  Special Projects and Demos
-    // Delete old projects; insert new list
-    $stmt = $pdo->prepare('DELETE FROM Project WHERE profile_id = :pid');
-    $stmt->execute(array(':pid' => $profileid));
-    insertProjects($profileid,$pdo);
-
-//  Education
-    // Delete old education entries; recreate new list
-    $stmt = $pdo->prepare('DELETE FROM Education WHERE profile_id = :pid');
-    $stmt->execute(array(':pid' => $profileid));
-    insertEducations($profileid,$pdo);
-//  Certificates
-    // Delete old certificate entries; recreate new list
-    $stmt = $pdo->prepare('DELETE FROM Certificates WHERE profile_id = :pid');
-    $stmt->execute(array(':pid' => $profileid));
-    insertCertificates($profileid,$pdo);
-//  Positions
-    // Clear old position entries; recreate new list
-    $stmt = $pdo->prepare('DELETE FROM Position WHERE profile_id = :pid');
-    $stmt->execute(array(':pid' => $profileid));
-    // Clear old activitites; recreate new list
-    $stmt = $pdo->prepare('DELETE FROM Activity WHERE profile_id = :pid');
-    $stmt->execute(array(':pid' => $profileid));
-    // Insert new position entries; create replacement list
-    insertPositions($profileid, $pdo);
-    changeResumeStyle($pdo);
-    //$_SESSION['count_position'] = get_position_count($profileid,$pdo);
-    // foreach ($_POST as $key => $value) {
-    //    $_SESSION['message'] = $_SESSION['message']
-    //      ."Field ".htmlspecialchars($key)." is ".htmlspecialchars($value)."<br>";
-    //      store_error_messages();
-    // }
-    // Only approved users may enter contact information.
-    if ($_SESSION['contact_info'] == 0) {
-        header('Location: index.php');
-        return;
-    }  else {
-        header("Location: contacts.php?profile_id=".$profileid);
-        return;
-    }
-} else {
-  //$_SESSION['message'] = ' Initial Get Request: nothing posted yet. ';
-}
+// if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
+//     isset($_POST['email']) ) {
+//
+//     unset($_SESSION['error']);
+//     unset($_SESSION['success']);
+//     unset($_SESSION['message']);
+//     $_SESSION['message'] = ' ';
+//     $profileid = $_SESSION['profile_id'];
+//     $profileInserted = insertProfile($pdo,$IsUpdate=true);
+//     if($profileInserted===false){
+//            $_SESSION['error'] = $_SESSION['error']
+//               . ' Could not change name or email. Please try again.';
+//            header('Location: edit.php?profile_id='.$_POST['profile_id']);
+//            return;
+//     }
+// //  Check Professional Goals
+//     // Profession might be vaild but have a deleted word.
+//     // This will always be an UPDATE procedure because profession and goals
+//     // are fields in the Profile table.
+//     $professionAdded = insertProfession($profileid, $pdo, $IsUpdate=true);
+//     $goalsAdded = insertProfessionalGoals($profileid, $pdo, $IsUpdate=true);
+// //  Skills
+//     // Delete old skill entries; insert new list
+//     //$stmt = $pdo->prepare('DELETE FROM SkillSet WHERE profile_id = :pid');
+//     //$stmt->execute(array(':pid' => $profileid));
+//     //insertSkillSet($profileid,$pdo);
+// //  Hobbies and Interests
+//     // Delete old hobbies; insert new list
+//     $stmt = $pdo->prepare('DELETE FROM HobbyList WHERE profile_id = :pid');
+//     $stmt->execute(array(':pid' => $profileid));
+//     insertHobbyList($profileid,$pdo);
+//
+//     $stmt = $pdo->prepare('DELETE FROM Personal WHERE profile_id = :pid');
+//     $stmt->execute(array(':pid' => $profileid));
+//     insertPersonal($profileid,$pdo);
+// //  Special Projects and Demos
+//     // Delete old projects; insert new list
+//     $stmt = $pdo->prepare('DELETE FROM Project WHERE profile_id = :pid');
+//     $stmt->execute(array(':pid' => $profileid));
+//     insertProjects($profileid,$pdo);
+//
+// //  Education
+//     // Delete old education entries; recreate new list
+//     $stmt = $pdo->prepare('DELETE FROM Education WHERE profile_id = :pid');
+//     $stmt->execute(array(':pid' => $profileid));
+//     insertEducations($profileid,$pdo);
+// //  Certificates
+//     // Delete old certificate entries; recreate new list
+//     $stmt = $pdo->prepare('DELETE FROM Certificates WHERE profile_id = :pid');
+//     $stmt->execute(array(':pid' => $profileid));
+//     insertCertificates($profileid,$pdo);
+// //  Positions
+//     // Clear old position entries; recreate new list
+//     $stmt = $pdo->prepare('DELETE FROM Position WHERE profile_id = :pid');
+//     $stmt->execute(array(':pid' => $profileid));
+//     // Clear old activitites; recreate new list
+//     $stmt = $pdo->prepare('DELETE FROM Activity WHERE profile_id = :pid');
+//     $stmt->execute(array(':pid' => $profileid));
+//     // Insert new position entries; create replacement list
+//     insertPositions($profileid, $pdo);
+//     changeResumeStyle($pdo);
+//     //$_SESSION['count_position'] = get_position_count($profileid,$pdo);
+//     // foreach ($_POST as $key => $value) {
+//     //    $_SESSION['message'] = $_SESSION['message']
+//     //      ."Field ".htmlspecialchars($key)." is ".htmlspecialchars($value)."<br>";
+//     //      store_error_messages();
+//     // }
+//     // Only approved users may enter contact information.
+//     if ($_SESSION['contact_info'] == 0) {
+//         header('Location: index.php');
+//         return;
+//     }  else {
+//         header("Location: contacts.php?profile_id=".$profileid);
+//         return;
+//     }
+// } else {
+//   //$_SESSION['message'] = ' Initial Get Request: nothing posted yet. ';
+// }
 ?>
 
 <!--            VIEW                -->
@@ -129,9 +129,9 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
 <?php
    require_once 'header.php';
    // Get educations and positions from database YYz6UJyE
-   $educations = loadEdu($profileid,$pdo);
-   $Certificates = loadCertif($profileid,$pdo);
-   $projects = loadProjects($profileid,$pdo);
+   // $educations = loadEdu($profileid,$pdo);
+   // $Certificates = loadCertif($profileid,$pdo);
+   // $projects = loadProjects($profileid,$pdo);
    // var_dump($Certificates);
    //
    // $sql = 'SELECT Certificates.year, Certificates.award_link as award, Award.name As degree,
@@ -151,10 +151,10 @@ if (isset($_POST['first_name']) && isset($_POST['last_name']) &&
    // var_dump($Certifications);
    // var_dump($retrieved);
    //print_r($Certificates);
-   $positions = loadPos($profileid,$pdo);
-   $skills = loadSkill($profileid,$pdo);
-   $hobbies= loadHobbies($profileid,$pdo);
-   $interests = loadPersonal($profileid,$pdo);
+   // $positions = loadPos($profileid,$pdo);
+   // $skills = loadSkill($profileid,$pdo);
+   // $hobbies= loadHobbies($profileid,$pdo);
+   // $interests = loadPersonal($profileid,$pdo);
 ?>
 <style>
 div.radio {

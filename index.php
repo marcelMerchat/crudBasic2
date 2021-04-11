@@ -62,6 +62,12 @@ div.container-edu-info {
 .more-bottom-margin {
     margin-bottom: 30px;
 }
+#main {
+    position: absolute;
+    left: 30%;
+    right: 30%;
+    border: 0px orange solid;
+}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -120,9 +126,9 @@ if ( isset($_SESSION['user_id']) && (strlen($_SESSION['user_id']) > 0) ) {
     $stmtUsrCount->execute(array(':sid' => $_SESSION['user_id']));
     $rowCnt = $stmtUsrCount->fetch(PDO::FETCH_ASSOC);
     $tableRows = array_values($rowCnt)[0];
-    //echo '<pre><p>User logged-in. There are ';
-    //var_dump($tableRows);
-    //echo ' profiles.</p></pre>';
+    // echo '<pre><p>User logged-in. There are ';
+    // var_dump($tableRows);
+    // echo ' profiles.</p></pre>';
     //echo 'var_dump is '; // type and value
     //echo htmlspecialchars($row_count).' &lt'. ' &gt';
 } else {
@@ -169,7 +175,7 @@ if($tableRows > 0) {
     if ( isset($_SESSION['user_id']) && strlen($_SESSION['user_id']) > 0 ) {
       $stmtUsr = $pdo->prepare($sqlUsr);
       $stmtUsr->execute(array(':sid' => $_SESSION['user_id']));
-      $row = $stmtUsr->fetch(PDO::FETCH_ASSOC);
+      //$row = $stmtUsr->fetch(PDO::FETCH_ASSOC);
       while ( $row = $stmtUsr->fetch(PDO::FETCH_ASSOC) ) {
           $resume_style = $row['resume_style'];
           if($resume_style == 'student') {
@@ -227,6 +233,10 @@ if ( isset($_SESSION['user_id']) && strlen($_SESSION['user_id']) > 0 ) {
              .'<a href="changePassword.php">here</a>.'
           .'</p>';
 }
+//<a href="http://localhost/index.php"> main page</a>.//
+echo '<p class="justify left">Take me to the
+          <a href="http://marcel-merchat.com/index.php"> main page</a>.
+      </p>';
 ?>
 </div> <!-- end main -->
 <script>

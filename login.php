@@ -137,7 +137,7 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
       <?php
         flashMessages();
       ?>
-      <div class="container-form-entry more-top-margin-3x">
+      <div class="container-form-entry more-top-margin-2x">
         <div class="more-input-margin less-bottom-margin less-top-margin box-input-label">
                 <label class="less-bottom-margin less-top-margin center" for="email">Email</label>
         </div><div class="less-top-margin less-bottom-margin">
@@ -147,7 +147,7 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
                  id="email" />
           </p>
         </div></div>
-     <div class="container-form-entry more-top-margin-3x">
+     <div class="container-form-entry more-top-margin-2x">
        <div class="more-input-margin less-bottom-margin less-top-margin box-input-label center">
                <label class="center" for="id_1723">Password</label>
        </div><div class="less-top-margin less-bottom-margin box-profile-input">
@@ -157,7 +157,7 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
           </p>
        </div>
      </div>
-     <h3 class="more-top-margin-3x center">
+     <h3 class="more-top-margin-2x center">
          <button class="button-submit" onclick="return doValidate();">Login</button>
          &nbsp;
          <button class="button-submit" name="cancel">Cancel</button>
@@ -166,13 +166,15 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
              at the website (see util.php) performs a final validation check.-->
      </h3>
      <!-- Hint: -->
-       <p class="justify quad-space">You can get your own password
-           <a href="apply.php"> here</a> or login as
-           guest@mycompany.com using password 'guest123' for a fast preview.
-       </p><p class="justify">If you forgot the password,
+       <p class="left more-top-margin-3x">You can login as
+           guest@mycompany.com using password 'guest123' or get your own password
+               <a href="apply.php"> here</a>. If you forgot the password,
                 you can get a new one <a href="forgotpass.php">here</a>.
-       </p><p class="justify left">Take me back to the
-           <a href="index.php"> first page</a>.
+       </p><p class="left more-top-margin-1x">Take me back to the
+           <a href="index.php"> profile starting page</a>.
+       </p><p class="left more-top-margin-1x">Take me to the
+           <!--<a href="http://localhost/index.php"> main page</a>.-->
+           <a href="http://marcel-merchat.com/index.php"> main page</a>.
        </p>
   </form>
 </div>
@@ -180,12 +182,12 @@ if (   isset($_POST['email']) && isset($_POST['pass']) ) {
 /* onchange="this.className=(this.value=='')?'':'visited';" */
 $(document).ready(function() {
   window.console && console.log('Document ready called ');
-  adjustWindow();
   isMobileDevice = Boolean("<?php echo isMobile() ?>" == 1);
   isLargeDevice = !isMobileDevice;
   window.console && console.log('Mobile device = ' + isMobileDevice);
   var w = $( window ).width();
   window.console && console.log('The window width is = ' + w);
+  adjustWindow();
 });
 function doValidate() {
     //console.log('Validating...');

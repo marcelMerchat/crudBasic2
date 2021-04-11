@@ -418,7 +418,7 @@ input.wide-20char {
 }
 .quad-space {
     margin-top: 4vw;
-    margin-bottom: 4vw;
+    margin-bottom: 2vw;
 }
 /* after input change conditions within paragraph */
 /*.text-box {
@@ -824,11 +824,6 @@ li {
     font-size: 1em;
     color: #333;
 }
-/*#main {
-    position: absolute;
-    top: 2%;
-    border: 0px orange solid;
-}*/
 #top {
     bottom: 30%;
     height: 27%;

@@ -252,6 +252,9 @@ To get started run the following SQL commands:
 
 CREATE DATABASE team; (Human Resources)
 
+GRANT ALL PRIVILEGES ON team.* TO 'gramps77'@'localhost' IDENTIFIED BY 'mcp2tWc';
+// gramps77@localhost hash: e76500c3d37247cb0564d800821a1311 random: XyZzy12*_
+
 // GRANT ALL PRIVILEGES
              ON team.*
              TO 'username'@'localhost' IDENTIFIED BY 'password';
@@ -279,9 +282,18 @@ CREATE TABLE users (
    INDEX(email)
 ) ENGINE=InnoDB CHARSET=utf8;
 
+// password is login123
+merchat77@gmail.com bd244d460a85ee6e0883dbf56bcd30b6 XyZzy12*_
+
+INSERT INTO users (name,email,password, random)
+    VALUES ('gramps77','gramps77@localhost','eaa52980acd0bcfd0937ee5110c74817','XyZzy12*_');
+// password is 'rock123'
+
 INSERT INTO users (name,email,password, random)
     VALUES ('Elvis','epresley@musicland.edu','eaa52980acd0bcfd0937ee5110c74817','XyZzy12*_');
 // password is 'rock123'
+
+104aa81147bbc5e0a62b0f64756f6567
 
 // ALTER TABLE `users` ADD `contact_info` Boolean DEFAULT 0 AFTER timeout;
 // ALTER TABLE `users` DROP `hint`;
@@ -295,8 +307,10 @@ CREATE TABLE Profile (
    last_name VARCHAR(128),
    email VARCHAR(128),
    phone VARCHAR(128),
+   linkedin VARCHAR(128),
    profession VARCHAR(128),
    goal Text,
+   resume_style VARCHAR(64) DEFAULT 'student',
 
    PRIMARY KEY(profile_id),
 
@@ -387,9 +401,12 @@ CREATE TABLE SkillSet (
 
 CREATE TABLE Institution (
   institution_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(255),
-  provider VARCHAR(255),
-  PRIMARY KEY(institution_id provider)
+  name VARCHAR(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE Institution (
+  institution_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 The provider column is not being used. An extra foreign key for
@@ -606,7 +623,6 @@ CREATE TABLE Hobby (
   INDEX(name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO Hobby (name, details) VALUES ('Hobbies and Interests', 'Current events, Yoga');
 INSERT INTO Hobby (name) VALUES ('Journaling');
 INSERT INTO Hobby (name) VALUES ('Eating Out');
 INSERT INTO Hobby (name) VALUES ('Lifelong learning');
@@ -630,8 +646,6 @@ CREATE TABLE Personal (
   INDEX(interest)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO Personal (profile_id, interest, languages, computer_skill, publication, licenses)
- VALUES (80,'Yoga and eating out', 'Spanish, Mandarin', 'Word, Excel', 'Better Management Magazine', 'RN');
 INSERT INTO Hobby (name) VALUES ('Journaling');
 INSERT INTO Hobby (name) VALUES ('Eating Out');
 INSERT INTO Hobby (name) VALUES ('Lifelong learning');
@@ -695,7 +709,6 @@ INSERT INTO Dictionary (Word, Freq) VALUES ('analysis.',0);
 INSERT INTO Dictionary (Word, Freq) VALUES ('analysis?',0);
 
 
-INSERT INTO Dictionary (Word, Freq) VALUES ('scraps',0);
 INSERT INTO Dictionary (Word, Freq) VALUES  ('scraps',0);
 INSERT INTO Dictionary (Word, Freq) VALUES ('scraps,',0);
 INSERT INTO Dictionary (Word, Freq) VALUES ('scraps.',0);
@@ -706,10 +719,8 @@ INSERT INTO Dictionary (Word, Freq) VALUES ('scraped,',0);
 INSERT INTO Dictionary (Word, Freq) VALUES ('scraped.',0);
 INSERT INTO Dictionary (Word, Freq) VALUES ('scraped?',0);
 
-INSERT INTO Dictionary (Word, Freq) VALUES ('scraped',0);
 INSERT INTO Dictionary (Word) VALUES ('scrap');
 UPDATE Dictionary SET Freq = 0 WHERE Dictionary.Word = 'scrap'
-
 
 #########################################################################
 
@@ -812,7 +823,7 @@ Since it easier to work with the text files in the Window enviroment, copy the
 folder from the Windows side to the Ubuntu server folder for testing on
 localhost:
 
-sudo cp /mnt/c/Users/merch/Documents/edu/web_developer/mmdotcom/crudbasic/* /var/www/html/crudBasic
+sudo cp /mnt/c/Users/merch/OneDrive/Documents/edu/web_developer/mmdotcom2021/crudbasic/* /var/www/html/crudBasic
 
 Copy droplet repo to crudBasic folder
 sudo cp /home/gramps/repos/crudBasic/*  /var/www/marcel-merchat.com/html/crudBasic
@@ -833,7 +844,8 @@ git push
 
 Import to cloned project branch in Cloud:
 
-git fetch -all
+git fetch --all
+git pull
 git reset --hard origin/master
 
 #########################################################################
